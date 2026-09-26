@@ -1,48 +1,39 @@
-# transporte-escolar-frontend
+# Transporte Escolar · UI
 
-This template should help get you started developing with Vue 3 in Vite.
+Panel administrativo web para la gestión de un servicio de transporte escolar: clientes, prospectos, pagos semanales, asistencias y conductores.
 
-## Recommended IDE Setup
+Consume una API REST desarrollada en Go (repositorio independiente).
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Stack
 
-## Recommended Browser Setup
+- Vue 3 + TypeScript
+- Tailwind CSS v4
+- Pinia
+- Vue Router
+- Vite
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Instalación
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
+git clone https://github.com/ErnestAlf222/transporte-escolar-ui.git
+cd transporte-escolar-ui
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
+cp .env.example .env
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Variables de entorno
 
-```sh
-npm run build
-```
+| Variable       | Descripción                |
+| -------------- | -------------------------- |
+| `VITE_API_URL` | URL base de la API backend |
 
-### Lint with [ESLint](https://eslint.org/)
+## Scripts
 
-```sh
-npm run lint
-```
+| Comando           | Descripción            |
+| ----------------- | ---------------------- |
+| `npm run dev`     | Servidor de desarrollo |
+| `npm run build`   | Build de producción    |
+| `npm run preview` | Previsualiza el build  |
+| `npm run lint`    | Linting                |
+| `npm run format`  | Formato de código      |
