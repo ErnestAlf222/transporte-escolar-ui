@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { Menu, User, LogOut } from 'lucide-vue-next'
+import Spinner from '@/components/Spinner.vue'
 
 const correo = ref('')
 const password = ref('')
@@ -26,27 +28,27 @@ async function onSubmit() {
 </script>
 
 <template>
-    <div class="flex min-h-screen items-center justify-center bg-slate-950">
-        <form class="w-full max-w-sm space-y-4 rounded-xl border border-slate-800 bg-slate-900 p-8"
-            @submit.prevent="onSubmit">
-            <h1 class="text-xl font-semibold text-white">Iniciar sesión</h1>
+    <div class="flex min-h-screen items-center justify-center">
+        <form class="glass w-full max-w-sm space-y-4 rounded-card p-8" @submit.prevent="onSubmit">
+            <h1 class="text-xl font-semibold text-text-primary">Iniciar sesión</h1>
 
             <div>
-                <label class="block text-sm text-slate-400">Correo</label>
+                <label class="block text-sm text-text-secondary">Correo</label>
                 <input v-model="correo" type="email" required
-                    class="mt-1 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-white" />
+                    class="mt-1 w-full rounded-card border border-border bg-panel px-3 py-2 text-text-primary" />
             </div>
 
             <div>
-                <label class="block text-sm text-slate-400">Contraseña</label>
+                <label class="block text-sm text-text-secondary">Contraseña</label>
                 <input v-model="password" type="password" required
-                    class="mt-1 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-white" />
+                    class="mt-1 w-full rounded-card border border-border bg-panel px-3 py-2 text-text-primary" />
             </div>
 
-            <p v-if="error" class="text-sm text-red-400">{{ error }}</p>
+            <p v-if="error" class="text-sm text-danger">{{ error }}</p>
 
             <button type="submit" :disabled="cargando"
-                class="w-full rounded-md bg-indigo-600 py-2 font-medium text-white disabled:opacity-50">
+                class="flex w-full items-center justify-center gap-2 rounded-card bg-accent py-2 font-medium text-bg disabled:opacity-50">
+                <Spinner v-if="cargando" />
                 {{ cargando ? 'Ingresando...' : 'Ingresar' }}
             </button>
         </form>

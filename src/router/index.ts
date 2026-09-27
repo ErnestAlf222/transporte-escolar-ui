@@ -11,9 +11,20 @@ const router = createRouter({
     },
     {
       path: '/',
-      name: 'home',
-      component: () => import('@/views/DashboardView.vue'),
+      component: () => import('@/layouts/AppLayout.vue'),
       meta: { requiresAuth: true },
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('@/views/DashboardView.vue'),
+        },
+        {
+          path: 'clientes',
+          name: 'clientes',
+          component: () => import('@/views/ClientesView.vue'),
+        },
+      ],
     },
   ],
 })
