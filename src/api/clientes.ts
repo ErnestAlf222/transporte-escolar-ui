@@ -1,5 +1,11 @@
 import http from './http'
-import type { ClienteListItem, ClienteDetalle, EstatusCliente, MetodoPago } from '@/types/cliente'
+import type {
+  ClienteListItem,
+  ClienteDetalle,
+  EstatusCliente,
+  MetodoPago,
+  ActualizarClientePayload,
+} from '@/types/cliente'
 
 interface FiltrosClientes {
   estatus?: EstatusCliente
@@ -23,4 +29,11 @@ export async function archivarCliente(id: number, motivo: string, detalle: strin
 
 export async function reincorporarCliente(id: number): Promise<void> {
   await http.post(`/clientes/${id}/reincorporar`)
+}
+
+export async function actualizarCliente(
+  id: number,
+  payload: ActualizarClientePayload,
+): Promise<void> {
+  await http.patch(`/clientes/${id}`, payload)
 }

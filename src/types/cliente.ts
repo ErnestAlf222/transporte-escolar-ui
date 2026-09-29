@@ -16,15 +16,30 @@ export interface ClienteListItem {
   motivo_archivo_detalle?: string
 }
 
+export interface ActualizarClientePayload {
+  nombre_alumno?: string
+  apellido_paterno_alumno?: string
+  apellido_materno_alumno?: string
+  telefono_alumno?: string
+  nombre_tutor?: string
+  telefono_tutor?: string
+  telefono_emergencia?: string
+  correo?: string
+  escuela_id?: number
+}
+
 export interface ClienteDetalle {
   id: number
   nombre_alumno: string
   apellido_paterno_alumno: string
   apellido_materno_alumno: string
+  telefono_alumno?: string
   nombre_tutor: string
   telefono_tutor: string
+  telefono_emergencia?: string
   correo: string
   escuela_id: number | null
+  nombre_escuela?: string
   metodo_pago: MetodoPago
   monto_cuota: number
   monto_recargo: number

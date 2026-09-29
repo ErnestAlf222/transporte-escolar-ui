@@ -30,12 +30,16 @@ function onLogout() {
 
 <template>
     <div class="flex min-h-screen overflow-hidden">
-        <aside class="glass shrink-0 overflow-hidden transition-all duration-300" :class="menuAbierto ? 'w-56' : 'w-0'">
-            <div class="w-56 p-4">
-                <div class="mb-6 flex items-center gap-3">
+        <div v-if="menuAbierto" class="fixed inset-0 z-30 bg-black/75 sm:hidden" @click="cerrarMenu" />
+
+        <aside
+            class="glass fixed inset-y-0 left-0 z-40 overflow-hidden transition-all duration-300 sm:static sm:z-auto sm:translate-x-0"
+            :class="menuAbierto ? 'w-72 translate-x-0 sm:w-56' : 'w-72 -translate-x-full sm:w-0'">
+            <div class="w-72 p-4 sm:w-56">
+                <div class="mb-6 flex flex-col items-start gap-2">
                     <div
-                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel-2 text-text-secondary">
-                        <User class="h-6 w-6" />
+                        class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-panel-2 text-text-secondary">
+                        <User class="h-10 w-10" />
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-text-primary">Transporte Escolar</p>
@@ -45,7 +49,8 @@ function onLogout() {
                 <nav class="space-y-1">
                     <RouterLink v-for="item in navItems" :key="item.to" :to="item.to" @click="cerrarMenu"
                         class="block rounded-card px-3 py-2 text-sm text-text-secondary hover:bg-panel-2"
-                        active-class="bg-panel-2 text-text-primary">
+                        :active-class="item.to === '/' ? '' : '!bg-accent !text-bg !font-semibold'"
+                        :exact-active-class="item.to === '/' ? '!bg-accent !text-bg !font-semibold' : ''">
                         {{ item.label }}
                     </RouterLink>
                 </nav>
