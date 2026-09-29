@@ -17,6 +17,11 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue'),
     },
     {
+      path: '/registro',
+      name: 'registro-publico',
+      component: () => import('@/views/RegistroPublicoView.vue'),
+    },
+    {
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       meta: { requiresAuth: true },

@@ -56,6 +56,38 @@ const prospectosFiltrados = computed(() => {
     })
 })
 
+interface Familia {
+    clave: string
+    nombre_tutor: string
+    telefono_tutor: string
+    alumnos: ProspectoListItem[]
+}
+
+// Una tarjeta por tutor con sus alumnos dentro. Quien se registró solo (sin tutor) va como tarjeta individual.
+// El listado llega ordenado por fecha, así que las familias quedan ordenadas por su registro más reciente.
+const familias = computed<Familia[]>(() => {
+    const mapa = new Map<string, Familia>()
+    for (const p of prospectosFiltrados.value) {
+        const clave = p.tutor_id ? `t-${p.tutor_id}` : `a-${p.id}`
+        let familia = mapa.get(clave)
+        if (!familia) {
+            familia = { clave, nombre_tutor: p.nombre_tutor, telefono_tutor: p.telefono_tutor, alumnos: [] }
+            mapa.set(clave, familia)
+        }
+        familia.alumnos.push(p)
+    }
+    return [...mapa.values()]
+})
+
+// La familia se ve "pendiente" mientras al menos un alumno lo esté
+function estatusFamilia(f: Familia): EstatusProspecto {
+    return f.alumnos.some((a) => a.estatus === 'pendiente') ? 'pendiente' : 'convertido'
+}
+
+function textoTutor(f: Familia): string {
+    return f.nombre_tutor ? `Tutor: ${f.nombre_tutor}` : 'Registro del propio alumno'
+}
+
 function iniciales(p: ProspectoListItem): string {
     return `${p.nombre_alumno[0] ?? ''}${p.apellido_paterno_alumno?.[0] ?? ''}`.toUpperCase()
 }
@@ -131,42 +163,49 @@ onMounted(() => {
                 :mensaje="`No encontramos coincidencias para &quot;${busqueda}&quot;`" />
 
             <div v-else key="lista" class="flex flex-col gap-3">
-                <div v-for="prospecto in prospectosFiltrados" :key="prospecto.id"
+                <div v-for="familia in familias" :key="familia.clave"
                     class="glass flex cursor-pointer flex-col gap-3 rounded-card p-4 transition hover:bg-panel-2 sm:flex-row sm:items-center sm:gap-4"
-                    @click="abrirDetalle(prospecto.id)">
+                    @click="abrirDetalle(familia.alumnos[0]!.id)">
                     <div class="flex items-start justify-between gap-3 sm:contents">
                         <div class="flex items-center gap-3">
                             <div
                                 class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-panel-2 text-base font-semibold text-accent">
-                                {{ iniciales(prospecto) }}
+                                {{ iniciales(familia.alumnos[0]!) }}
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="font-semibold text-text-primary">
-                                    {{ prospecto.nombre_alumno }} {{ prospecto.apellido_paterno_alumno }} {{
-                                        prospecto.apellido_materno_alumno }}
+                                    {{ familia.alumnos[0]!.nombre_alumno }} {{
+                                        familia.alumnos[0]!.apellido_paterno_alumno }}
+                                    {{ familia.alumnos[0]!.apellido_materno_alumno }}
+                                    <span v-if="familia.alumnos.length > 1"
+                                        class="ml-1 rounded-card bg-accent/15 px-2 py-0.5 align-middle text-xs font-medium text-accent">
+                                        +{{ familia.alumnos.length - 1 }}
+                                    </span>
                                 </p>
-                                <p class="text-sm text-text-secondary">Tutor: {{ prospecto.nombre_tutor }}</p>
-                                <p v-if="prospecto.nombre_escuela" class="text-xs text-text-secondary">
-                                    {{ prospecto.nombre_escuela }}
+                                <p class="text-sm text-text-secondary">
+                                    {{ textoTutor(familia) }}
+                                </p>
+                                <p v-if="familia.alumnos[0]!.nombre_escuela" class="text-xs text-text-secondary">
+                                    {{ familia.alumnos[0]!.nombre_escuela }}
                                 </p>
                             </div>
                         </div>
 
                         <span class="shrink-0 rounded-card px-2 py-1 text-xs font-medium"
-                            :class="prospecto.estatus === 'pendiente' ? 'bg-sun/15 text-sun' : 'bg-mint/15 text-mint'">
-                            {{ prospecto.estatus === 'pendiente' ? 'Pendiente' : 'Convertido' }}
+                            :class="estatusFamilia(familia) === 'pendiente' ? 'bg-sun/15 text-sun' : 'bg-mint/15 text-mint'">
+                            {{ estatusFamilia(familia) === 'pendiente' ? 'Pendiente' : 'Convertido' }}
                         </span>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-3">
-                        <p class="text-sm text-text-secondary">{{ prospecto.telefono_tutor }}</p>
+                        <p class="text-sm text-text-secondary">{{ familia.telefono_tutor }}</p>
                         <div class="flex items-center gap-3">
-                            <a :href="`https://wa.me/${telefonoInternacional(prospecto.telefono_tutor)}`"
-                                target="_blank" rel="noopener" title="Abrir WhatsApp" @click.stop>
+                            <a :href="`https://wa.me/${telefonoInternacional(familia.telefono_tutor)}`" target="_blank"
+                                rel="noopener" title="Abrir WhatsApp" @click.stop>
                                 <WhatsappIcon class="h-5 w-5" />
                             </a>
-                            <a :href="`https://t.me/+${telefonoInternacional(prospecto.telefono_tutor)}`"
-                                target="_blank" rel="noopener" title="Abrir Telegram" @click.stop>
+                            <a :href="`https://t.me/+${telefonoInternacional(familia.telefono_tutor)}`" target="_blank"
+                                rel="noopener" title="Abrir Telegram" @click.stop>
                                 <TelegramIcon class="h-5 w-5" />
                             </a>
                         </div>
@@ -175,6 +214,7 @@ onMounted(() => {
             </div>
         </Transition>
 
-        <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" @close="cerrarDetalle" @convertido="alConvertido" />
+        <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" @close="cerrarDetalle" @convertido="alConvertido"
+            @abrir="abrirDetalle" />
     </div>
 </template>

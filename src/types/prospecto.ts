@@ -7,6 +7,7 @@ export interface ProspectoListItem {
   apellido_materno_alumno?: string
   nombre_tutor: string
   telefono_tutor: string
+  tutor_id: number | null
   escuela_id: number | null
   nombre_escuela?: string
   estatus: EstatusProspecto
@@ -33,6 +34,18 @@ export interface ProspectoDetalle {
   nombre_escuela?: string
   estatus: EstatusProspecto
   fecha_contacto: string
+  tutor_id: number | null
+  alumnos: AlumnoFamilia[]
+}
+
+// Cada alumno de la misma familia (mismo tutor), incluido el que se está viendo
+export interface AlumnoFamilia {
+  id: number
+  nombre_alumno: string
+  apellido_paterno_alumno?: string
+  apellido_materno_alumno?: string
+  nombre_escuela?: string
+  estatus: EstatusProspecto
 }
 
 export interface ConversionResponse {

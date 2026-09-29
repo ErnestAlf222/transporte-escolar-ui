@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { verProspecto, convertirProspecto } from '@/api/prospectos'
-import type { ProspectoDetalle } from '@/types/prospecto'
+import type { ProspectoDetalle, AlumnoFamilia } from '@/types/prospecto'
 import { telefonoInternacional } from '@/utils/telefono'
 import { X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check } from 'lucide-vue-next'
 import WhatsappIcon from '@/components/icons/WhatsappIcon.vue'
@@ -9,7 +9,7 @@ import TelegramIcon from '@/components/icons/TelegramIcon.vue'
 import Spinner from '@/components/Spinner.vue'
 
 const props = defineProps<{ prospectoId: number | null }>()
-const emit = defineEmits<{ close: []; convertido: [] }>()
+const emit = defineEmits<{ close: []; convertido: []; abrir: [id: number] }>()
 
 const detalle = ref<ProspectoDetalle | null>(null)
 const cargando = ref(false)
@@ -23,6 +23,18 @@ const convertidoOk = ref(false)
 function direccionCompleta(d: ProspectoDetalle): string {
     const partes = [d.calle, d.numero_exterior, d.numero_interior, d.colonia, d.codigo_postal].filter(Boolean)
     return partes.length > 0 ? partes.join(', ') : ''
+}
+
+function nombreCompleto(a: AlumnoFamilia): string {
+    return [a.nombre_alumno, a.apellido_paterno_alumno, a.apellido_materno_alumno].filter(Boolean).join(' ')
+}
+
+function inicialesAlumno(a: AlumnoFamilia): string {
+    return `${a.nombre_alumno[0] ?? ''}${a.apellido_paterno_alumno?.[0] ?? ''}`.toUpperCase()
+}
+
+function abrirAlumno(a: AlumnoFamilia) {
+    if (detalle.value && a.id !== detalle.value.id) emit('abrir', a.id)
 }
 
 async function cargar(id: number) {
@@ -101,26 +113,12 @@ function alTeclaEsc(evento: KeyboardEvent) {
                         </div>
 
                         <div v-else-if="detalle" class="space-y-5">
-                            <div class="flex items-center gap-4">
-                                <div
-                                    class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-accent/15 text-2xl font-bold text-accent">
-                                    {{ detalle.nombre_alumno[0] }}{{ detalle.apellido_paterno_alumno?.[0] ?? '' }}
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="truncate text-lg font-semibold text-text-primary">
-                                        {{ detalle.nombre_alumno }} {{ detalle.apellido_paterno_alumno }} {{
-                                            detalle.apellido_materno_alumno }}
-                                    </p>
-                                    <p class="flex items-center gap-1 text-sm text-text-secondary">
-                                        <GraduationCap class="h-4 w-4 shrink-0" />
-                                        {{ detalle.nombre_escuela || 'Sin escuela asignada' }}
-                                    </p>
-                                </div>
-                            </div>
 
                             <div class="glass space-y-3 rounded-card p-4">
-                                <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Tutor: {{
-                                    detalle.nombre_tutor }}</p>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                                    {{ detalle.nombre_tutor ? `Tutor: ${detalle.nombre_tutor}` : 'Contacto del alumno'
+                                    }}
+                                </p>
 
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-text-primary">{{ detalle.telefono_tutor }}</span>
@@ -155,6 +153,35 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                         </span>
                                     </span>
                                 </p>
+                            </div>
+                            <!-- Alumnos -->
+                            <div>
+                                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                                    Alumnos ({{ detalle.alumnos.length }})
+                                </p>
+                                <div class="flex flex-col gap-2">
+                                    <button v-for="a in detalle.alumnos" :key="a.id" type="button"
+                                        class="flex items-center gap-3 rounded-card border p-3 text-left transition hover:bg-panel-2"
+                                        :class="a.id === detalle.id ? 'border-accent/50 bg-accent/10' : 'border-border'"
+                                        @click="abrirAlumno(a)">
+                                        <div
+                                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-panel-2 text-sm font-semibold text-accent">
+                                            {{ inicialesAlumno(a) }}
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate font-semibold text-text-primary">{{ nombreCompleto(a) }}
+                                            </p>
+                                            <p class="flex items-center gap-1 text-xs text-text-secondary">
+                                                <GraduationCap class="h-3.5 w-3.5 shrink-0" />
+                                                {{ a.nombre_escuela || 'Sin escuela asignada' }}
+                                            </p>
+                                        </div>
+                                        <span class="shrink-0 rounded-card px-2 py-1 text-xs font-medium"
+                                            :class="a.estatus === 'pendiente' ? 'bg-sun/15 text-sun' : 'bg-mint/15 text-mint'">
+                                            {{ a.estatus === 'pendiente' ? 'Pendiente' : 'Convertido' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div v-if="detalle.estatus === 'convertido'"

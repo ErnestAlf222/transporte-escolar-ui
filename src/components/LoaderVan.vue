@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+withDefaults(defineProps<{ variante?: 'pantalla' | 'inline' | 'compacto' }>(), {
+    variante: 'pantalla',
+})
+
 const palabras = ['Ernesto', 'Alfonso', 'Sánchez', 'Montiel']
 const indice = ref(0)
 let intervalo: ReturnType<typeof setInterval>
@@ -17,8 +21,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-bg">
-        <svg class="van" viewBox="0 0 140 70" xmlns="http://www.w3.org/2000/svg">
+    <div class="flex flex-col items-center justify-center"
+        :class="variante === 'pantalla' ? 'fixed inset-0 z-50 gap-6 bg-bg' : ''">
+        <svg class="van" :class="`van--${variante}`" viewBox="0 0 140 70" xmlns="http://www.w3.org/2000/svg">
             <ellipse cx="72" cy="62" rx="52" ry="4" fill="rgba(0,0,0,0.35)" />
 
             <path d="M16 50 L16 24 Q16 16 24 15 L96 15 Q104 15 108 21 L120 36 L122 46 Q122 50 118 50 Z"
@@ -43,7 +48,7 @@ onUnmounted(() => {
             <circle cx="104" cy="52" r="3" fill="var(--color-text-secondary)" />
         </svg>
 
-        <p class="text-sm text-text-secondary">
+        <p v-if="variante === 'pantalla'" class="text-sm text-text-secondary">
             Hecho con tecnología
             <span class="font-semibold text-accent">{{ palabras[indice] }}</span>
         </p>
@@ -54,6 +59,14 @@ onUnmounted(() => {
 .van {
     width: 160px;
     animation: bounce 1.2s ease-in-out infinite;
+}
+
+.van--inline {
+    width: 110px;
+}
+
+.van--compacto {
+    width: 44px;
 }
 
 .wheel {
