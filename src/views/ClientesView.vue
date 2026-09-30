@@ -37,13 +37,36 @@ const clientesFiltrados = computed(() => {
     })
 })
 
-// Agrupa por la primera letra del nombre del alumno, para el índice alfabético tipo Contactos
+interface Familia {
+    clave: string
+    nombre_tutor: string
+    telefono_tutor: string
+    alumnos: ClienteListItem[]
+}
+
+// Una fila por tutor con sus alumnos; quien no tiene tutor va solo.
+// El backend ordena por nombre de alumno, así que alumnos[0] es el primero alfabéticamente.
+const familias = computed<Familia[]>(() => {
+    const mapa = new Map<string, Familia>()
+    for (const c of clientesFiltrados.value) {
+        const clave = c.tutor_id ? `t-${c.tutor_id}` : `c-${c.id}`
+        let familia = mapa.get(clave)
+        if (!familia) {
+            familia = { clave, nombre_tutor: c.nombre_tutor, telefono_tutor: c.telefono_tutor, alumnos: [] }
+            mapa.set(clave, familia)
+        }
+        familia.alumnos.push(c)
+    }
+    return [...mapa.values()]
+})
+
+// Índice alfabético tipo Contactos: por la primera letra del primer alumno de cada familia
 const clientesAgrupados = computed(() => {
-    const grupos: Record<string, ClienteListItem[]> = {}
-    for (const cliente of clientesFiltrados.value) {
-        const letra = (cliente.nombre_alumno[0] ?? '#').toUpperCase()
+    const grupos: Record<string, Familia[]> = {}
+    for (const familia of familias.value) {
+        const letra = (familia.alumnos[0]!.nombre_alumno.trim()[0] ?? '#').toUpperCase()
         if (!grupos[letra]) grupos[letra] = []
-        grupos[letra].push(cliente)
+        grupos[letra].push(familia)
     }
     return grupos
 })
@@ -104,6 +127,29 @@ function alGuardar() {
 
 function iniciales(cliente: ClienteListItem): string {
     return `${cliente.nombre_alumno[0] ?? ''}${cliente.apellido_paterno_alumno[0] ?? ''}`.toUpperCase()
+}
+
+function nombreAlumno(c: ClienteListItem): string {
+    return [c.nombre_alumno, c.apellido_paterno_alumno, c.apellido_materno_alumno]
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(' ')
+}
+
+function textoTutorFamilia(f: Familia): string {
+    return f.nombre_tutor ? `Tutor: ${f.nombre_tutor}` : 'Registro del propio alumno'
+}
+
+// Si todos van a la misma escuela sale una vez; si no, se listan separadas por un punto
+function textoEscuelas(f: Familia): string {
+    const nombres = new Set(f.alumnos.map((a) => a.nombre_escuela).filter(Boolean))
+    return [...nombres].join(' · ')
+}
+
+function textoPago(f: Familia): string {
+    const metodos = new Set(f.alumnos.map((a) => a.metodo_pago))
+    if (metodos.size > 1) return 'Pago mixto'
+    return f.alumnos[0]!.metodo_pago === 'digital' ? 'Pago digital' : 'Pago en efectivo'
 }
 
 async function cargar() {
@@ -177,44 +223,47 @@ onMounted(() => {
                             class="scroll-mt-4 text-xs font-semibold uppercase text-text-secondary">
                             {{ letra }}
                         </p>
-                        <div v-for="cliente in clientesAgrupados[letra]" :key="cliente.id"
+                        <div v-for="familia in clientesAgrupados[letra]" :key="familia.clave"
                             class="glass flex cursor-pointer flex-col gap-3 rounded-card p-4 transition hover:bg-panel-2 sm:flex-row sm:items-center sm:gap-4"
-                            @click="abrirDetalle(cliente.id)">
+                            @click="abrirDetalle(familia.alumnos[0]!.id)">
                             <div class="flex items-start justify-between gap-3 sm:contents">
                                 <div class="flex items-center gap-3">
                                     <div
                                         class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-panel-2 text-base font-semibold text-accent">
-                                        {{ iniciales(cliente) }}
+                                        {{ iniciales(familia.alumnos[0]!) }}
                                     </div>
 
                                     <div class="min-w-0 flex-1">
                                         <p class="font-semibold text-text-primary">
-                                            {{ cliente.nombre_alumno }} {{ cliente.apellido_paterno_alumno }} {{
-                                                cliente.apellido_materno_alumno }}
+                                            {{ nombreAlumno(familia.alumnos[0]!) }}
+                                            <span v-if="familia.alumnos.length > 1"
+                                                class="ml-1 rounded-card bg-accent/15 px-2 py-0.5 align-middle text-xs font-medium text-accent">
+                                                +{{ familia.alumnos.length - 1 }}
+                                            </span>
                                         </p>
-                                        <p class="text-sm text-text-secondary">Tutor: {{ cliente.nombre_tutor }}</p>
-                                        <p v-if="cliente.nombre_escuela" class="text-xs text-text-secondary">
-                                            {{ cliente.nombre_escuela }}
+                                        <p class="text-sm text-text-secondary">{{ textoTutorFamilia(familia) }}</p>
+                                        <p v-if="textoEscuelas(familia)" class="text-xs text-text-secondary">
+                                            {{ textoEscuelas(familia) }}
                                         </p>
                                     </div>
                                 </div>
 
                                 <span
                                     class="shrink-0 rounded-card bg-accent/15 px-2 py-1 text-xs font-medium text-accent">
-                                    {{ cliente.metodo_pago === 'digital' ? 'Pago digital' : 'Pago en efectivo' }}
+                                    {{ textoPago(familia) }}
                                 </span>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-3">
-                                <p class="text-sm text-text-secondary">{{ cliente.telefono_tutor }}</p>
+                                <p class="text-sm text-text-secondary">{{ familia.telefono_tutor }}</p>
 
                                 <div class="flex items-center gap-3">
-                                    <a :href="`https://wa.me/${telefonoInternacional(cliente.telefono_tutor)}`"
+                                    <a :href="`https://wa.me/${telefonoInternacional(familia.telefono_tutor)}`"
                                         target="_blank" rel="noopener" class="hover:opacity-80" title="Abrir WhatsApp"
                                         @click.stop>
                                         <WhatsappIcon class="h-5 w-5" />
                                     </a>
-                                    <a :href="`https://t.me/+${telefonoInternacional(cliente.telefono_tutor)}`"
+                                    <a :href="`https://t.me/+${telefonoInternacional(familia.telefono_tutor)}`"
                                         target="_blank" rel="noopener" class="hover:opacity-80" title="Abrir Telegram"
                                         @click.stop>
                                         <TelegramIcon class="h-5 w-5" />
@@ -229,6 +278,6 @@ onMounted(() => {
 
         <!-- Modal de detalle del cliente -->
         <ClienteDetalleModal :cliente-id="clienteIdActivo" :modo-edicion="modoEdicion" @close="cerrarDetalle"
-            @editar="abrirEdicion" @cancelar-edicion="cancelarEdicion" @guardado="alGuardar" />
+            @editar="abrirEdicion" @cancelar-edicion="cancelarEdicion" @guardado="alGuardar" @abrir="abrirDetalle" />
     </div>
 </template>

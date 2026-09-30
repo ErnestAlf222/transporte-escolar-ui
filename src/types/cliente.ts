@@ -14,6 +14,8 @@ export interface ClienteListItem {
   nombre_escuela?: string
   motivo_archivo?: MotivoArchivo
   motivo_archivo_detalle?: string
+  tutor_id: number | null
+  hermanos: number
 }
 
 export interface ActualizarClientePayload {
@@ -48,4 +50,33 @@ export interface ClienteDetalle {
   motivo_archivo?: MotivoArchivo
   motivo_archivo_detalle?: string
   foto_url?: string
+  tutor_id: number | null
+  alumnos: AlumnoClienteFamilia[]
+}
+
+// Cada alumno de la misma familia (mismo tutor), incluido el que se está viendo
+export interface AlumnoClienteFamilia {
+  id: number
+  nombre_alumno: string
+  apellido_paterno_alumno?: string
+  apellido_materno_alumno?: string
+  nombre_escuela?: string
+  estatus: EstatusCliente
+  metodo_pago: MetodoPago
+  monto_cuota: number
+}
+
+export interface AdeudoAlumno {
+  id: number
+  nombre_alumno: string
+  apellido_paterno_alumno?: string
+  apellido_materno_alumno?: string
+  estatus: EstatusCliente
+  semanas_pendientes: number
+  total_adeudo: number
+}
+
+export interface AdeudoFamilia {
+  alumnos: AdeudoAlumno[]
+  total_familia: number
 }

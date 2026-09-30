@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
+import axios from 'axios'
 import { actualizarCliente } from '@/api/clientes'
 import { listarEscuelas } from '@/api/escuelas'
 import type { ClienteDetalle, ActualizarClientePayload } from '@/types/cliente'
@@ -80,8 +81,11 @@ async function guardar() {
             escuela_id: payload.escuela_id ?? props.detalle.escuela_id,
             nombre_escuela: escuelasOpciones.value.find((o) => o.value === form.value.escuela_id)?.label,
         })
-    } catch {
-        errorGuardar.value = 'No se pudieron guardar los cambios'
+    } catch (e) {
+        errorGuardar.value =
+            axios.isAxiosError(e) && e.response?.status === 409
+                ? 'Ese teléfono ya pertenece a otro tutor'
+                : 'No se pudieron guardar los cambios'
     } finally {
         guardando.value = false
     }
@@ -117,6 +121,10 @@ async function guardar() {
             <label class="block text-xs text-text-secondary">Escuela</label>
             <DropdownSelect v-model="form.escuela_id" :opciones="escuelasOpciones" class="mt-1 w-full" />
         </div>
+
+        <p v-if="detalle.tutor_id !== null" class="text-xs text-text-secondary">
+            Los datos del tutor se comparten con sus hermanos: al guardar cambian en toda la familia.
+        </p>
 
         <div class="grid gap-3 sm:grid-cols-2">
             <div>

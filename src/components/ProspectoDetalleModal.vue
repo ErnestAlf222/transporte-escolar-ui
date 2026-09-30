@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { verProspecto, convertirProspecto } from '@/api/prospectos'
 import type { ProspectoDetalle, AlumnoFamilia } from '@/types/prospecto'
 import { telefonoInternacional } from '@/utils/telefono'
-import { X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check } from 'lucide-vue-next'
+import { X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check, Phone } from 'lucide-vue-next'
 import WhatsappIcon from '@/components/icons/WhatsappIcon.vue'
 import TelegramIcon from '@/components/icons/TelegramIcon.vue'
 import Spinner from '@/components/Spinner.vue'
@@ -12,7 +12,8 @@ const props = defineProps<{ prospectoId: number | null }>()
 const emit = defineEmits<{ close: []; convertido: []; abrir: [id: number] }>()
 
 const detalle = ref<ProspectoDetalle | null>(null)
-const cargando = ref(false)
+const cargando = ref(false) // solo la primera carga (spinner)
+const cambiando = ref(false) // al cambiar de alumno: se conserva lo mostrado y solo se atenúa
 const error = ref('')
 
 const confirmandoConversion = ref(false)
@@ -26,37 +27,81 @@ function direccionCompleta(d: ProspectoDetalle): string {
 }
 
 function nombreCompleto(a: AlumnoFamilia): string {
-    return [a.nombre_alumno, a.apellido_paterno_alumno, a.apellido_materno_alumno].filter(Boolean).join(' ')
+    return [a.nombre_alumno, a.apellido_paterno_alumno, a.apellido_materno_alumno]
+        .map((s) => (s ?? '').trim())
+        .filter(Boolean)
+        .join(' ')
 }
 
 function inicialesAlumno(a: AlumnoFamilia): string {
-    return `${a.nombre_alumno[0] ?? ''}${a.apellido_paterno_alumno?.[0] ?? ''}`.toUpperCase()
+    return `${a.nombre_alumno.trim()[0] ?? ''}${a.apellido_paterno_alumno?.[0] ?? ''}`.toUpperCase()
 }
 
 function abrirAlumno(a: AlumnoFamilia) {
-    if (detalle.value && a.id !== detalle.value.id) emit('abrir', a.id)
+    if (a.id !== props.prospectoId) emit('abrir', a.id)
 }
 
+// Abre la app de llamadas con el número cargado (en celular marca directo)
+function hrefLlamada(telefono: string): string {
+    return `tel:+${telefonoInternacional(telefono)}`
+}
+
+function tituloContacto(d: ProspectoDetalle): string {
+    return d.tutor_id !== null ? `Tutor: ${d.nombre_tutor}` : 'Contacto y domicilio'
+}
+
+function tituloAlumno(d: ProspectoDetalle): string {
+    return `Datos de ${d.nombre_alumno.trim()}`
+}
+
+const ETIQUETAS_PARENTESCO: Record<string, string> = {
+    padre: 'Padre',
+    madre: 'Madre',
+    abuelo: 'Abuelo',
+    abuela: 'Abuela',
+    estudiante: 'El propio alumno',
+}
+
+function textoParentesco(d: ProspectoDetalle): string {
+    if (!d.parentesco) return ''
+    const etiqueta =
+        d.parentesco === 'otro' ? d.parentesco_detalle || 'Otro' : (ETIQUETAS_PARENTESCO[d.parentesco] ?? d.parentesco)
+    return `Registró: ${etiqueta}`
+}
+
+let ultimaSolicitud = 0
+
 async function cargar(id: number) {
-    cargando.value = true
+    const solicitud = ++ultimaSolicitud
+    const primeraCarga = detalle.value === null
+    cargando.value = primeraCarga
+    cambiando.value = !primeraCarga
     error.value = ''
-    detalle.value = null
+    errorConversion.value = ''
     confirmandoConversion.value = false
     convertidoOk.value = false
     try {
-        detalle.value = await verProspecto(id)
+        const nuevo = await verProspecto(id)
+        if (solicitud === ultimaSolicitud) detalle.value = nuevo
     } catch {
-        error.value = 'No se pudo cargar el detalle del prospecto'
+        if (solicitud === ultimaSolicitud) error.value = 'No se pudo cargar el detalle del prospecto'
     } finally {
-        cargando.value = false
+        if (solicitud === ultimaSolicitud) {
+            cargando.value = false
+            cambiando.value = false
+        }
     }
 }
 
 watch(
     () => props.prospectoId,
-    (id) => {
-        if (id !== null) cargar(id)
+    (id, anterior) => {
+        if (id === null) return
+        // Al abrir desde cerrado se parte de cero; entre alumnos se conserva lo mostrado
+        if (anterior === null) detalle.value = null
+        cargar(id)
     },
+    { immediate: true },
 )
 
 async function confirmarConversion() {
@@ -104,7 +149,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                             <Spinner />
                             Cargando...
                         </div>
-                        <p v-else-if="error" class="text-danger">{{ error }}</p>
+                        <p v-else-if="error && !detalle" class="text-danger">{{ error }}</p>
 
                         <div v-else-if="convertidoOk"
                             class="flex flex-col items-center gap-3 rounded-card bg-mint/10 py-8 text-mint">
@@ -112,16 +157,22 @@ function alTeclaEsc(evento: KeyboardEvent) {
                             <p class="font-medium">Convertido a cliente correctamente</p>
                         </div>
 
-                        <div v-else-if="detalle" class="space-y-5">
+                        <div v-else-if="detalle" class="space-y-5 transition-opacity duration-150"
+                            :class="{ 'opacity-60': cambiando }">
+                            <p v-if="error" class="text-sm text-danger">{{ error }}</p>
 
                             <div class="glass space-y-3 rounded-card p-4">
                                 <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                                    {{ detalle.nombre_tutor ? `Tutor: ${detalle.nombre_tutor}` : 'Contacto del alumno'
-                                    }}
+                                    {{ tituloContacto(detalle) }}
                                 </p>
 
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-text-primary">{{ detalle.telefono_tutor }}</span>
+                                <div v-if="detalle.tutor_id !== null" class="flex items-center justify-between">
+                                    <a :href="hrefLlamada(detalle.telefono_tutor)"
+                                        class="flex items-center gap-2 text-sm text-text-primary hover:text-accent"
+                                        title="Llamar">
+                                        <Phone class="h-4 w-4 shrink-0" />
+                                        {{ detalle.telefono_tutor }}
+                                    </a>
                                     <div class="flex items-center gap-3">
                                         <a :href="`https://wa.me/${telefonoInternacional(detalle.telefono_tutor)}`"
                                             target="_blank" rel="noopener" title="Abrir WhatsApp">
@@ -137,7 +188,10 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                 <p v-if="detalle.telefono_emergencia"
                                     class="flex items-center gap-2 text-sm text-text-secondary">
                                     <AlertTriangle class="h-4 w-4 shrink-0 text-sun" />
-                                    Emergencia: <span class="text-text-primary">{{ detalle.telefono_emergencia }}</span>
+                                    Emergencia:
+                                    <a :href="hrefLlamada(detalle.telefono_emergencia)"
+                                        class="text-text-primary hover:text-accent">{{ detalle.telefono_emergencia
+                                        }}</a>
                                 </p>
                                 <p v-if="detalle.correo" class="flex items-center gap-2 text-sm text-text-secondary">
                                     <Mail class="h-4 w-4 shrink-0" />
@@ -154,7 +208,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                     </span>
                                 </p>
                             </div>
-                            <!-- Alumnos -->
+
                             <div>
                                 <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                                     Alumnos ({{ detalle.alumnos.length }})
@@ -162,7 +216,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                 <div class="flex flex-col gap-2">
                                     <button v-for="a in detalle.alumnos" :key="a.id" type="button"
                                         class="flex items-center gap-3 rounded-card border p-3 text-left transition hover:bg-panel-2"
-                                        :class="a.id === detalle.id ? 'border-accent/50 bg-accent/10' : 'border-border'"
+                                        :class="a.id === prospectoId ? 'border-accent/50 bg-accent/10' : 'border-border'"
                                         @click="abrirAlumno(a)">
                                         <div
                                             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-panel-2 text-sm font-semibold text-accent">
@@ -182,6 +236,36 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                         </span>
                                     </button>
                                 </div>
+                            </div>
+
+                            <div class="glass space-y-3 rounded-card p-4">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                                    {{ tituloAlumno(detalle) }}
+                                </p>
+
+                                <div v-if="detalle.telefono_alumno" class="flex items-center justify-between">
+                                    <a :href="hrefLlamada(detalle.telefono_alumno)"
+                                        class="flex items-center gap-2 text-sm text-text-primary hover:text-accent"
+                                        title="Llamar">
+                                        <Phone class="h-4 w-4 shrink-0" />
+                                        {{ detalle.telefono_alumno }}
+                                    </a>
+                                    <div class="flex items-center gap-3">
+                                        <a :href="`https://wa.me/${telefonoInternacional(detalle.telefono_alumno)}`"
+                                            target="_blank" rel="noopener" title="Abrir WhatsApp">
+                                            <WhatsappIcon class="h-5 w-5" />
+                                        </a>
+                                        <a :href="`https://t.me/+${telefonoInternacional(detalle.telefono_alumno)}`"
+                                            target="_blank" rel="noopener" title="Abrir Telegram">
+                                            <TelegramIcon class="h-5 w-5" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <p v-else class="text-sm text-text-secondary">Sin teléfono del alumno</p>
+
+                                <p v-if="textoParentesco(detalle)" class="text-sm text-text-secondary">
+                                    {{ textoParentesco(detalle) }}
+                                </p>
                             </div>
 
                             <div v-if="detalle.estatus === 'convertido'"

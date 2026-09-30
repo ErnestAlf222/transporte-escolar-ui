@@ -35,6 +35,9 @@ export interface ProspectoDetalle {
   estatus: EstatusProspecto
   fecha_contacto: string
   tutor_id: number | null
+  telefono_alumno?: string
+  parentesco?: string
+  parentesco_detalle?: string
   alumnos: AlumnoFamilia[]
 }
 
