@@ -121,7 +121,7 @@ function cancelarEdicion() {
 }
 
 function alGuardar() {
-    cargar()
+    recargarSilencioso()
     router.back()
 }
 
@@ -166,6 +166,17 @@ async function cargar() {
         cargando.value = false
     }
 }
+// Refresca el listado sin spinner ni parpadeo (al guardar una edición)
+async function recargarSilencioso() {
+    try {
+        clientes.value = await listarClientes({
+            estatus: filtroEstatus.value,
+            escuela_id: filtroEscuela.value ? Number(filtroEscuela.value) : undefined,
+        })
+    } catch {
+        // Se conserva el listado actual
+    }
+}
 
 onMounted(() => {
     cargar()
@@ -208,9 +219,9 @@ onMounted(() => {
                 :mensaje="`No encontramos coincidencias para &quot;${busqueda}&quot;`" />
 
             <div v-else key="lista" class="flex gap-3">
-                <nav class="sticky top-0 flex shrink-0 flex-col items-center gap-0.5 self-start py-1">
+                <nav class="sticky top-0 -ml-2 flex shrink-0 flex-col items-center gap-0.5 self-start py-1 sm:ml-0">
                     <button v-for="letra in alfabeto" :key="letra" type="button" :disabled="!clientesAgrupados[letra]"
-                        class="text-sm font-semibold leading-tight"
+                        class="text-base font-semibold leading-tight sm:text-sm"
                         :class="clientesAgrupados[letra] ? 'text-accent hover:opacity-70' : 'text-text-secondary/30 cursor-default'"
                         @click="irALetra(letra)">
                         {{ letra }}
@@ -278,6 +289,7 @@ onMounted(() => {
 
         <!-- Modal de detalle del cliente -->
         <ClienteDetalleModal :cliente-id="clienteIdActivo" :modo-edicion="modoEdicion" @close="cerrarDetalle"
-            @editar="abrirEdicion" @cancelar-edicion="cancelarEdicion" @guardado="alGuardar" @abrir="abrirDetalle" />
+            @editar="abrirEdicion" @cancelar-edicion="cancelarEdicion" @guardado="alGuardar" @abrir="abrirDetalle"
+            @dinero-guardado="recargarSilencioso" @estatus-cambiado="recargarSilencioso" />
     </div>
 </template>

@@ -80,3 +80,16 @@ export interface AdeudoFamilia {
   alumnos: AdeudoAlumno[]
   total_familia: number
 }
+
+export interface ConfigurarClientePayload {
+  monto_cuota?: number
+  monto_recargo?: number
+  dia_limite_pago?: number
+  metodo_pago?: MetodoPago
+  aplicar_a_hermanos?: boolean
+}
+
+export interface AdeudoCliente {
+  semanas: { estatus: string }[] | null
+  total_adeudo: number
+}

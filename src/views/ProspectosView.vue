@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { listarProspectos } from '@/api/prospectos'
+import { escucharEventosProspectos, listarProspectos } from '@/api/prospectos'
 import { listarEscuelas } from '@/api/escuelas'
 import type { ProspectoListItem, EstatusProspecto } from '@/types/prospecto'
 import DropdownSelect from '@/components/DropdownSelect.vue'
@@ -23,6 +23,7 @@ const opcionesEstatus = [
     { value: '', label: 'Todos' },
     { value: 'pendiente', label: 'Pendientes' },
     { value: 'convertido', label: 'Convertidos' },
+    { value: 'descartado', label: 'Descartados' },
 ]
 
 const prospectos = ref<ProspectoListItem[]>([])
@@ -81,7 +82,8 @@ const familias = computed<Familia[]>(() => {
 
 // La familia se ve "pendiente" mientras al menos un alumno lo esté
 function estatusFamilia(f: Familia): EstatusProspecto {
-    return f.alumnos.some((a) => a.estatus === 'pendiente') ? 'pendiente' : 'convertido'
+    if (f.alumnos.some((a) => a.estatus === 'pendiente')) return 'pendiente'
+    return f.alumnos.every((a) => a.estatus === 'descartado') ? 'descartado' : 'convertido'
 }
 
 function textoTutor(f: Familia): string {
@@ -122,9 +124,45 @@ function alConvertido() {
     cargar()
 }
 
+// Recarga sin el spinner de carga, para que la lista no parpadee al llegar un aviso
+async function refrescar() {
+    try {
+        prospectos.value = await listarProspectos({
+            escuela_id: filtroEscuela.value ? Number(filtroEscuela.value) : undefined,
+            estatus: filtroEstatus.value || undefined,
+        })
+    } catch {
+        // se conserva lo que ya se muestra
+    }
+}
+
+const ESPERA_RECONEXION_MS = 3000
+let detener: AbortController | null = null
+
+// Mantiene la conexión de tiempo real; si se cae, espera y reconecta, y refresca por si se perdió un aviso
+async function suscribirEventos() {
+    detener = new AbortController()
+    const { signal } = detener
+    while (!signal.aborted) {
+        try {
+            await escucharEventosProspectos(refrescar, signal)
+        } catch {
+            if (signal.aborted) return
+        }
+        if (signal.aborted) return
+        await refrescar()
+        await new Promise((resolver) => setTimeout(resolver, ESPERA_RECONEXION_MS))
+    }
+}
+
 onMounted(() => {
     cargar()
     cargarEscuelas()
+    suscribirEventos()
+})
+
+onUnmounted(() => {
+    detener?.abort()
 })
 </script>
 
@@ -192,8 +230,9 @@ onMounted(() => {
                         </div>
 
                         <span class="shrink-0 rounded-card px-2 py-1 text-xs font-medium"
-                            :class="estatusFamilia(familia) === 'pendiente' ? 'bg-sun/15 text-sun' : 'bg-mint/15 text-mint'">
-                            {{ estatusFamilia(familia) === 'pendiente' ? 'Pendiente' : 'Convertido' }}
+                            :class="estatusFamilia(familia) === 'pendiente' ? 'bg-sun/15 text-sun' : estatusFamilia(familia) === 'descartado' ? 'bg-danger/15 text-danger' : 'bg-mint/15 text-mint'">
+                            {{ estatusFamilia(familia) === 'pendiente' ? 'Pendiente' : estatusFamilia(familia) ===
+                                'descartado' ? 'Descartado' : 'Convertido' }}
                         </span>
                     </div>
 
@@ -215,6 +254,6 @@ onMounted(() => {
         </Transition>
 
         <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" @close="cerrarDetalle" @convertido="alConvertido"
-            @abrir="abrirDetalle" />
+            @estatus-cambiado="alConvertido" @abrir="abrirDetalle" />
     </div>
 </template>

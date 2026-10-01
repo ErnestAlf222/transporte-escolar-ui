@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { verProspecto, convertirProspecto } from '@/api/prospectos'
+import { verProspecto, convertirProspecto, descartarProspecto, restaurarProspecto } from '@/api/prospectos'
 import type { ProspectoDetalle, AlumnoFamilia } from '@/types/prospecto'
 import { telefonoInternacional } from '@/utils/telefono'
-import { X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check, Phone } from 'lucide-vue-next'
+import { X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check, Phone, Clock, Ban, Undo2 } from 'lucide-vue-next'
 import WhatsappIcon from '@/components/icons/WhatsappIcon.vue'
 import TelegramIcon from '@/components/icons/TelegramIcon.vue'
 import Spinner from '@/components/Spinner.vue'
 
 const props = defineProps<{ prospectoId: number | null }>()
-const emit = defineEmits<{ close: []; convertido: []; abrir: [id: number] }>()
+const emit = defineEmits<{ close: []; convertido: []; 'estatus-cambiado': []; abrir: [id: number] }>()
 
 const detalle = ref<ProspectoDetalle | null>(null)
 const cargando = ref(false) // solo la primera carga (spinner)
@@ -20,6 +20,10 @@ const confirmandoConversion = ref(false)
 const convirtiendo = ref(false)
 const errorConversion = ref('')
 const convertidoOk = ref(false)
+
+const confirmandoDescarte = ref(false)
+const cambiandoEstatus = ref(false)
+const errorEstatus = ref('')
 
 function direccionCompleta(d: ProspectoDetalle): string {
     const partes = [d.calle, d.numero_exterior, d.numero_interior, d.colonia, d.codigo_postal].filter(Boolean)
@@ -52,6 +56,14 @@ function tituloContacto(d: ProspectoDetalle): string {
 
 function tituloAlumno(d: ProspectoDetalle): string {
     return `Datos de ${d.nombre_alumno.trim()}`
+}
+
+function textoFechaRegistro(d: ProspectoDetalle): string {
+    const fecha = new Date(d.fecha_contacto)
+    if (Number.isNaN(fecha.getTime())) return ''
+    const dia = fecha.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    const hora = fecha.toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit', hour12: true })
+    return `Registrado el ${dia} a las ${hora}`
 }
 
 const ETIQUETAS_PARENTESCO: Record<string, string> = {
@@ -118,6 +130,37 @@ async function confirmarConversion() {
     } finally {
         convirtiendo.value = false
         confirmandoConversion.value = false
+    }
+}
+
+async function descartar() {
+    if (!detalle.value) return
+    cambiandoEstatus.value = true
+    errorEstatus.value = ''
+    try {
+        await descartarProspecto(detalle.value.id)
+        confirmandoDescarte.value = false
+        emit('estatus-cambiado')
+        emit('close')
+    } catch {
+        errorEstatus.value = 'No se pudo descartar el prospecto'
+    } finally {
+        cambiandoEstatus.value = false
+    }
+}
+
+async function restaurar() {
+    if (!detalle.value) return
+    cambiandoEstatus.value = true
+    errorEstatus.value = ''
+    try {
+        await restaurarProspecto(detalle.value.id)
+        emit('estatus-cambiado')
+        emit('close')
+    } catch {
+        errorEstatus.value = 'No se pudo restaurar el prospecto'
+    } finally {
+        cambiandoEstatus.value = false
     }
 }
 
@@ -207,6 +250,11 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                         </span>
                                     </span>
                                 </p>
+                                <p v-if="textoFechaRegistro(detalle)"
+                                    class="flex items-start gap-2 text-sm text-text-secondary">
+                                    <Clock class="mt-0.5 h-4 w-4 shrink-0" />
+                                    {{ textoFechaRegistro(detalle) }}
+                                </p>
                             </div>
 
                             <div>
@@ -273,16 +321,59 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                 Este prospecto ya fue convertido a cliente.
                             </div>
 
+                            <div v-else-if="detalle.estatus === 'descartado'"
+                                class="space-y-3 rounded-card border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
+                                <p>Este prospecto fue descartado.</p>
+                                <p v-if="errorEstatus" class="text-xs">{{ errorEstatus }}</p>
+                                <button type="button" :disabled="cambiandoEstatus"
+                                    class="flex items-center gap-2 rounded-card border border-danger/40 px-3 py-2 text-xs font-medium hover:bg-danger/10 disabled:opacity-50"
+                                    @click="restaurar">
+                                    <Spinner v-if="cambiandoEstatus" />
+                                    <Undo2 v-else class="h-4 w-4" />
+                                    Restaurar
+                                </button>
+                            </div>
+
                             <template v-else>
                                 <p v-if="errorConversion" class="text-sm text-danger">{{ errorConversion }}</p>
 
-                                <div v-if="!confirmandoConversion" class="flex justify-end">
+                                <div v-if="!confirmandoConversion && !confirmandoDescarte"
+                                    class="flex justify-end gap-3">
+                                    <button type="button"
+                                        class="flex items-center gap-2 rounded-card border border-danger/40 px-4 py-2 text-sm text-danger/90 hover:bg-danger/10"
+                                        @click="confirmandoDescarte = true">
+                                        <Ban class="h-4 w-4" />
+                                        Descartar
+                                    </button>
                                     <button type="button"
                                         class="flex items-center gap-2 rounded-card bg-accent px-4 py-2 text-sm font-medium text-bg hover:opacity-90"
                                         @click="confirmandoConversion = true">
                                         <UserCheck class="h-4 w-4" />
                                         Convertir a cliente
                                     </button>
+                                </div>
+
+                                <div v-else-if="confirmandoDescarte"
+                                    class="rounded-card border border-danger/30 bg-danger/10 p-4">
+                                    <p class="mb-3 text-sm text-text-primary">
+                                        ¿Descartar a <strong>{{ detalle.nombre_alumno }}</strong>? Sale de Pendientes y
+                                        puedes restaurarlo después desde el filtro Descartados.
+                                    </p>
+                                    <p v-if="errorEstatus" class="mb-3 text-xs text-danger">{{ errorEstatus }}</p>
+                                    <div class="flex justify-end gap-3">
+                                        <button type="button"
+                                            class="rounded-card border border-border px-4 py-2 text-sm text-text-secondary hover:bg-panel-2"
+                                            @click="confirmandoDescarte = false; errorEstatus = ''">
+                                            Cancelar
+                                        </button>
+                                        <button type="button" :disabled="cambiandoEstatus"
+                                            class="flex items-center gap-2 rounded-card bg-danger px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                                            @click="descartar">
+                                            <Spinner v-if="cambiandoEstatus" />
+                                            <Ban v-else class="h-4 w-4" />
+                                            Descartar
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div v-else class="rounded-card border border-accent/30 bg-accent/10 p-4">

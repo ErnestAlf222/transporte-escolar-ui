@@ -6,6 +6,8 @@ import type {
   MetodoPago,
   ActualizarClientePayload,
   AdeudoFamilia,
+  ConfigurarClientePayload,
+  AdeudoCliente,
 } from '@/types/cliente'
 
 interface FiltrosClientes {
@@ -41,5 +43,17 @@ export async function actualizarCliente(
 
 export async function verAdeudoFamilia(id: number): Promise<AdeudoFamilia> {
   const { data } = await http.get<AdeudoFamilia>(`/clientes/${id}/adeudo-familia`)
+  return data
+}
+
+export async function configurarCliente(
+  id: number,
+  payload: ConfigurarClientePayload,
+): Promise<void> {
+  await http.patch(`/clientes/${id}/configuracion`, payload)
+}
+
+export async function verAdeudoCliente(id: number): Promise<AdeudoCliente> {
+  const { data } = await http.get<AdeudoCliente>(`/clientes/${id}/adeudo`)
   return data
 }

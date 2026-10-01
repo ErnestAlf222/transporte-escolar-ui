@@ -1,4 +1,4 @@
-export type EstatusProspecto = 'pendiente' | 'convertido'
+export type EstatusProspecto = 'pendiente' | 'convertido' | 'descartado'
 
 export interface ProspectoListItem {
   id: number
