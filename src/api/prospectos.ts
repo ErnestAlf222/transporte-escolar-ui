@@ -4,6 +4,7 @@ import type {
   ProspectoDetalle,
   EstatusProspecto,
   ConversionResponse,
+  ActualizarProspectoPayload,
 } from '@/types/prospecto'
 
 interface FiltrosProspectos {
@@ -63,4 +64,11 @@ export async function escucharEventosProspectos(
       if (bloque.startsWith('event:')) alEvento()
     }
   }
+}
+
+export async function actualizarProspecto(
+  id: number,
+  payload: ActualizarProspectoPayload,
+): Promise<void> {
+  await http.patch(`/prospectos/${id}`, payload)
 }

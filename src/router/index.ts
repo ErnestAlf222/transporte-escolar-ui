@@ -56,6 +56,11 @@ const router = createRouter({
           name: 'prospecto-detalle',
           component: () => import('@/views/ProspectosView.vue'),
         },
+        {
+          path: 'pagos',
+          name: 'pagos',
+          component: () => import('@/views/PagosView.vue'),
+        },
       ],
     },
   ],

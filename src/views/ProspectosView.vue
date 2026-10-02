@@ -254,6 +254,6 @@ onUnmounted(() => {
         </Transition>
 
         <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" @close="cerrarDetalle" @convertido="alConvertido"
-            @estatus-cambiado="alConvertido" @abrir="abrirDetalle" />
+            @estatus-cambiado="alConvertido" @guardado="alConvertido" @abrir="abrirDetalle" />
     </div>
 </template>

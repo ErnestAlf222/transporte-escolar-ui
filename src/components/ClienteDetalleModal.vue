@@ -435,7 +435,7 @@ function alCerrar() {
                                 leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-50">
                                 <div v-if="archivando && detalle && !modoEdicion" role="dialog"
                                     aria-label="Archivar alumno"
-                                    class="glass pointer-events-auto max-h-full w-full max-w-md space-y-4 overflow-y-auto overscroll-contain rounded-card p-5 shadow-xl shadow-black/40 md:max-w-xl"
+                                    class="glass pointer-events-auto max-h-full w-full max-w-md space-y-4 overflow-y-auto overscroll-contain scroll-fino rounded-card p-5 shadow-xl shadow-black/40 md:max-w-xl"
                                     :style="{ transformOrigin: '50% 50%' }">
                                     <p class="text-base font-semibold text-text-primary">
                                         ¿Archivar a <strong>{{ detalle.nombre_alumno.trim() }}</strong>?

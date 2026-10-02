@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { registrarProspecto } from '@/api/registro-publico'
 import { listarEscuelasPublicas } from '@/api/escuelas'
 import type { Parentesco } from '@/types/registro-publico'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 import LoaderVan from '@/components/LoaderVan.vue'
 import BotonScroll from '@/components/BotonScroll.vue'
-import { Check, AlertCircle } from 'lucide-vue-next'
+import { useConsultaTelefono } from '@/composables/useConsultaTelefono'
+import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin } from 'lucide-vue-next'
 
 const opcionesParentesco = [
     { value: 'padre', label: 'Padre' },
@@ -39,6 +40,37 @@ const form = ref({
 
 const esEstudiante = computed(() => form.value.parentesco === 'estudiante')
 
+// Escucha los teléfonos mientras se escriben y pregunta al servidor si ya existen
+const { resultado: consultaTutor } = useConsultaTelefono(() => form.value.telefono_tutor)
+const { resultado: consultaAlumno } = useConsultaTelefono(() => form.value.telefono_alumno)
+
+// Respuesta a "¿Acabamos de recibir a tu madre?"; vuelve a pendiente si cambia el número
+const respuestaTutor = ref<'pendiente' | 'si' | 'no'>('pendiente')
+watch(
+    () => form.value.telefono_tutor,
+    () => {
+        respuestaTutor.value = 'pendiente'
+    },
+)
+
+const tutorConocido = computed(() => !esEstudiante.value && consultaTutor.value?.tipo === 'tutor')
+const tutorConfirmado = computed(() => tutorConocido.value && respuestaTutor.value === 'si')
+const textoBotonEnvio = computed(() => (tutorConfirmado.value ? 'Unir a mi familia' : 'Registrarme'))
+const tutorEsAlumno = computed(() => !esEstudiante.value && consultaTutor.value?.tipo === 'alumno')
+// No se puede enviar mientras el número del tutor no esté confirmado o sea de un alumno
+const tutorBloqueado = computed(
+    () => tutorEsAlumno.value || (tutorConocido.value && respuestaTutor.value !== 'si'),
+)
+const alumnoTelefonoRepetido = computed(() => {
+    const tipo = consultaAlumno.value?.tipo
+    return tipo === 'tutor' || tipo === 'alumno'
+})
+const parentescoTexto = computed(() =>
+    form.value.parentesco === 'otro'
+        ? 'tutor'
+        : (opcionesParentesco.find((o) => o.value === form.value.parentesco)?.label ?? 'tutor').toLowerCase(),
+)
+
 // Solo se marcan campos en rojo después del primer intento de enviar, no antes
 const intentoEnviar = ref(false)
 
@@ -49,8 +81,10 @@ const errores = computed(() => ({
     escuela_id: !form.value.escuela_id,
     parentesco_detalle: form.value.parentesco === 'otro' && !form.value.parentesco_detalle,
     telefono_alumno: esEstudiante.value && !form.value.telefono_alumno,
-    nombre_tutor: !esEstudiante.value && !form.value.nombre_tutor,
+    nombre_tutor: !esEstudiante.value && !tutorConfirmado.value && !form.value.nombre_tutor,
     telefono_tutor: !esEstudiante.value && !form.value.telefono_tutor,
+    telefono_tutor_conocido: tutorBloqueado.value,
+    telefono_alumno_repetido: alumnoTelefonoRepetido.value,
 }))
 
 function mostrarError(campo: keyof typeof errores.value) {
@@ -94,7 +128,7 @@ async function enviar() {
             parentesco: form.value.parentesco,
             parentesco_detalle: form.value.parentesco === 'otro' ? form.value.parentesco_detalle : undefined,
             telefono_alumno: form.value.telefono_alumno || undefined,
-            nombre_tutor: esEstudiante.value ? undefined : form.value.nombre_tutor,
+            nombre_tutor: esEstudiante.value || tutorConfirmado.value ? undefined : form.value.nombre_tutor,
             telefono_tutor: esEstudiante.value ? undefined : form.value.telefono_tutor,
             correo: form.value.correo || undefined,
             codigo_postal: form.value.codigo_postal || undefined,
@@ -147,7 +181,11 @@ function registrarOtroAlumno() {
 
             <form v-else id="formRegistro" class="space-y-6" @submit.prevent="enviar">
                 <div class="space-y-3">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Datos del alumno</p>
+                    <p
+                        class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                        <GraduationCap class="h-4 w-4" />
+                        Datos del alumno
+                    </p>
 
                     <div>
                         <label class="block text-xs text-text-secondary">¿Quién llena este registro?</label>
@@ -198,6 +236,9 @@ function registrarOtroAlumno() {
                                 :class="mostrarError('telefono_alumno') ? 'border-danger' : 'border-border'" />
                             <p v-if="mostrarError('telefono_alumno')" class="mt-1 text-xs text-danger">Este campo es
                                 obligatorio</p>
+                            <p v-if="alumnoTelefonoRepetido" class="mt-1 text-xs text-sun">
+                                Ese teléfono ya está registrado.
+                            </p>
                         </div>
                     </div>
 
@@ -215,9 +256,13 @@ function registrarOtroAlumno() {
                 </div>
 
                 <div v-if="!esEstudiante" class="space-y-3 border-t border-border pt-4">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Datos del tutor</p>
+                    <p
+                        class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                        <Users class="h-4 w-4" />
+                        Datos del tutor
+                    </p>
                     <div class="grid gap-3 sm:grid-cols-2">
-                        <div>
+                        <div v-if="!tutorConfirmado">
                             <label class="block text-xs text-text-secondary">Nombre del tutor</label>
                             <input v-model="form.nombre_tutor" type="text"
                                 class="mt-1 w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
@@ -234,17 +279,60 @@ function registrarOtroAlumno() {
                                 obligatorio</p>
                         </div>
                     </div>
+
+                    <div v-if="tutorConocido" class="rounded-card border border-accent/30 bg-accent/10 p-4">
+                        <p class="text-sm text-text-primary">
+                            ¿Acabamos de recibir a tu {{ parentescoTexto }}?
+                            <span v-if="consultaTutor?.nombre">Su nombre es <strong>{{ consultaTutor.nombre
+                            }}</strong></span>
+                        </p>
+                        <div v-if="respuestaTutor === 'pendiente'" class="mt-3 flex gap-3">
+                            <button type="button"
+                                class="rounded-card bg-accent px-4 py-2 text-sm font-medium text-bg hover:opacity-90"
+                                @click="respuestaTutor = 'si'">
+                                Sí
+                            </button>
+                            <button type="button"
+                                class="rounded-card border border-border px-4 py-2 text-sm text-text-secondary hover:bg-panel-2"
+                                @click="respuestaTutor = 'no'">
+                                No
+                            </button>
+                        </div>
+                        <p v-else-if="respuestaTutor === 'si'" class="mt-2 flex items-center gap-2 text-sm text-mint">
+                            <Check class="h-4 w-4" />
+                            Listo, este registro se vincula a su familia.
+                            <button type="button"
+                                class="ml-auto text-xs text-text-secondary underline hover:text-text-primary"
+                                @click="respuestaTutor = 'pendiente'">
+                                Cambiar
+                            </button>
+                        </p>
+                        <p v-else class="mt-2 text-sm text-sun">
+                            Ese número ya está registrado a nombre de otra persona. Revisa que lo hayas escrito bien.
+                        </p>
+                    </div>
+                    <p v-else-if="tutorEsAlumno" class="text-sm text-sun">
+                        Ese teléfono ya pertenece a un alumno registrado. Revisa el número del tutor.
+                    </p>
                 </div>
 
                 <div class="space-y-3 border-t border-border pt-4">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Contacto y domicilio
-                        (opcional)</p>
+                    <p
+                        class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                        <Mail class="h-4 w-4" />
+                        Correo de contacto (opcional)
+                    </p>
+                    <input v-model="form.correo" type="email"
+                        class="w-full rounded-card border border-border bg-panel px-3 py-2 text-sm text-text-primary" />
+                </div>
 
-                    <div>
-                        <label class="block text-xs text-text-secondary">Correo</label>
-                        <input v-model="form.correo" type="email"
-                            class="mt-1 w-full rounded-card border border-border bg-panel px-3 py-2 text-sm text-text-primary" />
-                    </div>
+                <div class="space-y-3 border-t border-border pt-4">
+                    <p
+                        class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                        <MapPin class="h-4 w-4" />
+                        Domicilio del alumno (opcional)
+                    </p>
+                    <p class="text-xs text-text-secondary">Dónde pasamos por el alumno.</p>
 
                     <div class="grid gap-3 sm:grid-cols-2">
                         <div>
@@ -295,7 +383,7 @@ function registrarOtroAlumno() {
                     </RouterLink>
                     <button type="submit" form="formRegistro"
                         class="shrink-0 rounded-card bg-accent px-5 py-2 text-sm font-medium text-bg hover:opacity-90">
-                        Registrarme
+                        {{ textoBotonEnvio }}
                     </button>
                 </template>
             </div>

@@ -20,6 +20,12 @@ export interface RegistroProspectoPayload {
 
 export interface RegistroProspectoResponse {
   ya_existe: boolean
-  tipo?: 'cliente' | 'prospecto'
+  tipo?: 'cliente' | 'prospecto' | 'telefono'
   mensaje: string
 }
+
+export interface ConsultaTelefonoResponse {
+  tipo: 'tutor' | 'alumno' | 'libre'
+  nombre?: string
+}
+

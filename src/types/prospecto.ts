@@ -56,3 +56,21 @@ export interface ConversionResponse {
   token_acceso: string
   mensaje: string
 }
+
+export interface ActualizarProspectoPayload {
+  nombre_alumno?: string
+  apellido_paterno_alumno?: string
+  apellido_materno_alumno?: string
+  telefono_alumno?: string
+  nombre_tutor?: string
+  telefono_tutor?: string
+  telefono_emergencia?: string
+  correo?: string
+  escuela_id?: number
+  codigo_postal?: string
+  calle?: string
+  numero_exterior?: string
+  numero_interior?: string
+  colonia?: string
+  direccion_referencias?: string
+}

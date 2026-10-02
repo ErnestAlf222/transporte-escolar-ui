@@ -237,7 +237,7 @@ onUnmounted(() => {
         leave-active-class="transition duration-200 ease-in motion-reduce:transition-none"
         leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-50">
         <div v-if="abierto" role="dialog" aria-label="Dinero del cliente"
-            class="absolute inset-x-4 bottom-20 z-20 max-h-[calc(100%-6rem)] overflow-y-auto overscroll-contain rounded-card border border-border bg-panel p-5 shadow-xl shadow-black/40"
+            class="absolute inset-x-4 bottom-20 z-20 max-h-[calc(100%-6rem)] overflow-y-auto overscroll-contain scroll-fino rounded-card border border-border bg-panel p-5 shadow-xl shadow-black/40"
             :style="{ transformOrigin: '100% calc(100% + 2.25rem)' }" @keydown.esc="alEsc">
             <p class="mb-4 truncate text-base font-semibold text-text-primary">Dinero de {{ nombreCorto }}</p>
 
@@ -320,14 +320,14 @@ onUnmounted(() => {
                 <p v-if="errorAdeudo" class="text-sm text-danger">{{ errorAdeudo }}</p>
                 <template v-else-if="adeudo">
                     <div v-if="!unSoloAlumno" class="space-y-3">
-                        <div v-for="a in adeudo.alumnos" :key="a.id"
-                            class="flex items-center justify-between gap-3 text-sm">
+                        <div v-for="a in adeudo.alumnos" :key="a.id" class="flex items-center justify-between gap-3"
+                            :class="a.estatus === 'activo' ? 'text-sm' : 'text-xs opacity-60'">
                             <div class="min-w-0">
                                 <p class="truncate text-text-primary">{{ nombreAdeudo(a) }}</p>
                                 <p class="text-xs text-text-secondary">{{ detalleAdeudo(a) }}</p>
                             </div>
                             <p class="shrink-0 font-semibold"
-                                :class="a.estatus === 'activo' ? 'text-text-primary' : 'text-text-secondary'">
+                                :class="a.estatus === 'activo' ? 'text-text-primary' : 'text-text-secondary line-through'">
                                 {{ formatearMonto(a.total_adeudo) }}
                             </p>
                         </div>
