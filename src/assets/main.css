@@ -19,6 +19,7 @@
   --color-glass: rgba(255, 255, 255, 0.055);
 
   --radius-card: 1.25rem;
+  --spacing-cabecera: 4rem;
 
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 }

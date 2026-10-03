@@ -35,6 +35,7 @@ export interface ResumenPagoSemana {
 export interface PagosSemana {
   semana_inicio: string
   es_actual: boolean
+  primera_fecha: string // "AAAA-MM-DD" del primer alumno registrado; vacío si no hay
   resumen: ResumenPagoSemana
   escuelas: EscuelaPagoSemana[]
 }

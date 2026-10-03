@@ -29,7 +29,7 @@ function onLogout() {
 </script>
 
 <template>
-    <div class="flex min-h-screen overflow-hidden">
+    <div class="flex min-h-screen overflow-x-clip">
         <div v-if="menuAbierto" class="fixed inset-0 z-30 bg-black/75 sm:hidden" @click="cerrarMenu" />
 
         <aside
@@ -58,7 +58,8 @@ function onLogout() {
         </aside>
 
         <div class="flex min-w-0 flex-1 flex-col">
-            <header class="glass flex items-center justify-between px-6 py-4">
+            <div class="sticky top-0 z-20 bg-bg">
+            <header class="glass flex h-cabecera items-center justify-between px-6">
                 <button class="text-text-primary" @click="menuAbierto = !menuAbierto">
                     <Menu class="h-6 w-6" />
                 </button>
@@ -70,6 +71,7 @@ function onLogout() {
                     <span class="hidden sm:inline">Cerrar sesión</span>
                 </button>
             </header>
+            </div>
 
             <main class="mx-auto w-full max-w-6xl flex-1 p-6" @click="menuAbierto && cerrarMenu()">
                 <RouterView />
