@@ -1,4 +1,5 @@
 import http from './http'
+import { escucharEventos } from './eventos'
 import type { PagosSemana } from '@/types/pago'
 
 // Sin semana devuelve la semana en curso; con semana (un lunes, AAAA-MM-DD) devuelve esa
@@ -25,4 +26,8 @@ export async function marcarPagado(
     semana_inicio: semanaInicio,
     mensaje,
   })
+}
+
+export function escucharEventosPagos(alEvento: () => void, senal: AbortSignal): Promise<void> {
+  return escucharEventos('/pagos/eventos', alEvento, senal)
 }

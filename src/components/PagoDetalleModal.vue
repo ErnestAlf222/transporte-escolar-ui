@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import axios from 'axios'
-import { X, Check, Ban, Banknote, ImageOff, ExternalLink } from 'lucide-vue-next'
+import { X, Check, Ban, Banknote, ChevronRight, Image as IconoImagen } from 'lucide-vue-next'
 import { confirmarPago, rechazarPago, marcarPagado } from '@/api/pagos'
 import type { AlumnoPagoSemana } from '@/types/pago'
 import { formatearMonto } from '@/utils/moneda'
 import { rangoSemana, soloFecha } from '@/utils/semana'
 import { textoFechaHora } from '@/utils/fecha'
 import { ETIQUETAS_METODO, METODO_DIGITAL, estaAtenuado, etiquetaDe } from '@/utils/pagos'
+import PagoConfiguracionForm from '@/components/PagoConfiguracionForm.vue'
 import Spinner from '@/components/Spinner.vue'
+import VisorCaptura from '@/components/VisorCaptura.vue'
 
 const MAX_MENSAJE = 300
 
@@ -25,7 +27,7 @@ const motivo = ref('')
 const rechazando = ref(false)
 const enviando = ref(false)
 const error = ref('')
-const capturaFallida = ref(false)
+const verCaptura = ref(false)
 
 // Al abrir otro alumno, o si cambia su captura, se limpia lo escrito
 watch(
@@ -35,7 +37,7 @@ watch(
         motivo.value = ''
         rechazando.value = false
         error.value = ''
-        capturaFallida.value = false
+        verCaptura.value = false
     },
 )
 
@@ -54,6 +56,9 @@ const puedeMarcarPagado = computed(() => {
     const a = props.alumno
     return props.puedeResolver && !!a && (a.estatus === 'no_reportada' || a.estatus === 'rechazado') && !estaAtenuado(a)
 })
+
+// Un alumno sin cuota no tiene monto que cobrar: el admin la configura aquí mismo
+const puedeConfigurar = computed(() => props.puedeResolver && !!props.alumno?.sin_cuota)
 
 async function ejecutar(accion: () => Promise<void>) {
     enviando.value = true
@@ -126,7 +131,7 @@ const clasesCampo =
                     leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-95">
                     <div
-                        class="glass flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col rounded-card p-5 sm:p-6 md:max-w-2xl">
+                        class="glass relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col rounded-card p-5 sm:p-6 md:max-w-2xl">
                         <div class="mb-4 flex shrink-0 items-start justify-between gap-3">
                             <div class="min-w-0">
                                 <h2 class="truncate text-lg font-semibold text-text-primary">{{ alumno.alumno }}</h2>
@@ -138,7 +143,7 @@ const clasesCampo =
                             </button>
                         </div>
 
-                        <div
+                        <div :class="{ 'pb-16': puedeConfigurar }"
                             class="-mr-4 min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain scroll-fino pr-4 sm:-mr-5 sm:pr-5">
                             <div class="glass space-y-2 rounded-card p-4">
                                 <div class="flex items-center justify-between gap-3">
@@ -146,7 +151,7 @@ const clasesCampo =
                                         :class="etiquetaDe(alumno).clases">
                                         {{ etiquetaDe(alumno).texto }}
                                     </span>
-                                    <p v-if="alumno.estatus !== 'confirmado' && !alumno.sin_cuota"
+                                    <p v-if="alumno.estatus === 'confirmado' || !alumno.sin_cuota"
                                         class="text-lg font-semibold text-text-primary"
                                         :class="{ 'line-through': estaAtenuado(alumno) }">
                                         {{ formatearMonto(alumno.monto) }}
@@ -166,28 +171,15 @@ const clasesCampo =
                                 </p>
                             </div>
 
-                            <div v-if="alumno.evidencia_url" class="space-y-2">
-                                <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                                    Captura del cliente
-                                </p>
-                                <a v-if="capturaUrl && !capturaFallida" :href="capturaUrl" target="_blank"
-                                    rel="noopener noreferrer" title="Abrir en tamaño completo">
-                                    <img :src="capturaUrl" alt="Captura de pantalla del pago" loading="lazy"
-                                        referrerpolicy="no-referrer"
-                                        class="max-h-96 w-full rounded-card bg-panel-2 object-contain"
-                                        @error="capturaFallida = true" />
-                                </a>
-                                <p v-else
-                                    class="flex items-center gap-2 rounded-card bg-panel-2 p-3 text-sm text-text-secondary">
-                                    <ImageOff class="h-4 w-4 shrink-0" />
-                                    No se pudo mostrar la captura.
-                                    <a v-if="capturaUrl" :href="capturaUrl" target="_blank" rel="noopener noreferrer"
-                                        class="ml-auto flex items-center gap-1 text-accent underline">
-                                        Abrir
-                                        <ExternalLink class="h-3.5 w-3.5" />
-                                    </a>
-                                </p>
-                            </div>
+                            <button v-if="alumno.evidencia_url" type="button"
+                                class="glass-plano flex w-full items-center justify-between gap-3 rounded-card p-3 text-left text-sm text-text-primary transition hover:bg-panel-2"
+                                @click="verCaptura = true">
+                                <span class="flex items-center gap-2">
+                                    <IconoImagen class="h-4 w-4 text-accent" />
+                                    Ver captura del cliente
+                                </span>
+                                <ChevronRight class="h-4 w-4 text-text-secondary" />
+                            </button>
                             <p v-else-if="alumno.estatus === 'pendiente_revision'" class="text-sm text-text-secondary">
                                 El cliente no adjuntó captura.
                             </p>
@@ -296,9 +288,14 @@ const clasesCampo =
                                 Solo el administrador puede validar pagos.
                             </p>
                         </div>
+
+                        <PagoConfiguracionForm v-if="puedeConfigurar" :key="alumno.cliente_id" :alumno="alumno"
+                            @guardado="emit('resuelto')" />
                     </div>
                 </Transition>
             </div>
         </Transition>
     </Teleport>
+
+    <VisorCaptura :url="capturaUrl" :abierto="verCaptura" @close="verCaptura = false" />
 </template>

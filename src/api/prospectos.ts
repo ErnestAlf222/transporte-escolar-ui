@@ -1,4 +1,5 @@
 import http from './http'
+import { escucharEventos } from './eventos'
 import type {
   ProspectoListItem,
   ProspectoDetalle,
@@ -39,31 +40,8 @@ export async function restaurarProspecto(id: number): Promise<void> {
 
 // Escucha /prospectos/eventos con fetch (EventSource no permite el encabezado Authorization).
 // Llama a alEvento por cada evento real; los comentarios de conexión y latido se ignoran.
-export async function escucharEventosProspectos(
-  alEvento: () => void,
-  senal: AbortSignal,
-): Promise<void> {
-  const respuesta = await fetch(`${http.defaults.baseURL}/prospectos/eventos`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-      Accept: 'text/event-stream',
-    },
-    signal: senal,
-  })
-  if (!respuesta.ok || !respuesta.body) throw new Error(`Eventos: ${respuesta.status}`)
-
-  const lector = respuesta.body.pipeThrough(new TextDecoderStream()).getReader()
-  let pendiente = ''
-  while (true) {
-    const { value, done } = await lector.read()
-    if (done) return
-    pendiente += value
-    const bloques = pendiente.split('\n\n')
-    pendiente = bloques.pop() ?? ''
-    for (const bloque of bloques) {
-      if (bloque.startsWith('event:')) alEvento()
-    }
-  }
+export function escucharEventosProspectos(alEvento: () => void, senal: AbortSignal): Promise<void> {
+  return escucharEventos('/prospectos/eventos', alEvento, senal)
 }
 
 export async function actualizarProspecto(

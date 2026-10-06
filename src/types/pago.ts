@@ -15,6 +15,12 @@ export interface AlumnoPagoSemana {
   mensaje_admin?: string
   archivado: boolean
   sin_cuota: boolean
+  tutor?: string
+  telefono_tutor?: string
+  telefono_alumno?: string
+  monto_cuota: number
+  monto_recargo: number
+  dia_limite_pago: number // 0 = domingo ... 6 = sábado
 }
 
 export interface EscuelaPagoSemana {
