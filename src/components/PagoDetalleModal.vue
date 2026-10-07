@@ -161,8 +161,9 @@ const clasesCampo =
                                 </div>
                                 <p class="text-sm text-text-secondary">Semana del {{ rangoSemana(semanaInicio) }}</p>
                                 <p class="text-sm text-text-secondary">
-                                    <span :class="{ 'font-medium text-accent': alumno.metodo_pago === METODO_DIGITAL }">
-                                        {{ ETIQUETAS_METODO[alumno.metodo_pago] ?? alumno.metodo_pago }}
+                                    <span
+                                        :class="{ 'font-medium text-accent': alumno.metodo_semana === METODO_DIGITAL }">
+                                        {{ ETIQUETAS_METODO[alumno.metodo_semana] ?? alumno.metodo_semana }}
                                     </span>
                                     <span v-if="alumno.sin_cuota" class="text-sun"> · Cuota sin configurar</span>
                                 </p>
@@ -181,7 +182,9 @@ const clasesCampo =
                                 <ChevronRight class="h-4 w-4 text-text-secondary" />
                             </button>
                             <p v-else-if="alumno.estatus === 'pendiente_revision'" class="text-sm text-text-secondary">
-                                El cliente no adjuntó captura.
+                                {{ alumno.metodo_semana === METODO_DIGITAL
+                                    ? 'El cliente no adjuntó captura.'
+                                    : 'Pago en efectivo: se recibe en persona, no lleva captura.' }}
                             </p>
 
                             <div v-if="alumno.nota" class="space-y-1">
@@ -189,7 +192,7 @@ const clasesCampo =
                                     Nota del cliente
                                 </p>
                                 <p
-                                    class="whitespace-pre-line break-words rounded-card bg-panel-2 p-3 text-sm text-text-primary">
+                                    class="whitespace-pre-line wrap-break-word rounded-card bg-panel-2 p-3 text-sm text-text-primary">
                                     {{ alumno.nota }}
                                 </p>
                             </div>

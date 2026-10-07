@@ -4,6 +4,7 @@ export interface AlumnoPagoSemana {
   cliente_id: number
   alumno: string
   metodo_pago: string
+  metodo_semana: string // cómo se pagó esa semana; si el pago no lo trae, el método de la cuenta
   estatus: EstatusSemana
   monto: number
   con_recargo: boolean

@@ -30,8 +30,12 @@ export async function archivarCliente(id: number, motivo: string, detalle: strin
   await http.post(`/clientes/${id}/archivar`, { motivo, detalle })
 }
 
-export async function reincorporarCliente(id: number): Promise<void> {
-  await http.post(`/clientes/${id}/reincorporar`)
+export async function reincorporarCliente(
+  id: number,
+  perdonar = false,
+  pagar = false,
+): Promise<void> {
+  await http.post(`/clientes/${id}/reincorporar`, { perdonar, pagar })
 }
 
 export async function actualizarCliente(

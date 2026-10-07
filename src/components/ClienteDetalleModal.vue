@@ -105,19 +105,39 @@ async function confirmarArchivo() {
     }
 }
 
-async function reincorporar() {
+// Deuda congelada que impide reincorporar; null = no hay deuda que mostrar
+const deudaPendiente = ref<number | null>(null)
+
+async function intentarReincorporar(perdonar: boolean, pagar = false) {
     if (props.clienteId === null || enviandoEstatus.value) return
     enviandoEstatus.value = true
     errorEstatus.value = ''
     try {
-        await reincorporarCliente(props.clienteId)
+        await reincorporarCliente(props.clienteId, perdonar, pagar)
+        deudaPendiente.value = null
         emit('estatus-cambiado')
         await cargar(props.clienteId, true)
-    } catch {
-        errorEstatus.value = 'No se pudo reincorporar al alumno'
+    } catch (e) {
+        if (axios.isAxiosError(e) && e.response?.status === 409 && typeof e.response.data?.deuda === 'number') {
+            deudaPendiente.value = e.response.data.deuda
+        } else {
+            errorEstatus.value = 'No se pudo reincorporar al alumno'
+        }
     } finally {
         enviandoEstatus.value = false
     }
+}
+
+function reincorporar() {
+    return intentarReincorporar(false)
+}
+
+function perdonarYReincorporar() {
+    return intentarReincorporar(true)
+}
+
+function pagarYReincorporar() {
+    return intentarReincorporar(false, true)
 }
 
 
@@ -392,7 +412,37 @@ function alCerrar() {
                                     </div>
                                     <template v-if="puedeEditar">
                                         <p v-if="errorEstatus" class="text-xs">{{ errorEstatus }}</p>
-                                        <button type="button" :disabled="enviandoEstatus"
+
+                                        <div v-if="deudaPendiente !== null"
+                                            class="space-y-2 rounded-card border border-danger/40 p-3 text-xs">
+                                            <p>
+                                                Tiene una deuda congelada de
+                                                <strong>{{ formatearMonto(deudaPendiente) }}</strong>.
+                                                Puedes saldarla en efectivo ahora, o perdonarla y empezar de cero
+                                                esta semana.
+                                            </p>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button" :disabled="enviandoEstatus"
+                                                    class="flex items-center gap-2 rounded-card bg-[#229ED9] px-3 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+                                                    @click="pagarYReincorporar">
+                                                    <Spinner v-if="enviandoEstatus" />
+                                                    Reincorporar y pagar
+                                                </button>
+                                                <button type="button" :disabled="enviandoEstatus"
+                                                    class="flex items-center gap-2 rounded-card bg-danger px-3 py-2 text-xs font-medium text-bg hover:opacity-90 disabled:opacity-50"
+                                                    @click="perdonarYReincorporar">
+                                                    <Spinner v-if="enviandoEstatus" />
+                                                    Perdonar y reincorporar
+                                                </button>
+                                                <button type="button" :disabled="enviandoEstatus"
+                                                    class="rounded-card border border-border px-3 py-2 text-xs hover:bg-panel-2 disabled:opacity-50"
+                                                    @click="deudaPendiente = null">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <button v-else type="button" :disabled="enviandoEstatus"
                                             class="flex items-center gap-2 rounded-card border border-danger/40 px-3 py-2 text-xs font-medium hover:bg-danger/10 disabled:opacity-50"
                                             @click="reincorporar">
                                             <Spinner v-if="enviandoEstatus" />

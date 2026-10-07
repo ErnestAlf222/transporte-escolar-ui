@@ -222,7 +222,7 @@ function alternarFiltro(estatus: EstatusSemana) {
     cambiarFiltro(filtroEstatus.value === estatus ? '' : estatus)
 }
 
-const PAUSA_CARGA_MS = 300
+const PAUSA_CARGA_MS = 100
 const filtrando = ref(false)
 let temporizadorFiltro: ReturnType<typeof setTimeout> | undefined
 
@@ -451,8 +451,8 @@ onUnmounted(() => {
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-text-primary">{{ a.alumno }}</p>
                                 <p class="text-xs text-text-secondary">
-                                    <span :class="{ 'font-medium text-accent': a.metodo_pago === METODO_DIGITAL }">
-                                        {{ ETIQUETAS_METODO[a.metodo_pago] ?? a.metodo_pago }}
+                                    <span :class="{ 'font-medium text-accent': a.metodo_semana === METODO_DIGITAL }">
+                                        {{ ETIQUETAS_METODO[a.metodo_semana] ?? a.metodo_semana }}
                                     </span>
                                     <span v-if="a.sin_cuota" class="text-sun"> · Cuota sin configurar</span>
                                 </p>
