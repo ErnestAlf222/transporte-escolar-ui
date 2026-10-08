@@ -1,162 +1,157 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { verAsignaciones } from '@/api/asignaciones'
-import type { Asignaciones, AlumnoAsignacion } from '@/types/asignacion'
-import { compararTexto } from '@/utils/orden'
-import DropdownSelect from '@/components/DropdownSelect.vue'
-import Spinner from '@/components/Spinner.vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Users, Check, Clock } from 'lucide-vue-next'
+import { listarConductores, escucharEventosRecorridos } from '@/api/conductores'
+import type { ConductorLista } from '@/types/conductor'
+import { inicial, textoAlumnos, terminoHoy, textoTermino } from '@/utils/conductores'
+import LoaderVan from '@/components/LoaderVan.vue'
+import ConductorPerfilModal from '@/components/ConductorPerfilModal.vue'
 
-const CLAVE_SIN_ESCUELA = 'sin-escuela'
+const route = useRoute()
+const router = useRouter()
 
-const datos = ref<Asignaciones>({ conductores: [], alumnos: [] })
+const conductores = ref<ConductorLista[]>([])
 const cargando = ref(true)
 const error = ref('')
-const filtroEscuela = ref('')
 
-async function cargar() {
-    cargando.value = true
+const conductorIdActivo = computed(() => {
+    const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+    const numero = Number(id)
+    return id !== undefined && Number.isFinite(numero) ? numero : null
+})
+
+const conductorActivo = computed(
+    () => conductores.value.find((c) => c.id === conductorIdActivo.value) ?? null,
+)
+
+function abrirDetalle(id: number) {
+    router.push({ name: 'conductor-detalle', params: { id } })
+}
+
+function cerrarDetalle() {
+    router.push({ name: 'conductores' })
+}
+
+function verAlumnos() {
+    if (conductorIdActivo.value === null) return
+    router.push({ name: 'conductor-alumnos', params: { id: conductorIdActivo.value } })
+}
+
+async function cargar(silencioso = false) {
+    if (!silencioso) cargando.value = true
     error.value = ''
     try {
-        datos.value = await verAsignaciones()
+        conductores.value = await listarConductores()
     } catch {
-        error.value = 'No se pudo cargar la asignación de conductores'
+        if (!silencioso) error.value = 'No se pudo cargar la lista de conductores'
     } finally {
         cargando.value = false
     }
 }
 
-onMounted(cargar)
+const esperar = (ms: number) => new Promise((resolver) => setTimeout(resolver, ms))
+const ESPERA_RECONEXION_MS = 3000
+let detener: AbortController | null = null
 
-function claveEscuela(id: number | null): string {
-    return id === null ? CLAVE_SIN_ESCUELA : String(id)
-}
-
-function etiquetaEscuela(a: AlumnoAsignacion): string {
-    return a.turno ? `${a.escuela} (${a.turno})` : a.escuela
-}
-
-// "Sin escuela" siempre al final; el resto por nombre, con su turno
-function compararClaves(ka: string, la: string, kb: string, lb: string): number {
-    if (ka === CLAVE_SIN_ESCUELA || kb === CLAVE_SIN_ESCUELA) {
-        return Number(ka === CLAVE_SIN_ESCUELA) - Number(kb === CLAVE_SIN_ESCUELA)
-    }
-    return compararTexto(la, lb)
-}
-
-const opcionesEscuela = computed(() => {
-    const mapa = new Map<string, string>()
-    for (const a of datos.value.alumnos) mapa.set(claveEscuela(a.escuela_id), etiquetaEscuela(a))
-    const ordenadas = [...mapa.entries()].sort(([ka, la], [kb, lb]) => compararClaves(ka, la, kb, lb))
-    return [
-        { value: '', label: 'Todas las escuelas' },
-        ...ordenadas.map(([value, label]) => ({ value, label })),
-    ]
-})
-
-const alumnosVisibles = computed(() =>
-    datos.value.alumnos.filter((a) => !filtroEscuela.value || claveEscuela(a.escuela_id) === filtroEscuela.value),
-)
-
-const sinAsignar = computed(() => alumnosVisibles.value.filter((a) => a.conductor_id === null))
-
-interface GrupoEscuela {
-    clave: string
-    etiqueta: string
-    alumnos: AlumnoAsignacion[]
-}
-
-const gruposSinAsignar = computed<GrupoEscuela[]>(() => {
-    const mapa = new Map<string, GrupoEscuela>()
-    for (const a of sinAsignar.value) {
-        const clave = claveEscuela(a.escuela_id)
-        let grupo = mapa.get(clave)
-        if (!grupo) {
-            grupo = { clave, etiqueta: etiquetaEscuela(a), alumnos: [] }
-            mapa.set(clave, grupo)
+// Mantiene la conexión de tiempo real; si se cae, espera, reconecta y refresca por si se perdió un aviso
+async function suscribirEventos() {
+    detener = new AbortController()
+    const { signal } = detener
+    while (!signal.aborted) {
+        try {
+            await escucharEventosRecorridos(() => cargar(true), signal)
+        } catch {
+            if (signal.aborted) return
         }
-        grupo.alumnos.push(a)
+        if (signal.aborted) return
+        cargar(true)
+        await esperar(ESPERA_RECONEXION_MS)
     }
-    const grupos = [...mapa.values()]
-    for (const g of grupos) g.alumnos.sort((a, b) => compararTexto(a.alumno, b.alumno))
-    return grupos.sort((a, b) => compararClaves(a.clave, a.etiqueta, b.clave, b.etiqueta))
+}
+
+onMounted(() => {
+    cargar()
+    suscribirEventos()
 })
 
-const tarjetas = computed(() =>
-    datos.value.conductores.map((conductor) => ({
-        conductor,
-        alumnos: alumnosVisibles.value.filter((a) => a.conductor_id === conductor.id),
-    })),
-)
-
-function inicial(nombre: string): string {
-    return nombre.trim().charAt(0).toUpperCase()
-}
+onUnmounted(() => detener?.abort())
 </script>
 
 <template>
-    <div class="space-y-5">
-        <div class="flex items-center justify-between gap-3">
-            <h1 class="text-2xl font-semibold text-text-primary">Conductores</h1>
-            <DropdownSelect v-model="filtroEscuela" :opciones="opcionesEscuela" />
-        </div>
+    <div class="space-y-4">
+        <h1 class="text-2xl font-semibold text-text-primary">Conductores</h1>
 
-        <div v-if="cargando" class="flex justify-center py-10">
-            <Spinner />
-        </div>
+        <LoaderVan v-if="cargando" />
         <p v-else-if="error" class="text-sm text-danger">{{ error }}</p>
+        <p v-else-if="conductores.length === 0" class="text-text-secondary">Aún no hay conductores.</p>
 
-        <template v-else>
-            <section class="space-y-3">
-                <h2 class="text-sm font-semibold text-text-primary">Sin asignar · {{ sinAsignar.length }}</h2>
-                <p v-if="sinAsignar.length === 0" class="text-sm text-text-secondary">
-                    Todos los alumnos tienen conductor.
-                </p>
+        <div v-else class="grid gap-3 sm:grid-cols-2">
+            <article v-for="(c, i) in conductores" :key="c.id" role="button" tabindex="0"
+                class="entra-suave glass-plano relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-2xl p-3 pl-5 transition hover:bg-panel-2"
+                :class="{ 'opacity-60': c.estatus === 'inactivo' }" :style="{ '--i': i }" @click="abrirDetalle(c.id)"
+                @keydown.enter="abrirDetalle(c.id)">
+                <span class="absolute inset-y-0 left-0 w-1.5"
+                    :class="terminoHoy(c) ? 'bg-mint' : 'bg-accent/50'"></span>
 
-                <div v-for="grupo in gruposSinAsignar" :key="grupo.clave" class="space-y-2">
-                    <h3
-                        class="w-fit rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
-                        {{ grupo.etiqueta }} · {{ grupo.alumnos.length }}
-                    </h3>
-                    <div class="flex flex-col gap-2">
-                        <div v-for="a in grupo.alumnos" :key="a.id"
-                            class="glass-plano flex items-center justify-between gap-3 rounded-card p-3">
-                            <div class="min-w-0">
-                                <p class="truncate font-medium text-text-primary">{{ a.alumno }}</p>
-                                <p v-if="a.colonia" class="truncate text-xs text-text-secondary">{{ a.colonia }}</p>
-                            </div>
-                        </div>
+                <div class="relative h-14 w-14 shrink-0">
+                    <template v-if="terminoHoy(c)">
+                        <span class="pulso absolute inset-0 rounded-full border-2 border-mint"></span>
+                        <span class="pulso pulso-b absolute inset-0 rounded-full border-2 border-mint"></span>
+                    </template>
+                    <img v-if="c.foto_url" :src="c.foto_url" :alt="c.nombre_completo"
+                        class="relative h-14 w-14 rounded-full object-cover" />
+                    <div v-else
+                        class="relative flex h-14 w-14 items-center justify-center rounded-full bg-accent text-xl font-semibold text-bg">
+                        {{ inicial(c.nombre_completo) }}
                     </div>
                 </div>
-            </section>
 
-            <section class="space-y-3">
-                <h2 class="text-sm font-semibold text-text-primary">Conductores · {{ tarjetas.length }}</h2>
-                <p v-if="tarjetas.length === 0" class="text-sm text-text-secondary">
-                    Aún no hay conductores activos.
-                </p>
-
-                <div v-for="t in tarjetas" :key="t.conductor.id" class="glass-plano space-y-3 rounded-card p-4">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel-2 text-sm font-semibold text-accent">
-                            {{ inicial(t.conductor.nombre) }}
-                        </div>
-                        <div class="min-w-0">
-                            <p class="truncate font-semibold text-text-primary">{{ t.conductor.nombre }}</p>
-                            <p class="text-xs text-text-secondary">{{ t.alumnos.length }} alumnos</p>
-                        </div>
-                    </div>
-
-                    <p v-if="t.alumnos.length === 0" class="text-xs text-text-secondary">Sin alumnos asignados</p>
-                    <ul v-else class="space-y-1">
-                        <li v-for="a in t.alumnos" :key="a.id"
-                            class="flex items-center justify-between gap-2 text-sm text-text-secondary">
-                            <span class="truncate">{{ a.alumno }}</span>
-                            <span class="shrink-0 text-xs">{{ etiquetaEscuela(a) }}</span>
-                        </li>
-                    </ul>
+                <div class="min-w-0 flex-1">
+                    <p class="truncate font-semibold text-text-primary">{{ c.nombre_completo }}</p>
+                    <p class="mt-0.5 flex items-center gap-1.5 text-xs text-text-secondary">
+                        <Users class="h-3.5 w-3.5" />
+                        {{ textoAlumnos(c.alumnos) }}
+                    </p>
+                    <p class="mt-0.5 flex items-center gap-1.5 text-xs"
+                        :class="terminoHoy(c) ? 'text-mint' : 'text-text-secondary'">
+                        <Check v-if="terminoHoy(c)" class="h-3.5 w-3.5" />
+                        <Clock v-else class="h-3.5 w-3.5" />
+                        {{ textoTermino(c) }}
+                    </p>
                 </div>
-            </section>
-        </template>
+            </article>
+        </div>
+
+        <ConductorPerfilModal :conductor="conductorActivo" @close="cerrarDetalle" @ver-alumnos="verAlumnos" />
     </div>
 </template>
+
+<style scoped>
+.pulso {
+    opacity: 0;
+    animation: pulso 2.6s ease-out infinite;
+}
+
+.pulso-b {
+    animation-delay: 1.3s;
+}
+
+@keyframes pulso {
+    0% {
+        transform: scale(1);
+        opacity: 0.55;
+    }
+
+    100% {
+        transform: scale(1.45);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pulso {
+        animation: none;
+    }
+}
+</style>

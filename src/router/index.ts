@@ -66,6 +66,21 @@ const router = createRouter({
           name: 'conductores',
           component: () => import('@/views/ConductoresView.vue'),
         },
+        {
+          path: 'conductores/:id',
+          name: 'conductor-detalle',
+          component: () => import('@/views/ConductoresView.vue'),
+        },
+        {
+          path: 'conductores/:id/alumnos',
+          name: 'conductor-alumnos',
+          component: () => import('@/views/ConductorAlumnosView.vue'),
+        },
+        {
+          path: 'conductores/:id/agregar',
+          name: 'conductor-agregar',
+          component: () => import('@/views/ConductorAgregarView.vue'),
+        },
       ],
     },
   ],
