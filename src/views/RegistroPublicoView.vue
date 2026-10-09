@@ -3,11 +3,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { registrarProspecto } from '@/api/registro-publico'
 import { listarEscuelasPublicas } from '@/api/escuelas'
 import type { Parentesco } from '@/types/registro-publico'
+import { OPCIONES_SERVICIO, type Servicio } from '@/utils/servicio'
 import DropdownSelect from '@/components/DropdownSelect.vue'
 import LoaderVan from '@/components/LoaderVan.vue'
 import BotonScroll from '@/components/BotonScroll.vue'
 import { useConsultaTelefono } from '@/composables/useConsultaTelefono'
-import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin } from 'lucide-vue-next'
+import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin, ArrowRightLeft, ArrowRight, ArrowLeft } from 'lucide-vue-next'
 
 const opcionesParentesco = [
     { value: 'padre', label: 'Padre' },
@@ -36,6 +37,7 @@ const form = ref({
     colonia: '',
     direccion_referencias: '',
     escuela_id: '',
+    servicio: 'completo' as Servicio,
 })
 
 const esEstudiante = computed(() => form.value.parentesco === 'estudiante')
@@ -137,6 +139,7 @@ async function enviar() {
             colonia: form.value.colonia || undefined,
             direccion_referencias: form.value.direccion_referencias || undefined,
             escuela_id: Number(form.value.escuela_id),
+            servicio: form.value.servicio,
         })
         resultado.value = { tipo: resp.ya_existe ? 'ya_existe' : 'ok', mensaje: resp.mensaje }
     } catch {
@@ -191,6 +194,28 @@ function registrarOtroAlumno() {
                         <label class="block text-xs text-text-secondary">¿Quién llena este registro?</label>
                         <DropdownSelect v-model="form.parentesco" :opciones="opcionesParentesco" alinear="left"
                             class="mt-1 w-fit" />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-text-secondary">¿Qué servicio necesita?</label>
+                        <div class="mt-1 grid gap-2 sm:grid-cols-3">
+                            <button v-for="o in OPCIONES_SERVICIO" :key="o.value" type="button"
+                                class="flex items-center gap-3 rounded-card border px-3 py-2.5 text-left transition"
+                                :class="form.servicio === o.value
+                                    ? 'border-accent bg-accent/10'
+                                    : 'border-border bg-panel hover:bg-panel-2'" @click="form.servicio = o.value">
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                                    :class="form.servicio === o.value ? 'bg-accent text-bg' : 'bg-panel-2 text-accent'">
+                                    <ArrowRightLeft v-if="o.value === 'completo'" class="h-4 w-4" />
+                                    <ArrowRight v-else-if="o.value === 'ida'" class="h-4 w-4" />
+                                    <ArrowLeft v-else class="h-4 w-4" />
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block text-sm font-medium text-text-primary">{{ o.titulo }}</span>
+                                    <span class="block text-xs text-text-secondary">{{ o.detalle }}</span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     <div v-if="form.parentesco === 'otro'">

@@ -42,9 +42,19 @@ interface FormDinero {
 const form = ref<FormDinero>({ cuota: '', recargo: '', dia: 3, metodo: 'digital' })
 const original = ref<FormDinero>({ ...form.value })
 const aplicarHermanos = ref(false)
+// Se prende al guardar con la casilla marcada: mientras no cambie nada, no hay nada nuevo que guardar
+const copiaAplicada = ref(false)
+// Solo una acción del usuario sobre la casilla apaga "ya aplicada": cargar un alumno no cuenta
+let cambiandoAlumno = false
+watch(aplicarHermanos, () => {
+    if (cambiandoAlumno) return
+    copiaAplicada.value = false
+})
 const guardando = ref(false)
 const errorGuardar = ref('')
 const guardadoOk = ref(false)
+// El lunes desde el que rige el último cambio de cuota, recargo o día límite guardado ('' = nada que avisar)
+const aplicaDesde = ref('')
 
 const adeudo = ref<AdeudoFamilia | null>(null)
 const errorAdeudo = ref('')
@@ -91,11 +101,16 @@ const nombreCorto = computed(() => props.detalle.nombre_alumno.trim())
 // si no cambiaste nada, se les copia la configuración completa de este alumno
 const copiaTodo = computed(() => aplicarHermanos.value && !hayCambios.value)
 
-const textoAyudaHermanos = computed(() =>
-    copiaTodo.value
+const textoAyudaHermanos = computed(() => {
+    if (copiaAplicada.value && !hayCambios.value) {
+        return hermanosActivos.value === 1
+            ? 'Ya se aplicó a su hermano.'
+            : `Ya se aplicó a sus ${hermanosActivos.value} hermanos.`
+    }
+    return copiaTodo.value
         ? `No cambiaste nada: se copiarán la cuota, el recargo, el día límite y el método de pago de ${nombreCorto.value}.`
-        : 'A sus hermanos solo se les aplicará lo que cambiaste.',
-)
+        : 'A sus hermanos solo se les aplicará lo que cambiaste.'
+})
 
 const puedeGuardar = computed(
     () =>
@@ -103,7 +118,7 @@ const puedeGuardar = computed(
         !guardando.value &&
         !cuotaMal.value &&
         !recargoMal.value &&
-        (hayCambios.value || (aplicarHermanos.value && hermanosActivos.value > 0)),
+        (hayCambios.value || (aplicarHermanos.value && hermanosActivos.value > 0 && !copiaAplicada.value)),
 )
 
 // Un solo alumno: no se repite la lista y el total dice de quién es
@@ -143,6 +158,8 @@ function alEsc(evento: KeyboardEvent) {
     abierto.value = false
 }
 
+let idPrecargado: number | null = null
+
 function precargar(d: ClienteDetalle) {
     form.value = {
         cuota: String(d.monto_cuota),
@@ -151,7 +168,18 @@ function precargar(d: ClienteDetalle) {
         metodo: d.metodo_pago,
     }
     original.value = { ...form.value }
-    aplicarHermanos.value = false
+    // La casilla solo se apaga al cambiar de alumno: tras guardar se recarga el mismo y debe seguir marcada
+    // Al abrir a un alumno, la casilla sale marcada si sus hermanos ya tienen su misma configuración.
+    // Tras guardar se recarga el mismo alumno y se deja como esté.
+    if (d.id !== idPrecargado) {
+        cambiandoAlumno = true
+        aplicarHermanos.value = !!d.hermanos_iguales
+        copiaAplicada.value = !!d.hermanos_iguales
+        aplicaDesde.value = ''
+        // El aviso del watch llega después de este bloque: se baja la marca en el siguiente ciclo
+        Promise.resolve().then(() => (cambiandoAlumno = false))
+    }
+    idPrecargado = d.id
     errorGuardar.value = ''
 }
 
@@ -176,6 +204,14 @@ watch(
     { immediate: true },
 )
 
+// "2026-10-12" -> "lunes 12 de octubre"
+function textoAplicaDesde(iso: string): string {
+    const [a, m, d] = iso.split('-').map(Number)
+    return new Date(a!, m! - 1, d!)
+        .toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })
+        .replace(',', '')
+}
+
 async function guardar() {
     if (!puedeGuardar.value) return
 
@@ -199,9 +235,10 @@ async function guardar() {
     guardando.value = true
     errorGuardar.value = ''
     try {
-        await configurarCliente(props.detalle.id, payload)
+        const respuesta = await configurarCliente(props.detalle.id, payload)
+        aplicaDesde.value = respuesta.aplica_desde ?? ''
         original.value = { ...form.value }
-        aplicarHermanos.value = false
+        copiaAplicada.value = aplicarHermanos.value
         guardadoOk.value = true
         if (temporizadorOk) clearTimeout(temporizadorOk)
         temporizadorOk = setTimeout(() => (guardadoOk.value = false), 2500)
@@ -297,6 +334,9 @@ onUnmounted(() => {
                 </div>
 
                 <p v-if="errorGuardar" class="mt-3 text-xs text-danger">{{ errorGuardar }}</p>
+                <p v-if="aplicaDesde" class="mt-3 text-xs text-text-secondary">
+                    Este cambio aplica desde el {{ textoAplicaDesde(aplicaDesde) }}: lo que ya se debe no cambia.
+                </p>
 
                 <div v-if="puedeEditar" class="mt-5 flex items-center justify-end gap-3">
                     <span v-if="guardadoOk" class="mr-auto flex items-center gap-1 text-xs text-mint">

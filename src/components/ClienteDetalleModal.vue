@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { verCliente, verAdeudoCliente, archivarCliente, reincorporarCliente } from '@/api/clientes'
+import { verCliente, verAdeudoCliente, verAdeudoFamilia, archivarCliente, reincorporarCliente } from '@/api/clientes'
 import type { ClienteDetalle, AlumnoClienteFamilia, MotivoArchivo } from '@/types/cliente'
 import { telefonoInternacional } from '@/utils/telefono'
 import { X, Mail, GraduationCap, AlertTriangle, Pencil, Save, Phone, Archive, ArchiveRestore } from 'lucide-vue-next'
@@ -148,6 +148,24 @@ const error = ref('')
 const mensajeGuardado = ref(false)
 const formRef = ref<InstanceType<typeof ClienteEditarForm> | null>(null)
 
+// Lo que debe cada hermano: es el mismo cálculo que usa el panel de Dinero
+const adeudos = ref<Record<number, number>>({})
+
+async function cargarAdeudos(id: number) {
+    try {
+        const r = await verAdeudoFamilia(id)
+        const mapa: Record<number, number> = {}
+        for (const a of r.alumnos) mapa[a.id] = a.total_adeudo
+        adeudos.value = mapa
+    } catch {
+        // Si falla no se muestra monto, y el resto del detalle no se afecta
+    }
+}
+
+function adeudoDe(id: number): number | null {
+    return id in adeudos.value ? adeudos.value[id]! : null
+}
+
 function formatearMonto(monto: number): string {
     return monto.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
 }
@@ -190,7 +208,10 @@ async function cargar(id: number, silencioso = false) {
     error.value = ''
     try {
         const nuevo = await verCliente(id)
-        if (solicitud === ultimaSolicitud) detalle.value = nuevo
+        if (solicitud === ultimaSolicitud) {
+            detalle.value = nuevo
+            cargarAdeudos(id)
+        }
     } catch {
         if (solicitud === ultimaSolicitud) error.value = 'No se pudo cargar el detalle del cliente'
     } finally {
@@ -360,8 +381,13 @@ function alCerrar() {
                                                 </p>
                                             </div>
                                             <div class="shrink-0 text-right">
-                                                <p class="text-sm font-semibold text-text-primary">{{
-                                                    formatearMonto(a.monto_cuota) }}</p>
+                                                <template v-if="a.estatus !== 'archivado' && adeudoDe(a.id) !== null">
+                                                    <p v-if="adeudoDe(a.id)! > 0"
+                                                        class="text-sm font-semibold text-accent">
+                                                        {{ formatearMonto(adeudoDe(a.id)!) }}
+                                                    </p>
+                                                    <p v-else class="text-xs text-mint">Al corriente</p>
+                                                </template>
                                                 <p v-if="a.estatus === 'archivado'" class="text-xs text-danger">
                                                     Archivado
                                                 </p>

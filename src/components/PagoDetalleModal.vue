@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import axios from 'axios'
-import { X, Check, Ban, Banknote, ChevronRight, Image as IconoImagen } from 'lucide-vue-next'
-import { confirmarPago, rechazarPago, marcarPagado } from '@/api/pagos'
+import { X, Check, Ban, ChevronRight, Image as IconoImagen } from 'lucide-vue-next'
+import { confirmarPago, rechazarPago } from '@/api/pagos'
 import type { AlumnoPagoSemana } from '@/types/pago'
 import { formatearMonto } from '@/utils/moneda'
-import { rangoSemana, soloFecha } from '@/utils/semana'
+import { rangoSemana } from '@/utils/semana'
 import { textoFechaHora } from '@/utils/fecha'
 import { ETIQUETAS_METODO, METODO_DIGITAL, estaAtenuado, etiquetaDe } from '@/utils/pagos'
 import PagoConfiguracionForm from '@/components/PagoConfiguracionForm.vue'
+import AbonoFamiliaForm from '@/components/AbonoFamiliaForm.vue'
 import Spinner from '@/components/Spinner.vue'
 import VisorCaptura from '@/components/VisorCaptura.vue'
 
@@ -16,6 +17,7 @@ const MAX_MENSAJE = 300
 
 const props = defineProps<{
     alumno: AlumnoPagoSemana | null
+    hermanos?: AlumnoPagoSemana[] // quienes comparten tutor con este alumno esa semana, incluido él
     escuela: string
     semanaInicio: string
     puedeResolver: boolean
@@ -47,14 +49,22 @@ const capturaUrl = computed(() => {
     return /^https?:\/\//i.test(url) ? url : ''
 })
 
+// Solo los pagos digitales con captura se confirman o rechazan; el efectivo se registra con lo que se recibió
 const pagoPorVerificar = computed(
-    () => props.puedeResolver && props.alumno?.estatus === 'pendiente_revision' && props.alumno.pago_id !== undefined,
+    () =>
+        props.puedeResolver &&
+        props.alumno?.estatus === 'pendiente_revision' &&
+        props.alumno.pago_id !== undefined &&
+        props.alumno.metodo_semana === METODO_DIGITAL,
 )
 
 // Semanas sin pago confirmado que el admin puede dar por pagadas (efectivo, o pagó en persona)
 const puedeMarcarPagado = computed(() => {
     const a = props.alumno
-    return props.puedeResolver && !!a && (a.estatus === 'no_reportada' || a.estatus === 'rechazado') && !estaAtenuado(a)
+    return props.puedeResolver && !!a && (a.estatus === 'no_reportada' ||
+        a.estatus === 'rechazado' ||
+        a.estatus === 'pago_parcial' ||
+        (a.estatus === 'pendiente_revision' && a.metodo_semana !== METODO_DIGITAL)) && !estaAtenuado(a)
 })
 
 // Un alumno sin cuota no tiene monto que cobrar: el admin la configura aquí mismo
@@ -95,10 +105,10 @@ function rechazar() {
     ejecutar(() => rechazarPago(pagoId, motivo.value.trim()))
 }
 
-function marcarComoPagado() {
-    const a = props.alumno
-    if (!a) return
-    ejecutar(() => marcarPagado(a.cliente_id, soloFecha(props.semanaInicio), mensaje.value.trim()))
+// Al registrar lo recibido se refresca la lista y se cierra el detalle
+function alRegistrar() {
+    emit('resuelto')
+    emit('close')
 }
 
 function empezarRechazo() {
@@ -265,26 +275,9 @@ const clasesCampo =
                                 </div>
                             </template>
 
-                            <div v-else-if="puedeMarcarPagado" class="space-y-3 border-t border-border pt-4">
-                                <div>
-                                    <label class="block text-xs text-text-secondary" for="mensaje-manual">
-                                        Mensaje para el cliente (opcional)
-                                    </label>
-                                    <textarea id="mensaje-manual" v-model="mensaje" rows="2" :maxlength="MAX_MENSAJE"
-                                        placeholder="Ej. Recibido en efectivo"
-                                        :class="[clasesCampo, 'mt-1']"></textarea>
-                                </div>
-                                <p v-if="error" class="text-sm text-danger">{{ error }}</p>
-                                <div class="flex justify-end">
-                                    <button type="button" :disabled="enviando"
-                                        class="flex items-center gap-2 rounded-card bg-accent px-4 py-2 text-sm font-medium text-bg hover:opacity-90 disabled:opacity-50"
-                                        @click="marcarComoPagado">
-                                        <Spinner v-if="enviando" />
-                                        <Banknote v-else class="h-4 w-4" />
-                                        Marcar como pagado
-                                    </button>
-                                </div>
-                            </div>
+                            <AbonoFamiliaForm v-else-if="puedeMarcarPagado" :alumno="alumno"
+                                :hermanos="hermanos ?? [alumno]" :semana-inicio="semanaInicio"
+                                @registrado="alRegistrar" />
 
                             <p v-else-if="!puedeResolver && alumno.estatus !== 'confirmado'"
                                 class="text-xs text-text-secondary">

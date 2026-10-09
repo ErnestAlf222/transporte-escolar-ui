@@ -52,6 +52,7 @@ export interface ClienteDetalle {
   foto_url?: string
   tutor_id: number | null
   alumnos: AlumnoClienteFamilia[]
+  hermanos_iguales?: boolean // todos sus hermanos activos tienen su misma configuración de dinero
 }
 
 // Cada alumno de la misma familia (mismo tutor), incluido el que se está viendo
@@ -87,6 +88,12 @@ export interface ConfigurarClientePayload {
   dia_limite_pago?: number
   metodo_pago?: MetodoPago
   aplicar_a_hermanos?: boolean
+}
+
+// Lo que responde el servidor al guardar: aplica_desde viene vacío si el cambio no afecta lo que se cobra
+export interface ConfigurarClienteRespuesta {
+  mensaje: string
+  aplica_desde?: string // AAAA-MM-DD: el lunes desde el que rige el cambio
 }
 
 export interface AdeudoCliente {

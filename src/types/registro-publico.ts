@@ -1,3 +1,5 @@
+import type { Servicio } from '@/utils/servicio'
+
 export type Parentesco = 'padre' | 'madre' | 'abuelo' | 'abuela' | 'estudiante' | 'otro'
 
 export interface RegistroProspectoPayload {
@@ -16,6 +18,7 @@ export interface RegistroProspectoPayload {
   colonia?: string
   direccion_referencias?: string
   escuela_id: number
+  servicio?: Servicio
 }
 
 export interface RegistroProspectoResponse {
@@ -28,4 +31,3 @@ export interface ConsultaTelefonoResponse {
   tipo: 'tutor' | 'alumno' | 'libre'
   nombre?: string
 }
-

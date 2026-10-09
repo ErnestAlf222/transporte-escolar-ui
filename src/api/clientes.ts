@@ -7,6 +7,7 @@ import type {
   ActualizarClientePayload,
   AdeudoFamilia,
   ConfigurarClientePayload,
+  ConfigurarClienteRespuesta,
   AdeudoCliente,
 } from '@/types/cliente'
 
@@ -53,8 +54,12 @@ export async function verAdeudoFamilia(id: number): Promise<AdeudoFamilia> {
 export async function configurarCliente(
   id: number,
   payload: ConfigurarClientePayload,
-): Promise<void> {
-  await http.patch(`/clientes/${id}/configuracion`, payload)
+): Promise<ConfigurarClienteRespuesta> {
+  const { data } = await http.patch<ConfigurarClienteRespuesta>(
+    `/clientes/${id}/configuracion`,
+    payload,
+  )
+  return data
 }
 
 export async function verAdeudoCliente(id: number): Promise<AdeudoCliente> {

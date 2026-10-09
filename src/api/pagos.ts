@@ -1,6 +1,6 @@
 import http from './http'
 import { escucharEventos } from './eventos'
-import type { PagosSemana } from '@/types/pago'
+import type { PagosSemana, AbonoPayload, AbonoRespuesta } from '@/types/pago'
 
 // Sin semana devuelve la semana en curso; con semana (un lunes, AAAA-MM-DD) devuelve esa
 export async function verPagosSemana(semana?: string): Promise<PagosSemana> {
@@ -26,6 +26,20 @@ export async function marcarPagado(
     semana_inicio: semanaInicio,
     mensaje,
   })
+}
+
+// Lo que se recibió de una familia en una semana: el servidor lo reparte entre los hermanos que deben
+export async function registrarAbono(
+  clienteId: number,
+  payload: AbonoPayload,
+): Promise<AbonoRespuesta> {
+  const { data } = await http.post<AbonoRespuesta>(`/clientes/${clienteId}/abonos`, payload)
+  return data
+}
+
+// Anula un recibo completo (todos los hermanos que se pagaron juntos)
+export async function anularAbono(lote: string): Promise<void> {
+  await http.post(`/abonos/${lote}/anular`)
 }
 
 export function escucharEventosPagos(alEvento: () => void, senal: AbortSignal): Promise<void> {

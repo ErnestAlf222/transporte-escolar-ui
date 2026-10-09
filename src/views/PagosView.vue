@@ -25,6 +25,7 @@ const CLASES_TODOS_SELECCIONADO = 'border border-accent/40 bg-accent/10'
 const CLASES_CONTADOR_SELECCIONADO: Record<EstatusSemana, string> = {
     pendiente_revision: 'border border-sun/40 bg-sun/10',
     no_reportada: 'border border-text-secondary/40 bg-text-secondary/10',
+    pago_parcial: 'border border-[#229ED9]/40 bg-[#229ED9]/10',
     rechazado: 'border border-danger/40 bg-danger/10',
     confirmado: 'border border-mint/40 bg-mint/10',
 }
@@ -87,6 +88,14 @@ const alumnoActivo = computed(
 )
 const escuelaActiva = computed(() => (grupoActivo.value ? etiquetaEscuela(grupoActivo.value) : ''))
 
+// Los hermanos del alumno abierto (mismo tutor, aunque vayan a otra escuela), incluido él
+const hermanosActivo = computed<AlumnoPagoSemana[]>(() => {
+    const a = alumnoActivo.value
+    if (!a) return []
+    if (a.tutor_id === null || a.tutor_id === undefined) return [a]
+    return (datos.value?.escuelas ?? []).flatMap((e) => e.alumnos).filter((x) => x.tutor_id === a.tutor_id)
+})
+
 function claveEscuela(id: number | null): string {
     return id === null ? CLAVE_SIN_ESCUELA : String(id)
 }
@@ -134,8 +143,12 @@ const escuelasVisibles = computed(() =>
         .sort(compararEscuelas),
 )
 
-const TANDA = 2
+// Tope de alumnos que se dibujan de una vez: con el tamaño de hoy entra toda la lista de un golpe.
+// Solo si algún día hubiera más de este número, seguiría mostrándose por tandas
+const TANDA = 500
 const PAUSA_TANDA_MS = 900
+// Las primeras filas entran escalonadas (hasta 8 pasos de 70 ms); el resto entra junto con la última
+const ESCALON_ENTRADA = 8
 const MARGEN_CARGA = '0px 0px 120px 0px' // empieza a cargar un poco antes de llegar al final
 
 const visibles = ref(TANDA)
@@ -211,6 +224,7 @@ function contarPorEstatus(estatus: EstatusSemana): number {
 const contadores = computed(() => [
     { estatus: 'pendiente_revision' as const, valor: contarPorEstatus('pendiente_revision') },
     { estatus: 'no_reportada' as const, valor: contarPorEstatus('no_reportada') },
+    { estatus: 'pago_parcial' as const, valor: contarPorEstatus('pago_parcial') },
     { estatus: 'rechazado' as const, valor: contarPorEstatus('rechazado') },
     { estatus: 'confirmado' as const, valor: contarPorEstatus('confirmado') },
 ])
@@ -391,7 +405,7 @@ onUnmounted(() => {
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-6">
                     <button type="button"
                         class="col-span-2 flex flex-col gap-1 rounded-card p-3 text-left transition sm:col-span-1"
                         :class="!filtroEstatus ? CLASES_TODOS_SELECCIONADO : CLASES_CONTADOR_NORMAL"
@@ -402,7 +416,7 @@ onUnmounted(() => {
                         <span class="text-2xl font-semibold text-text-primary">{{ totalAlumnos }}</span>
                     </button>
                     <button v-for="c in contadores" :key="c.estatus" type="button"
-                        class="flex flex-col gap-1 rounded-card p-3 text-left transition"
+                        class="flex flex-col gap-1 rounded-card p-3 text-left transition last:col-span-2 sm:last:col-span-1"
                         :class="filtroEstatus === c.estatus ? CLASES_CONTADOR_SELECCIONADO[c.estatus] : CLASES_CONTADOR_NORMAL"
                         :aria-pressed="filtroEstatus === c.estatus" @click="alternarFiltro(c.estatus)">
                         <span class="w-fit rounded-card px-2 py-0.5 text-xs font-medium"
@@ -446,7 +460,7 @@ onUnmounted(() => {
                         <div v-for="(a, j) in escuela.alumnos" :key="a.cliente_id" role="button" tabindex="0"
                             class="entra-suave glass-plano flex cursor-pointer items-center justify-between gap-3 rounded-card p-4 transition hover:bg-panel-2"
                             :class="{ 'opacity-60': estaAtenuado(a) }" @click="clienteActivoId = a.cliente_id"
-                            :style="{ '--i': (escuela.desde + j) % TANDA }"
+                            :style="{ '--i': Math.min(escuela.desde + j, ESCALON_ENTRADA) }"
                             @keydown.enter="clienteActivoId = a.cliente_id">
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-text-primary">{{ a.alumno }}</p>
@@ -476,7 +490,8 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <PagoDetalleModal :alumno="alumnoActivo" :escuela="escuelaActiva" :semana-inicio="datos?.semana_inicio ?? ''"
-            :puede-resolver="puedeResolver" @close="clienteActivoId = null" @resuelto="refrescar" />
+        <PagoDetalleModal :alumno="alumnoActivo" :hermanos="hermanosActivo" :escuela="escuelaActiva"
+            :semana-inicio="datos?.semana_inicio ?? ''" :puede-resolver="puedeResolver" @close="clienteActivoId = null"
+            @resuelto="refrescar" />
     </div>
 </template>
