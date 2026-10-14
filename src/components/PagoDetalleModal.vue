@@ -5,11 +5,13 @@ import { X, Check, Ban, ChevronRight, Image as IconoImagen } from 'lucide-vue-ne
 import { confirmarPago, rechazarPago } from '@/api/pagos'
 import type { AlumnoPagoSemana } from '@/types/pago'
 import { formatearMonto } from '@/utils/moneda'
-import { rangoSemana } from '@/utils/semana'
+import { rangoSemana, soloFecha } from '@/utils/semana'
 import { textoFechaHora } from '@/utils/fecha'
 import { ETIQUETAS_METODO, METODO_DIGITAL, estaAtenuado, etiquetaDe } from '@/utils/pagos'
 import PagoConfiguracionForm from '@/components/PagoConfiguracionForm.vue'
 import AbonoFamiliaForm from '@/components/AbonoFamiliaForm.vue'
+import RecibosSemana from '@/components/RecibosSemana.vue'
+import ServicioEtiqueta from '@/components/ServicioEtiqueta.vue'
 import Spinner from '@/components/Spinner.vue'
 import VisorCaptura from '@/components/VisorCaptura.vue'
 
@@ -30,6 +32,9 @@ const rechazando = ref(false)
 const enviando = ref(false)
 const error = ref('')
 const verCaptura = ref(false)
+// Cuenta cuántas veces se refrescaron los datos del alumno: los recibos se vuelven a pedir cada vez
+const refrescos = ref(0)
+watch(() => props.alumno, () => refrescos.value++)
 
 // Al abrir otro alumno, o si cambia su captura, se limpia lo escrito
 watch(
@@ -170,6 +175,7 @@ const clasesCampo =
                                     </p>
                                 </div>
                                 <p class="text-sm text-text-secondary">Semana del {{ rangoSemana(semanaInicio) }}</p>
+                                <ServicioEtiqueta :servicio="alumno.servicio" />
                                 <p class="text-sm text-text-secondary">
                                     <span
                                         :class="{ 'font-medium text-accent': alumno.metodo_semana === METODO_DIGITAL }">
@@ -219,6 +225,10 @@ const clasesCampo =
                                 <p class="font-medium">Pago confirmado</p>
                                 <p v-if="alumno.mensaje_admin">Mensaje para el cliente: {{ alumno.mensaje_admin }}</p>
                             </div>
+
+                            <RecibosSemana v-if="puedeResolver" :cliente-id="alumno.cliente_id"
+                                :semana-inicio="soloFecha(semanaInicio)" :version="refrescos"
+                                @anulado="emit('resuelto')" />
 
                             <template v-if="pagoPorVerificar">
                                 <div v-if="!rechazando" class="space-y-3 border-t border-border pt-4">

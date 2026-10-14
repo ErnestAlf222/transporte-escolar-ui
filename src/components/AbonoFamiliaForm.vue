@@ -162,6 +162,9 @@ function reiniciar() {
 
 watch(() => props.alumno.cliente_id, reiniciar, { immediate: true })
 
+// Si cambia lo abonado de la semana (se anuló o se registró un recibo), el monto sugerido ya no es el mismo
+watch(() => props.alumno.abonado ?? 0, reiniciar)
+
 // Cada cambio de monto o de fecha es un envío nuevo: otro identificador y otra vista previa
 watch(
     [monto, fecha, () => props.alumno.cliente_id],

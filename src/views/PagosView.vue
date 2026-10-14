@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ChevronLeft, ChevronRight, Search, X } from 'lucide-vue-next'
 import { verPagosSemana, escucharEventosPagos } from '@/api/pagos'
 import type { PagosSemana, EscuelaPagoSemana, EstatusSemana, AlumnoPagoSemana } from '@/types/pago'
@@ -26,6 +27,7 @@ const CLASES_CONTADOR_SELECCIONADO: Record<EstatusSemana, string> = {
     pendiente_revision: 'border border-sun/40 bg-sun/10',
     no_reportada: 'border border-text-secondary/40 bg-text-secondary/10',
     pago_parcial: 'border border-[#229ED9]/40 bg-[#229ED9]/10',
+    sin_cobro: 'border border-text-secondary/40 bg-text-secondary/10',
     rechazado: 'border border-danger/40 bg-danger/10',
     confirmado: 'border border-mint/40 bg-mint/10',
 }
@@ -36,10 +38,18 @@ const datos = ref<PagosSemana | null>(null)
 const cargando = ref(true) // solo la primera carga (spinner)
 const cambiando = ref(false) // al cambiar de semana: se conserva lo mostrado y solo se atenúa
 const error = ref('')
-const semanaPedida = ref<string | undefined>(undefined) // undefined = semana en curso
-const filtroEscuela = ref('')
-const filtroEstatus = ref<EstatusSemana | ''>('')
-const busqueda = ref('')
+const route = useRoute()
+const router = useRouter()
+const textoDe = (valor: unknown) => (typeof valor === 'string' ? valor : '')
+const estatusDeUrl = textoDe(route.query.estatus)
+const semanaDeUrl = textoDe(route.query.semana)
+
+const semanaPedida = ref<string | undefined>(/^\d{4}-\d{2}-\d{2}$/.test(semanaDeUrl) ? semanaDeUrl : undefined) // undefined = semana en curso
+const filtroEscuela = ref(textoDe(route.query.escuela))
+const filtroEstatus = ref<EstatusSemana | ''>(
+    Object.keys(CLASES_CONTADOR_SELECCIONADO).includes(estatusDeUrl) ? (estatusDeUrl as EstatusSemana) : '',
+)
+const busqueda = ref(textoDe(route.query.q))
 const campoBusqueda = ref<HTMLInputElement | null>(null)
 const busquedaActiva = computed(() => busqueda.value.trim() !== '')
 
@@ -77,7 +87,19 @@ const esPrimeraSemana = computed(
 const auth = useAuthStore()
 const puedeResolver = computed(() => auth.rol === 'admin')
 
-const clienteActivoId = ref<number | null>(null)
+const alumnoDeUrl = Number(textoDe(route.query.alumno))
+const clienteActivoId = ref<number | null>(Number.isInteger(alumnoDeUrl) && alumnoDeUrl > 0 ? alumnoDeUrl : null)
+
+// La URL refleja la vista (semana, filtros, búsqueda y alumno abierto): al recargar se regresa al mismo punto
+watch([semanaPedida, filtroEscuela, filtroEstatus, busqueda, clienteActivoId], () => {
+    const query: Record<string, string> = {}
+    if (semanaPedida.value) query.semana = semanaPedida.value
+    if (filtroEscuela.value) query.escuela = filtroEscuela.value
+    if (filtroEstatus.value) query.estatus = filtroEstatus.value
+    if (busqueda.value.trim()) query.q = busqueda.value
+    if (clienteActivoId.value !== null) query.alumno = String(clienteActivoId.value)
+    router.replace({ query })
+})
 
 // El alumno abierto se busca en los datos vigentes: si cambian (otro admin resolvió, tiempo real) el detalle se actualiza solo
 const grupoActivo = computed(() =>

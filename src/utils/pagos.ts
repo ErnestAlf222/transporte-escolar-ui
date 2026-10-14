@@ -8,6 +8,7 @@ export const ETIQUETAS: Record<EstatusSemana, { texto: string; clases: string }>
   pendiente_revision: { texto: 'Por verificar', clases: 'bg-sun/15 text-sun' },
   no_reportada: { texto: 'Sin reportar', clases: 'bg-panel-2 text-text-secondary' },
   pago_parcial: { texto: 'Pago parcial', clases: 'bg-[#229ED9]/15 text-[#229ED9]' },
+  sin_cobro: { texto: 'Sin cobro todavía', clases: 'bg-panel-2 text-text-muted' },
   rechazado: { texto: 'Rechazado', clases: 'bg-danger/15 text-danger' },
   confirmado: { texto: 'Pagado', clases: 'bg-mint/15 text-mint' },
 }

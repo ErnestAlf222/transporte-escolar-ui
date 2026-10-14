@@ -1,5 +1,5 @@
 export type EstatusSemana =
-  'confirmado' | 'pendiente_revision' | 'rechazado' | 'no_reportada' | 'pago_parcial'
+  'confirmado' | 'pendiente_revision' | 'rechazado' | 'no_reportada' | 'pago_parcial' | 'sin_cobro' // su cuota empieza en una semana posterior: todavía no hay nada que cobrar
 
 export interface AlumnoPagoSemana {
   cliente_id: number
@@ -22,6 +22,7 @@ export interface AlumnoPagoSemana {
   tutor?: string
   telefono_tutor?: string
   telefono_alumno?: string
+  servicio?: string // completo, ida o vuelta
   monto_cuota: number
   monto_recargo: number
   dia_limite_pago: number // 0 = domingo ... 6 = sábado
@@ -63,6 +64,24 @@ export interface AbonoPayload {
 export interface AbonoRespuesta {
   mensaje: string
   partes: ParteAbono[]
+}
+
+// Lo que le tocó a cada hermano en un recibo
+export interface ParteRecibo {
+  cliente_id: number
+  alumno: string
+  monto: number
+}
+
+// Un cobro de la familia en una semana: puede estar repartido entre varios hermanos
+export interface Recibo {
+  lote: string
+  monto: number
+  recibido_en: string
+  registrado_en: string
+  registrado_por?: string
+  metodo: string
+  partes: ParteRecibo[]
 }
 
 export interface PagosSemana {

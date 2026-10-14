@@ -343,14 +343,14 @@ function alCerrar() {
                                         </div>
                                     </div>
 
-                                    <p v-if="detalle.telefono_emergencia"
+                                    <!-- <p v-if="detalle.telefono_emergencia"
                                         class="flex items-center gap-2 text-sm text-text-secondary">
                                         <AlertTriangle class="h-4 w-4 shrink-0 text-sun" />
                                         Emergencia:
                                         <a :href="hrefLlamada(detalle.telefono_emergencia)"
                                             class="text-text-primary hover:text-accent">{{ detalle.telefono_emergencia
                                             }}</a>
-                                    </p>
+                                    </p> -->
                                     <p v-if="detalle.correo"
                                         class="flex items-center gap-2 text-sm text-text-secondary">
                                         <Mail class="h-4 w-4 shrink-0" />
