@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { verCliente, verAdeudoCliente, verAdeudoFamilia, archivarCliente, reincorporarCliente } from '@/api/clientes'
 import type { ClienteDetalle, AlumnoClienteFamilia, MotivoArchivo } from '@/types/cliente'
+import ServicioEtiqueta from '@/components/ServicioEtiqueta.vue'
 import { telefonoInternacional } from '@/utils/telefono'
 import { X, Mail, GraduationCap, AlertTriangle, Pencil, Save, Phone, Archive, ArchiveRestore } from 'lucide-vue-next'
 import WhatsappIcon from '@/components/icons/WhatsappIcon.vue'
@@ -373,7 +374,7 @@ function alCerrar() {
                                             </div>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate font-semibold text-text-primary">{{ nombreCompleto(a)
-                                                    }}
+                                                }}
                                                 </p>
                                                 <p class="flex items-center gap-1 text-xs text-text-secondary">
                                                     <GraduationCap class="h-3.5 w-3.5 shrink-0" />
@@ -400,6 +401,8 @@ function alCerrar() {
                                     <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
                                         {{ tituloAlumno(detalle) }}
                                     </p>
+
+                                    <ServicioEtiqueta :servicio="detalle.servicio" />
 
                                     <div v-if="detalle.telefono_alumno" class="flex items-center justify-between">
                                         <a :href="hrefLlamada(detalle.telefono_alumno)"
@@ -432,7 +435,7 @@ function alCerrar() {
                                                 Motivo: {{ etiquetaMotivo(detalle.motivo_archivo) }}
                                             </p>
                                             <p v-if="detalle.motivo_archivo_detalle">{{ detalle.motivo_archivo_detalle
-                                                }}
+                                            }}
                                             </p>
                                         </div>
                                     </div>

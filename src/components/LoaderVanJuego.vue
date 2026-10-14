@@ -173,15 +173,15 @@ onUnmounted(() => clearTimeout(reloj))
 }
 
 .p-W {
-    fill: var(--color-text-primary);
+    fill: var(--color-van);
 }
 
 .p-L {
-    fill: color-mix(in srgb, var(--color-text-primary) 70%, var(--color-bg));
+    fill: color-mix(in srgb, var(--color-van) 70%, var(--color-van-tinta));
 }
 
 .p-G {
-    fill: color-mix(in srgb, var(--color-text-secondary) 25%, var(--color-bg));
+    fill: color-mix(in srgb, var(--color-van) 25%, var(--color-van-tinta));
 }
 
 .p-H {
@@ -207,7 +207,7 @@ onUnmounted(() => clearTimeout(reloj))
 }
 
 .p-O {
-    fill: var(--color-bg);
+    fill: var(--color-van-tinta);
 }
 
 

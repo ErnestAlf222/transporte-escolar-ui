@@ -11,6 +11,16 @@
       rel="stylesheet"
     />
     <title>Transporte Escolar</title>
+    <script>
+      // Aplica el tema guardado antes de que cargue la página, para que no parpadee
+      ;(function () {
+        var guardado = null
+        try {
+          guardado = localStorage.getItem('tema')
+        } catch (e) {}
+        document.documentElement.dataset.theme = guardado === 'light' ? 'light' : 'dark'
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

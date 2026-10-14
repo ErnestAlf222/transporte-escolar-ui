@@ -38,6 +38,7 @@ export interface EscuelaPagoSemana {
 export interface ResumenPagoSemana {
   por_verificar: number
   sin_reportar: number
+  pago_parcial: number
   rechazados: number
   archivados: number
   pagados: number

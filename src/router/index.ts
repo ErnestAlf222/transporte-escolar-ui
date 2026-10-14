@@ -81,6 +81,11 @@ const router = createRouter({
           name: 'conductor-agregar',
           component: () => import('@/views/ConductorAgregarView.vue'),
         },
+        {
+          path: 'apariencia',
+          name: 'apariencia',
+          component: () => import('@/views/AparienciaView.vue'),
+        },
       ],
     },
   ],

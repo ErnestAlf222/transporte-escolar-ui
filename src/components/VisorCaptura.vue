@@ -46,11 +46,11 @@ function alTeclaEsc(evento: KeyboardEvent) {
             enter-from-class="opacity-0 scale-90" enter-to-class="opacity-100 scale-100"
             leave-active-class="transition duration-200 ease-in motion-reduce:transition-none"
             leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-90">
-            <div v-if="abierto" class="pointer-events-none fixed inset-0 z-[71] flex items-center justify-center p-4"
+            <div v-if="abierto" class="pointer-events-none fixed inset-0 z-71 flex items-center justify-center p-4"
                 tabindex="-1" @keydown="alTeclaEsc">
                 <div class="pointer-events-auto relative flex max-h-full w-full max-w-3xl items-center justify-center">
                     <button type="button" aria-label="Cerrar la captura"
-                        class="absolute -top-1 right-0 z-10 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-text-primary hover:bg-black/80"
+                        class="absolute -top-1 right-0 z-10 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80"
                         @click="emit('close')">
                         <X class="h-5 w-5" />
                     </button>

@@ -51,6 +51,7 @@ export interface ClienteDetalle {
   motivo_archivo_detalle?: string
   foto_url?: string
   tutor_id: number | null
+  servicio?: string // completo, ida o vuelta
   alumnos: AlumnoClienteFamilia[]
   hermanos_iguales?: boolean // todos sus hermanos activos tienen su misma configuración de dinero
 }

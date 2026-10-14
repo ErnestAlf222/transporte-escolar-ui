@@ -12,13 +12,18 @@ const props = withDefaults(defineProps<{
     opciones: Opcion[]
     alinear?: 'left' | 'right' | 'full'
     invalid?: boolean
-}>(), { alinear: 'right', invalid: false })
+    columnas?: 1 | 2
+}>(), { alinear: 'right', invalid: false, columnas: 1 })
 
-const clasesMenu = computed(() => ({
-    'left-0 w-40': props.alinear === 'left',
-    'right-0 w-40': props.alinear === 'right',
-    'inset-x-0': props.alinear === 'full',
-}))
+const clasesMenu = computed(() => {
+    // Con dos columnas el menú es más ancho y reparte las opciones en dos
+    if (props.columnas === 2) return 'left-0 w-72 grid grid-cols-2'
+    return {
+        'left-0 w-40': props.alinear === 'left',
+        'right-0 w-40': props.alinear === 'right',
+        'inset-x-0': props.alinear === 'full',
+    }
+})
 
 const emit = defineEmits<{
     'update:modelValue': [value: string]
@@ -60,7 +65,9 @@ onUnmounted(() => document.removeEventListener('click', alHacerClicFuera))
             enter-from-class="opacity-0 scale-95 -translate-y-1" enter-to-class="opacity-100 scale-100 translate-y-0"
             leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100 scale-100 translate-y-0"
             leave-to-class="opacity-0 scale-95 -translate-y-1">
-            <div v-if="abierto" class="glass absolute z-20 mt-2 overflow-hidden rounded-card" :class="clasesMenu">
+            <div v-if="abierto"
+                class="scroll-fino absolute z-20 mt-2 max-h-72 overflow-y-auto rounded-card border border-border bg-panel shadow-lg"
+                :class="clasesMenu">
                 <button v-for="opcion in opciones" :key="opcion.value" type="button"
                     class="block w-full px-3 py-2 text-left text-sm text-text-secondary hover:bg-panel-2"
                     :class="{ 'bg-panel-2 text-text-primary': opcion.value === modelValue }"

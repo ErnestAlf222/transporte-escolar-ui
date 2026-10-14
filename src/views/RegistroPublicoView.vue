@@ -8,8 +8,10 @@ import DropdownSelect from '@/components/DropdownSelect.vue'
 import LoaderVan from '@/components/LoaderVan.vue'
 import BotonScroll from '@/components/BotonScroll.vue'
 import { useConsultaTelefono } from '@/composables/useConsultaTelefono'
+import { useConfiguracion } from '@/composables/useConfiguracion'
 import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin, ArrowRightLeft, ArrowRight, ArrowLeft } from 'lucide-vue-next'
 
+const { configuracion } = useConfiguracion()
 const opcionesParentesco = [
     { value: 'padre', label: 'Padre' },
     { value: 'madre', label: 'Madre' },
@@ -165,7 +167,8 @@ function registrarOtroAlumno() {
             class="glass mx-auto w-full max-w-lg rounded-card p-6 sm:p-8 lg:grid lg:max-w-4xl lg:grid-cols-[16rem_1fr] lg:gap-12 lg:p-10">
             <header class="mb-6 text-center lg:sticky lg:top-10 lg:mb-0 lg:self-start">
                 <LoaderVan variante="inline" class="mb-4" />
-                <h1 class="mb-1 text-xl font-semibold text-text-primary">Registro de transporte escolar</h1>
+                <h1 class="mb-1 text-xl font-semibold text-text-primary">{{ configuracion?.nombre_negocio }}</h1>
+                <p class="mb-1 text-sm font-medium text-accent">Registro de transporte escolar</p>
                 <p v-if="!resultado" class="text-sm text-text-secondary">Llena tus datos y te contactaremos a la
                     brevedad.</p>
             </header>
@@ -309,7 +312,7 @@ function registrarOtroAlumno() {
                         <p class="text-sm text-text-primary">
                             ¿Acabamos de recibir a tu {{ parentescoTexto }}?
                             <span v-if="consultaTutor?.nombre">Su nombre es <strong>{{ consultaTutor.nombre
-                            }}</strong></span>
+                                    }}</strong></span>
                         </p>
                         <div v-if="respuestaTutor === 'pendiente'" class="mt-3 flex gap-3">
                             <button type="button"

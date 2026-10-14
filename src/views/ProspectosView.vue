@@ -168,7 +168,8 @@ onUnmounted(() => {
 
 <template>
     <div>
-        <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div
+            class="sticky top-cabecera z-20 -mx-6 mb-2 flex flex-wrap items-center justify-between gap-3 bg-bg px-6 pb-4 pt-2">
             <h1 class="text-2xl font-semibold text-text-primary">Prospectos</h1>
             <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <div class="flex gap-3">
@@ -205,7 +206,7 @@ onUnmounted(() => {
                     class="glass flex cursor-pointer flex-col gap-3 rounded-card p-4 transition hover:bg-panel-2 sm:flex-row sm:items-center sm:gap-4"
                     @click="abrirDetalle(familia.alumnos[0]!.id)">
                     <div class="flex items-start justify-between gap-3 sm:contents">
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3 sm:min-w-0 sm:flex-1">
                             <div
                                 class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-panel-2 text-base font-semibold text-accent">
                                 {{ iniciales(familia.alumnos[0]!) }}

@@ -78,7 +78,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                     <div
                         class="glass relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col overflow-hidden rounded-card">
                         <button
-                            class="absolute right-3 top-3 z-10 rounded-full bg-black/40 p-2 text-text-primary backdrop-blur hover:bg-black/60"
+                            class="absolute right-3 top-3 z-10 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
                             aria-label="Cerrar" @click="emit('close')">
                             <X class="h-4 w-4" />
                         </button>
@@ -86,7 +86,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                         <div v-if="foto" class="relative h-48 shrink-0">
                             <img :src="foto" alt="Foto de la casa" class="h-full w-full object-cover" />
                             <button type="button"
-                                class="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-text-primary backdrop-blur hover:bg-black/60"
+                                class="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white backdrop-blur hover:bg-black/60"
                                 @click="verFoto = true">
                                 <Maximize2 class="h-3.5 w-3.5" />
                                 Ampliar

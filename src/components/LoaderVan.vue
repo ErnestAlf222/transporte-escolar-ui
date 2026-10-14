@@ -27,16 +27,18 @@ onUnmounted(() => {
             <ellipse cx="72" cy="62" rx="52" ry="4" fill="rgba(0,0,0,0.35)" />
 
             <path d="M16 50 L16 24 Q16 16 24 15 L96 15 Q104 15 108 21 L120 36 L122 46 Q122 50 118 50 Z"
-                fill="var(--color-text-primary)" stroke="var(--color-bg)" stroke-width="1.5" />
+                fill="var(--color-van)" stroke="var(--color-van-tinta)" stroke-width="1.5" />
 
-            <path d="M100 19 L110 22 L118 35 L104 35 Z" fill="var(--color-bg)" opacity="0.85" />
+            <path d="M100 19 L110 22 L118 35 L104 35 Z" fill="var(--color-van-tinta)" opacity="0.85" />
 
             <path d="M26 19 L94 19 L94 33 L26 33 Z" fill="var(--color-accent)" opacity="0.8" />
 
-            <line x1="60" y1="33" x2="60" y2="50" stroke="var(--color-bg)" stroke-width="1" opacity="0.3" />
+            <line x1="60" y1="33" x2="60" y2="50" stroke="var(--color-van-tinta)" stroke-width="1" opacity="0.3" />
 
-            <path d="M26 50 a10 10 0 0 1 20 0" fill="none" stroke="var(--color-bg)" stroke-width="1.5" opacity="0.4" />
-            <path d="M94 50 a10 10 0 0 1 20 0" fill="none" stroke="var(--color-bg)" stroke-width="1.5" opacity="0.4" />
+            <path d="M26 50 a10 10 0 0 1 20 0" fill="none" stroke="var(--color-van-tinta)" stroke-width="1.5"
+                opacity="0.4" />
+            <path d="M94 50 a10 10 0 0 1 20 0" fill="none" stroke="var(--color-van-tinta)" stroke-width="1.5"
+                opacity="0.4" />
 
             <circle cx="118" cy="42" r="2.5" fill="var(--color-sun)" />
 
