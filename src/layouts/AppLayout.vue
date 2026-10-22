@@ -4,7 +4,21 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useTema } from '@/composables/useTema'
 import { useConfiguracion } from '@/composables/useConfiguracion'
-import { Menu, User, LogOut, Sun, Moon, Paintbrush } from 'lucide-vue-next'
+import {
+    Menu,
+    User,
+    LogOut,
+    Sun,
+    Moon,
+    Paintbrush,
+    LayoutDashboard,
+    Users,
+    UserPlus,
+    Wallet,
+    House,
+    CalendarCheck,
+    Bus,
+} from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -14,12 +28,13 @@ const { configuracion } = useConfiguracion()
 const menuAbierto = ref(false)
 
 const navItems = [
-    { label: 'Dashboard', to: '/' },
-    { label: 'Clientes', to: '/clientes' },
-    { label: 'Prospectos', to: '/prospectos' },
-    { label: 'Pagos', to: '/pagos' },
-    { label: 'Asistencias', to: '/asistencias' },
-    { label: 'Conductores', to: '/conductores' },
+    { label: 'Dashboard', to: '/', icono: LayoutDashboard },
+    { label: 'Clientes', to: '/clientes', icono: Users },
+    { label: 'Prospectos', to: '/prospectos', icono: UserPlus },
+    { label: 'Pagos', to: '/pagos', icono: Wallet },
+    { label: 'Familias', to: '/familias', icono: House },
+    { label: 'Asistencias', to: '/asistencias', icono: CalendarCheck },
+    { label: 'Conductores', to: '/conductores', icono: Bus },
 ]
 
 function cerrarMenu() {
@@ -59,9 +74,10 @@ function onLogout() {
                 </div>
                 <nav class="space-y-1">
                     <RouterLink v-for="item in navItems" :key="item.to" :to="item.to" @click="cerrarMenu"
-                        class="block rounded-card px-3 py-2 text-sm text-text-secondary hover:bg-panel-2"
+                        class="flex items-center gap-3 rounded-card px-3 py-2 text-sm text-text-secondary hover:bg-panel-2"
                         :active-class="item.to === '/' ? '' : '!bg-accent !text-bg !font-semibold'"
                         :exact-active-class="item.to === '/' ? '!bg-accent !text-bg !font-semibold' : ''">
+                        <component :is="item.icono" class="h-4 w-4 shrink-0" />
                         {{ item.label }}
                     </RouterLink>
                 </nav>

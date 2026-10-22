@@ -101,3 +101,15 @@ export interface AdeudoCliente {
   semanas: { estatus: string }[] | null
   total_adeudo: number
 }
+
+export interface AgregarAlumnoPayload {
+  nombre_alumno: string
+  apellido_paterno_alumno: string
+  apellido_materno_alumno: string
+  telefono_alumno?: string // opcional: vacío se guarda como nulo
+}
+
+export interface AgregarAlumnoRespuesta {
+  cliente_id: number
+  mensaje: string
+}

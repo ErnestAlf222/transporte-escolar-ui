@@ -9,6 +9,8 @@ import type {
   ConfigurarClientePayload,
   ConfigurarClienteRespuesta,
   AdeudoCliente,
+  AgregarAlumnoPayload,
+  AgregarAlumnoRespuesta,
 } from '@/types/cliente'
 
 interface FiltrosClientes {
@@ -64,5 +66,14 @@ export async function configurarCliente(
 
 export async function verAdeudoCliente(id: number): Promise<AdeudoCliente> {
   const { data } = await http.get<AdeudoCliente>(`/clientes/${id}/adeudo`)
+  return data
+}
+
+// Suma un alumno a una familia que ya existe; id es cualquier cliente de esa familia
+export async function agregarAlumno(
+  id: number,
+  payload: AgregarAlumnoPayload,
+): Promise<AgregarAlumnoRespuesta> {
+  const { data } = await http.post<AgregarAlumnoRespuesta>(`/clientes/${id}/hermanos`, payload)
   return data
 }

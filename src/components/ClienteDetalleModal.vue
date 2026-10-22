@@ -374,7 +374,7 @@ function alCerrar() {
                                             </div>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate font-semibold text-text-primary">{{ nombreCompleto(a)
-                                                }}
+                                                    }}
                                                 </p>
                                                 <p class="flex items-center gap-1 text-xs text-text-secondary">
                                                     <GraduationCap class="h-3.5 w-3.5 shrink-0" />
@@ -387,7 +387,9 @@ function alCerrar() {
                                                         class="text-sm font-semibold text-accent">
                                                         {{ formatearMonto(adeudoDe(a.id)!) }}
                                                     </p>
-                                                    <p v-else class="text-xs text-mint">Al corriente</p>
+                                                    <p v-else-if="a.monto_cuota > 0" class="text-xs text-mint">Al
+                                                        corriente</p>
+                                                    <p v-else class="text-xs text-sun">Sin cuota</p>
                                                 </template>
                                                 <p v-if="a.estatus === 'archivado'" class="text-xs text-danger">
                                                     Archivado
@@ -435,7 +437,7 @@ function alCerrar() {
                                                 Motivo: {{ etiquetaMotivo(detalle.motivo_archivo) }}
                                             </p>
                                             <p v-if="detalle.motivo_archivo_detalle">{{ detalle.motivo_archivo_detalle
-                                            }}
+                                                }}
                                             </p>
                                         </div>
                                     </div>
