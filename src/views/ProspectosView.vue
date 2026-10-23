@@ -12,6 +12,7 @@ import { Search, X } from 'lucide-vue-next'
 import WhatsappIcon from '@/components/icons/WhatsappIcon.vue'
 import TelegramIcon from '@/components/icons/TelegramIcon.vue'
 import { telefonoInternacional } from '@/utils/telefono'
+import { coincideBusqueda } from '@/utils/busqueda'
 
 const route = useRoute()
 const router = useRouter()
@@ -47,14 +48,14 @@ function cerrarDetalle() {
     router.push({ name: 'prospectos' })
 }
 
+// Primero se busca entre los alumnos; solo si ninguno coincide se busca por el nombre del tutor
 const prospectosFiltrados = computed(() => {
-    const termino = busqueda.value.trim().toLowerCase()
-    if (!termino) return prospectos.value
+    if (!busqueda.value.trim()) return prospectos.value
 
-    return prospectos.value.filter((p) => {
-        const texto = `${p.nombre_alumno} ${p.apellido_paterno_alumno ?? ''} ${p.apellido_materno_alumno ?? ''} ${p.nombre_tutor} ${p.telefono_tutor}`.toLowerCase()
-        return texto.includes(termino)
-    })
+    const porAlumno = prospectos.value.filter((p) => coincidePorAlumno(p))
+    if (porAlumno.length > 0) return porAlumno
+
+    return prospectos.value.filter((p) => coincideBusqueda(busqueda.value, [p.nombre_tutor], []))
 })
 
 interface Familia {
@@ -92,6 +93,60 @@ function textoTutor(f: Familia): string {
 
 function iniciales(p: ProspectoListItem): string {
     return `${p.nombre_alumno[0] ?? ''}${p.apellido_paterno_alumno?.[0] ?? ''}`.toUpperCase()
+}
+
+// Un alumno coincide por su nombre y apellidos (los apellidos pueden venir vacíos) o por el teléfono del tutor
+function coincidePorAlumno(p: ProspectoListItem): boolean {
+    return coincideBusqueda(
+        busqueda.value,
+        [p.nombre_alumno, p.apellido_paterno_alumno ?? '', p.apellido_materno_alumno ?? ''],
+        [p.telefono_tutor],
+    )
+}
+
+function nombreAlumno(p: ProspectoListItem): string {
+    return [p.nombre_alumno, p.apellido_paterno_alumno ?? '', p.apellido_materno_alumno ?? '']
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(' ')
+}
+
+// El alumno que da la cara por la familia: el primero que coincide con lo buscado, o el primero de la lista
+function alumnoPrincipal(f: Familia): ProspectoListItem {
+    if (busqueda.value.trim()) {
+        const coincide = f.alumnos.find((p) => coincidePorAlumno(p))
+        if (coincide) return coincide
+    }
+    return f.alumnos[0]!
+}
+
+// La búsqueda coincidió con el tutor y con ningún alumno: la tarjeta se titula con el tutor
+function coincidePorTutor(f: Familia): boolean {
+    if (!busqueda.value.trim() || !f.nombre_tutor) return false
+    return !f.alumnos.some((p) => coincidePorAlumno(p))
+}
+
+// Dos primeras palabras del nombre: "Rosa Vega Soto" -> "RV"
+function inicialesTexto(texto: string): string {
+    return texto
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((palabra) => palabra[0] ?? '')
+        .join('')
+        .toUpperCase()
+}
+
+// Qué iluminar al abrir el detalle: lo que se buscó, 3 segundos y se apaga
+const DURACION_DESTELLO_MS = 3000
+const resaltado = ref<'tutor' | 'alumno' | ''>('')
+let temporizadorDestello: ReturnType<typeof setTimeout> | undefined
+
+function abrirDesdeTarjeta(f: Familia) {
+    clearTimeout(temporizadorDestello)
+    resaltado.value = !busqueda.value.trim() ? '' : coincidePorTutor(f) ? 'tutor' : 'alumno'
+    abrirDetalle(alumnoPrincipal(f).id)
+    temporizadorDestello = setTimeout(() => (resaltado.value = ''), DURACION_DESTELLO_MS)
 }
 
 async function cargarEscuelas() {
@@ -204,28 +259,33 @@ onUnmounted(() => {
             <div v-else key="lista" class="flex flex-col gap-3">
                 <div v-for="familia in familias" :key="familia.clave"
                     class="glass flex cursor-pointer flex-col gap-3 rounded-card p-4 transition hover:bg-panel-2 sm:flex-row sm:items-center sm:gap-4"
-                    @click="abrirDetalle(familia.alumnos[0]!.id)">
+                    @click="abrirDesdeTarjeta(familia)">
                     <div class="flex items-start justify-between gap-3 sm:contents">
                         <div class="flex items-center gap-3 sm:min-w-0 sm:flex-1">
                             <div
                                 class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-panel-2 text-base font-semibold text-accent">
-                                {{ iniciales(familia.alumnos[0]!) }}
+                                {{ coincidePorTutor(familia) ? inicialesTexto(familia.nombre_tutor) :
+                                    iniciales(alumnoPrincipal(familia)) }}
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="font-semibold text-text-primary">
-                                    {{ familia.alumnos[0]!.nombre_alumno }} {{
-                                        familia.alumnos[0]!.apellido_paterno_alumno }}
-                                    {{ familia.alumnos[0]!.apellido_materno_alumno }}
-                                    <span v-if="familia.alumnos.length > 1"
+                                    {{ coincidePorTutor(familia) ? familia.nombre_tutor :
+                                        nombreAlumno(alumnoPrincipal(familia)) }}
+                                    <span v-if="coincidePorTutor(familia)"
+                                        class="ml-1 rounded-card bg-accent/15 px-2 py-0.5 align-middle text-xs font-medium text-accent">
+                                        Tutor · {{ familia.alumnos.length }}
+                                    </span>
+                                    <span v-else-if="familia.alumnos.length > 1"
                                         class="ml-1 rounded-card bg-accent/15 px-2 py-0.5 align-middle text-xs font-medium text-accent">
                                         +{{ familia.alumnos.length - 1 }}
                                     </span>
                                 </p>
                                 <p class="text-sm text-text-secondary">
-                                    {{ textoTutor(familia) }}
+                                    {{ coincidePorTutor(familia) ? `${familia.alumnos.length} ${familia.alumnos.length
+                                        === 1 ? 'alumno' : 'alumnos'}` : textoTutor(familia) }}
                                 </p>
-                                <p v-if="familia.alumnos[0]!.nombre_escuela" class="text-xs text-text-secondary">
-                                    {{ familia.alumnos[0]!.nombre_escuela }}
+                                <p v-if="alumnoPrincipal(familia).nombre_escuela" class="text-xs text-text-secondary">
+                                    {{ alumnoPrincipal(familia).nombre_escuela }}
                                 </p>
                             </div>
                         </div>
@@ -254,7 +314,8 @@ onUnmounted(() => {
             </div>
         </Transition>
 
-        <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" @close="cerrarDetalle" @convertido="alConvertido"
-            @estatus-cambiado="alConvertido" @guardado="alConvertido" @abrir="abrirDetalle" />
+        <ProspectoDetalleModal :prospecto-id="prospectoIdActivo" :resaltar="resaltado" @close="cerrarDetalle"
+            @convertido="alConvertido" @estatus-cambiado="alConvertido" @guardado="alConvertido"
+            @abrir="abrirDetalle" />
     </div>
 </template>

@@ -90,6 +90,36 @@
     }
   }
 
+  /* Destello de 3 s para mostrar lo que se buscó: un halo del color principal que aparece y se apaga solo */
+  .destello {
+    animation: destello 3s ease-out both;
+  }
+
+  @keyframes destello {
+    0% {
+      box-shadow: 0 0 0 0 transparent;
+      background-color: transparent;
+    }
+    12% {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 55%, transparent);
+      background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    }
+    70% {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent);
+      background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+      background-color: transparent;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .destello {
+      animation: none;
+    }
+  }
+
   /* Barra de desplazamiento delgada y discreta: sin flechas, redondeada, translúcida */
   .scroll-fino::-webkit-scrollbar {
     width: 6px;

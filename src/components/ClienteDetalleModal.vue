@@ -13,7 +13,11 @@ import ClienteDineroPanel from '@/components/ClienteDineroPanel.vue'
 import { useAuthStore } from '@/stores/auth'
 import axios from 'axios'
 
-const props = defineProps<{ clienteId: number | null; modoEdicion: boolean }>()
+const props = defineProps<{
+    clienteId: number | null
+    modoEdicion: boolean
+    resaltar?: 'tutor' | 'alumno' | '' // lo que se buscó: se ilumina unos segundos al abrir
+}>()
 const emit = defineEmits<{
     close: []
     editar: []
@@ -320,7 +324,8 @@ function alCerrar() {
                                 :class="{ 'opacity-60': cambiando }">
                                 <p v-if="error" class="text-sm text-danger">{{ error }}</p>
 
-                                <div class="glass space-y-3 rounded-card p-4">
+                                <div class="glass space-y-3 rounded-card p-4"
+                                    :class="{ destello: resaltar === 'tutor' }">
                                     <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
                                         {{ tituloContacto(detalle) }}
                                     </p>
@@ -366,15 +371,17 @@ function alCerrar() {
                                     <div class="flex flex-col gap-2">
                                         <button v-for="a in detalle.alumnos ?? []" :key="a.id" type="button"
                                             class="flex items-center gap-3 rounded-card border p-3 text-left transition hover:bg-panel-2"
-                                            :class="a.id === clienteId ? 'border-accent/50 bg-accent/10' : 'border-border'"
-                                            @click="abrirAlumno(a)">
+                                            :class="[
+                                                a.id === clienteId ? 'border-accent/50 bg-accent/10' : 'border-border',
+                                                { destello: resaltar === 'alumno' && a.id === clienteId },
+                                            ]" @click="abrirAlumno(a)">
                                             <div
                                                 class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-panel-2 text-sm font-semibold text-accent">
                                                 {{ inicialesAlumno(a) }}
                                             </div>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate font-semibold text-text-primary">{{ nombreCompleto(a)
-                                                    }}
+                                                }}
                                                 </p>
                                                 <p class="flex items-center gap-1 text-xs text-text-secondary">
                                                     <GraduationCap class="h-3.5 w-3.5 shrink-0" />
@@ -437,7 +444,7 @@ function alCerrar() {
                                                 Motivo: {{ etiquetaMotivo(detalle.motivo_archivo) }}
                                             </p>
                                             <p v-if="detalle.motivo_archivo_detalle">{{ detalle.motivo_archivo_detalle
-                                                }}
+                                            }}
                                             </p>
                                         </div>
                                     </div>
