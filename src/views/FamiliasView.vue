@@ -98,6 +98,14 @@ const familiasFiltradas = computed(() =>
 )
 
 // Un punto por escuela distinta, con el color de esa escuela
+// El alumno de esa familia que coincide con lo buscado, para que se vea por qué salió la tarjeta.
+// Si se buscó al tutor o su teléfono, no se muestra ninguno
+function alumnoQueCoincide(f: Familia): AlumnoFamilia | null {
+    if (!busqueda.value.trim()) return null
+    if (coincideBusqueda(busqueda.value, [f.tutor], [f.telefono])) return null
+    return f.alumnos.find((a) => coincideBusqueda(busqueda.value, [a.nombre], [])) ?? null
+}
+
 function puntosDe(f: Familia): string[] {
     const ids = new Set(f.alumnos.map((a) => a.escuelaId))
     return [...ids].map((id) => colorEscuela(id).punto)
@@ -163,10 +171,18 @@ function limpiarFormulario() {
     errorGuardar.value = ''
 }
 
+// Qué alumno iluminar al elegir la familia: el que coincidió con la búsqueda, 3 segundos y se apaga
+const DURACION_DESTELLO_MS = 3000
+const resaltarAlumnoId = ref<number | null>(null)
+let temporizadorDestello: ReturnType<typeof setTimeout> | undefined
+
 function elegirFamilia(f: Familia) {
+    clearTimeout(temporizadorDestello)
+    resaltarAlumnoId.value = alumnoQueCoincide(f)?.id ?? null
     familia.value = f
     exito.value = ''
     limpiarFormulario()
+    temporizadorDestello = setTimeout(() => (resaltarAlumnoId.value = null), DURACION_DESTELLO_MS)
 }
 
 function cambiarFamilia() {
@@ -267,6 +283,9 @@ const CLASES_BASE_CAMPO =
                         </span>
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-semibold text-text-primary">{{ f.tutor }}</p>
+                            <p v-if="alumnoQueCoincide(f)" class="truncate text-xs font-medium text-accent">
+                                Alumno: {{ alumnoQueCoincide(f)!.nombre }}
+                            </p>
                             <p class="text-xs text-text-secondary">
                                 {{ f.telefono }} · {{ f.alumnos.length }}
                                 {{ f.alumnos.length === 1 ? 'alumno' : 'alumnos' }}
@@ -308,7 +327,8 @@ const CLASES_BASE_CAMPO =
                 <div>
                     <p class="text-xs text-text-secondary">Alumnos registrados ({{ familia.alumnos.length }})</p>
                     <ul class="mt-2 space-y-2">
-                        <li v-for="a in familia.alumnos" :key="a.id" class="flex items-center gap-3">
+                        <li v-for="a in familia.alumnos" :key="a.id" class="flex items-center gap-3 rounded-card"
+                            :class="{ destello: a.id === resaltarAlumnoId }">
                             <span
                                 class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
                                 :class="colorEscuela(a.escuelaId).etiqueta">
