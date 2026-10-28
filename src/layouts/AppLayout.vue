@@ -18,6 +18,7 @@ import {
     House,
     CalendarCheck,
     Bus,
+    BadgeDollarSign,
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -32,6 +33,7 @@ const navItems = [
     { label: 'Clientes', to: '/clientes', icono: Users },
     { label: 'Prospectos', to: '/prospectos', icono: UserPlus },
     { label: 'Pagos', to: '/pagos', icono: Wallet },
+    { label: 'Casos especiales', to: '/casos-especiales', icono: BadgeDollarSign, claseIcono: 'text-mint' },
     { label: 'Familias', to: '/familias', icono: House },
     { label: 'Asistencias', to: '/asistencias', icono: CalendarCheck },
     { label: 'Conductores', to: '/conductores', icono: Bus },
@@ -77,7 +79,7 @@ function onLogout() {
                         class="flex items-center gap-3 rounded-card px-3 py-2 text-sm text-text-secondary hover:bg-panel-2"
                         :active-class="item.to === '/' ? '' : '!bg-accent !text-bg !font-semibold'"
                         :exact-active-class="item.to === '/' ? '!bg-accent !text-bg !font-semibold' : ''">
-                        <component :is="item.icono" class="h-4 w-4 shrink-0" />
+                        <component :is="item.icono" class="h-4 w-4 shrink-0" :class="item.claseIcono" />
                         {{ item.label }}
                     </RouterLink>
                 </nav>

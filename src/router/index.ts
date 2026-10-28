@@ -91,6 +91,16 @@ const router = createRouter({
           name: 'familias',
           component: () => import('@/views/FamiliasView.vue'),
         },
+        {
+          path: 'asistencias',
+          name: 'asistencias',
+          component: () => import('@/views/AsistenciasView.vue'),
+        },
+        {
+          path: 'casos-especiales',
+          name: 'casos-especiales',
+          component: () => import('@/views/CasosEspecialesView.vue'),
+        },
       ],
     },
   ],
