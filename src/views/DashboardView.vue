@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useNavegacionStore } from '@/stores/navegacion'
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, BadgeDollarSign } from 'lucide-vue-next'
 import { verPagosSemana } from '@/api/pagos'
 import { moverSemana, rangoSemana, soloFecha, lunesDe } from '@/utils/semana'
 import { verDashboard } from '@/api/dashboard'
+import { listarCasosEspeciales } from '@/api/casos-especiales'
+import type { CasoEspecial } from '@/types/caso-especial'
 import { ETIQUETAS } from '@/utils/pagos'
+import { formatearMonto } from '@/utils/moneda'
 import type { PagosSemana, EstatusSemana } from '@/types/pago'
 import type { DashboardResumen } from '@/types/dashboard'
 import LoaderVan from '@/components/LoaderVan.vue'
@@ -64,14 +67,23 @@ async function irA(ruta: string) {
 
 let ultimaSolicitud = 0
 
+// Los casos especiales de la semana que se está viendo: se piden junto con los pagos
+const casosSemana = ref<CasoEspecial[]>([])
+const totalCasos = computed(() => casosSemana.value.reduce((suma, c) => suma + c.monto, 0))
+
 // Solo los pagos dependen de la semana elegida; al cambiar de semana solo se cambian los datos
 async function cargarPagos() {
     const solicitud = ++ultimaSolicitud
     cambiando.value = pagos.value !== null
     try {
-        const nuevos = await verPagosSemana(semanaPedida.value)
+        // Si los casos fallan, la tarjeta de pagos se ve igual: cada pedido falla por su lado
+        const [nuevos, casos] = await Promise.all([
+            verPagosSemana(semanaPedida.value),
+            listarCasosEspeciales(semanaPedida.value).catch(() => [] as CasoEspecial[]),
+        ])
         if (solicitud !== ultimaSolicitud) return
         pagos.value = nuevos
+        casosSemana.value = casos
         errorPagos.value = false
     } catch {
         if (solicitud === ultimaSolicitud) errorPagos.value = true
@@ -250,6 +262,17 @@ const tarjetas = computed(() => {
                     </div>
                     <p class="text-xs text-text-secondary">{{ totalBarra }} alumnos a cobrar esta semana</p>
                 </div>
+
+                <component :is="pagos.es_actual ? 'button' : 'p'" v-if="casosSemana.length > 0"
+                    :type="pagos.es_actual ? 'button' : undefined"
+                    class="flex items-center gap-2 text-left text-xs font-medium text-mint"
+                    :class="pagos.es_actual ? 'cursor-pointer hover:opacity-80' : ''"
+                    @click="pagos.es_actual && irA('/casos-especiales')">
+                    <BadgeDollarSign class="h-4 w-4 shrink-0" />
+                    {{ casosSemana.length }}
+                    {{ casosSemana.length === 1 ? 'caso especial' : 'casos especiales' }}
+                    · {{ formatearMonto(totalCasos) }}
+                </component>
             </div>
 
             <div v-else class="flex items-center justify-center py-10">

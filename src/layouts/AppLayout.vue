@@ -33,7 +33,7 @@ const navItems = [
     { label: 'Clientes', to: '/clientes', icono: Users },
     { label: 'Prospectos', to: '/prospectos', icono: UserPlus },
     { label: 'Pagos', to: '/pagos', icono: Wallet },
-    { label: 'Casos especiales', to: '/casos-especiales', icono: BadgeDollarSign, claseIcono: 'text-mint' },
+    { label: 'Casos especiales', to: '/casos-especiales', icono: BadgeDollarSign, claseIcono: 'text-mint', hijo: true },
     { label: 'Familias', to: '/familias', icono: House },
     { label: 'Asistencias', to: '/asistencias', icono: CalendarCheck },
     { label: 'Conductores', to: '/conductores', icono: Bus },
@@ -77,6 +77,7 @@ function onLogout() {
                 <nav class="space-y-1">
                     <RouterLink v-for="item in navItems" :key="item.to" :to="item.to" @click="cerrarMenu"
                         class="flex items-center gap-3 rounded-card px-3 py-2 text-sm text-text-secondary hover:bg-panel-2"
+                        :class="item.hijo ? 'ml-5 border-l border-border pl-4' : ''"
                         :active-class="item.to === '/' ? '' : '!bg-accent !text-bg !font-semibold'"
                         :exact-active-class="item.to === '/' ? '!bg-accent !text-bg !font-semibold' : ''">
                         <component :is="item.icono" class="h-4 w-4 shrink-0" :class="item.claseIcono" />
