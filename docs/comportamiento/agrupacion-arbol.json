@@ -1,0 +1,1432 @@
+{
+  "clientes": {
+    "datos": {
+      "items": 61,
+      "sinTutor": 4,
+      "tutores": 30,
+      "tutoresConVariosAlumnos": 18,
+      "tutoresConNombresDistintos": 0,
+      "tutoresConTelefonosDistintos": 0
+    },
+    "sinBusqueda": [
+      {
+        "letra": "A",
+        "insignia": "",
+        "huella": "10yjxq5"
+      },
+      {
+        "letra": "A",
+        "insignia": "+1",
+        "huella": "1yasugm"
+      },
+      {
+        "letra": "A",
+        "insignia": "+1",
+        "huella": "1iabo60"
+      },
+      {
+        "letra": "A",
+        "insignia": "+1",
+        "huella": "vc20y5"
+      },
+      {
+        "letra": "A",
+        "insignia": "+1",
+        "huella": "1frirv9"
+      },
+      {
+        "letra": "B",
+        "insignia": "",
+        "huella": "1qhfugi"
+      },
+      {
+        "letra": "C",
+        "insignia": "+2",
+        "huella": "176ducx"
+      },
+      {
+        "letra": "C",
+        "insignia": "+1",
+        "huella": "eb2eew"
+      },
+      {
+        "letra": "C",
+        "insignia": "",
+        "huella": "1b4zejy"
+      },
+      {
+        "letra": "D",
+        "insignia": "",
+        "huella": "yj9ft"
+      },
+      {
+        "letra": "D",
+        "insignia": "+1",
+        "huella": "1e1wb59"
+      },
+      {
+        "letra": "D",
+        "insignia": "",
+        "huella": "1k8gvoq"
+      },
+      {
+        "letra": "D",
+        "insignia": "",
+        "huella": "fve5ad"
+      },
+      {
+        "letra": "E",
+        "insignia": "",
+        "huella": "d76sw0"
+      },
+      {
+        "letra": "E",
+        "insignia": "+1",
+        "huella": "1fparek"
+      },
+      {
+        "letra": "E",
+        "insignia": "+5",
+        "huella": "sbcktj"
+      },
+      {
+        "letra": "F",
+        "insignia": "+1",
+        "huella": "1u32olk"
+      },
+      {
+        "letra": "G",
+        "insignia": "+2",
+        "huella": "1ydwlk9"
+      },
+      {
+        "letra": "I",
+        "insignia": "",
+        "huella": "1snl1fq"
+      },
+      {
+        "letra": "J",
+        "insignia": "+2",
+        "huella": "ckn2y6"
+      },
+      {
+        "letra": "L",
+        "insignia": "",
+        "huella": "187lx8t"
+      },
+      {
+        "letra": "M",
+        "insignia": "",
+        "huella": "mkaowj"
+      },
+      {
+        "letra": "M",
+        "insignia": "+1",
+        "huella": "1wpo1c0"
+      },
+      {
+        "letra": "M",
+        "insignia": "+2",
+        "huella": "m8apa2"
+      },
+      {
+        "letra": "N",
+        "insignia": "+1",
+        "huella": "15vd0mi"
+      },
+      {
+        "letra": "N",
+        "insignia": "",
+        "huella": "1hxap8j"
+      },
+      {
+        "letra": "N",
+        "insignia": "",
+        "huella": "upvgpg"
+      },
+      {
+        "letra": "P",
+        "insignia": "",
+        "huella": "smb30k"
+      },
+      {
+        "letra": "R",
+        "insignia": "",
+        "huella": "6emhrx"
+      },
+      {
+        "letra": "S",
+        "insignia": "",
+        "huella": "1gddnaw"
+      },
+      {
+        "letra": "X",
+        "insignia": "",
+        "huella": "18y5er0"
+      },
+      {
+        "letra": "Á",
+        "insignia": "+1",
+        "huella": "1a1gx4s"
+      },
+      {
+        "letra": "Á",
+        "insignia": "+2",
+        "huella": "p2ylk4"
+      },
+      {
+        "letra": "Á",
+        "insignia": "+1",
+        "huella": "1afa96b"
+      }
+    ],
+    "consultas": {
+      "letraA": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1yasugm"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1iabo60"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "vc20y5"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1frirv9"
+        },
+        {
+          "letra": "B",
+          "insignia": "",
+          "huella": "1qhfugi"
+        },
+        {
+          "letra": "C",
+          "insignia": "+2",
+          "huella": "176ducx"
+        },
+        {
+          "letra": "C",
+          "insignia": "",
+          "huella": "12bbuc4"
+        },
+        {
+          "letra": "C",
+          "insignia": "",
+          "huella": "1b4zejy"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "yj9ft"
+        },
+        {
+          "letra": "D",
+          "insignia": "+1",
+          "huella": "1e1wb59"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "fve5ad"
+        },
+        {
+          "letra": "E",
+          "insignia": "",
+          "huella": "d76sw0"
+        },
+        {
+          "letra": "E",
+          "insignia": "+1",
+          "huella": "1fparek"
+        },
+        {
+          "letra": "E",
+          "insignia": "+5",
+          "huella": "sbcktj"
+        },
+        {
+          "letra": "F",
+          "insignia": "+1",
+          "huella": "1u32olk"
+        },
+        {
+          "letra": "G",
+          "insignia": "+2",
+          "huella": "1ydwlk9"
+        },
+        {
+          "letra": "J",
+          "insignia": "+2",
+          "huella": "ckn2y6"
+        },
+        {
+          "letra": "L",
+          "insignia": "",
+          "huella": "187lx8t"
+        },
+        {
+          "letra": "M",
+          "insignia": "",
+          "huella": "mkaowj"
+        },
+        {
+          "letra": "M",
+          "insignia": "+1",
+          "huella": "1wpo1c0"
+        },
+        {
+          "letra": "M",
+          "insignia": "+2",
+          "huella": "m8apa2"
+        },
+        {
+          "letra": "N",
+          "insignia": "+1",
+          "huella": "15vd0mi"
+        },
+        {
+          "letra": "N",
+          "insignia": "",
+          "huella": "1hxap8j"
+        },
+        {
+          "letra": "N",
+          "insignia": "",
+          "huella": "upvgpg"
+        },
+        {
+          "letra": "P",
+          "insignia": "",
+          "huella": "smb30k"
+        },
+        {
+          "letra": "R",
+          "insignia": "",
+          "huella": "6emhrx"
+        },
+        {
+          "letra": "S",
+          "insignia": "",
+          "huella": "1gddnaw"
+        },
+        {
+          "letra": "X",
+          "insignia": "",
+          "huella": "18y5er0"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+1",
+          "huella": "1a1gx4s"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+2",
+          "huella": "p2ylk4"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+1",
+          "huella": "1afa96b"
+        }
+      ],
+      "unaLetraE": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1yasugm"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1iabo60"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "vc20y5"
+        },
+        {
+          "letra": "A",
+          "insignia": "+1",
+          "huella": "1frirv9"
+        },
+        {
+          "letra": "B",
+          "insignia": "",
+          "huella": "1qhfugi"
+        },
+        {
+          "letra": "C",
+          "insignia": "+1",
+          "huella": "eb2eew"
+        },
+        {
+          "letra": "C",
+          "insignia": "",
+          "huella": "1b4zejy"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "yj9ft"
+        },
+        {
+          "letra": "D",
+          "insignia": "+1",
+          "huella": "1e1wb59"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "1k8gvoq"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "fve5ad"
+        },
+        {
+          "letra": "E",
+          "insignia": "",
+          "huella": "d76sw0"
+        },
+        {
+          "letra": "E",
+          "insignia": "+1",
+          "huella": "1fparek"
+        },
+        {
+          "letra": "E",
+          "insignia": "+5",
+          "huella": "sbcktj"
+        },
+        {
+          "letra": "F",
+          "insignia": "+1",
+          "huella": "1u32olk"
+        },
+        {
+          "letra": "G",
+          "insignia": "+2",
+          "huella": "1ydwlk9"
+        },
+        {
+          "letra": "I",
+          "insignia": "",
+          "huella": "1azo9p"
+        },
+        {
+          "letra": "I",
+          "insignia": "",
+          "huella": "1snl1fq"
+        },
+        {
+          "letra": "J",
+          "insignia": "+2",
+          "huella": "ckn2y6"
+        },
+        {
+          "letra": "L",
+          "insignia": "",
+          "huella": "187lx8t"
+        },
+        {
+          "letra": "M",
+          "insignia": "",
+          "huella": "mkaowj"
+        },
+        {
+          "letra": "M",
+          "insignia": "+1",
+          "huella": "1wpo1c0"
+        },
+        {
+          "letra": "M",
+          "insignia": "+2",
+          "huella": "m8apa2"
+        },
+        {
+          "letra": "N",
+          "insignia": "+1",
+          "huella": "15vd0mi"
+        },
+        {
+          "letra": "N",
+          "insignia": "",
+          "huella": "1hxap8j"
+        },
+        {
+          "letra": "N",
+          "insignia": "",
+          "huella": "upvgpg"
+        },
+        {
+          "letra": "P",
+          "insignia": "",
+          "huella": "smb30k"
+        },
+        {
+          "letra": "R",
+          "insignia": "",
+          "huella": "6emhrx"
+        },
+        {
+          "letra": "S",
+          "insignia": "",
+          "huella": "1gddnaw"
+        },
+        {
+          "letra": "X",
+          "insignia": "",
+          "huella": "18y5er0"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+1",
+          "huella": "1a1gx4s"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+2",
+          "huella": "p2ylk4"
+        },
+        {
+          "letra": "Á",
+          "insignia": "+1",
+          "huella": "1afa96b"
+        }
+      ],
+      "alumno": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        }
+      ],
+      "tutor1": [
+        {
+          "letra": "A",
+          "insignia": "Tutor · 1",
+          "huella": "1h473kw"
+        }
+      ],
+      "tutor2": [
+        {
+          "letra": "A",
+          "insignia": "Tutor · 2",
+          "huella": "1v2to0e"
+        }
+      ],
+      "telefono": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        }
+      ],
+      "parteDeApellido": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        },
+        {
+          "letra": "D",
+          "insignia": "",
+          "huella": "yj9ft"
+        },
+        {
+          "letra": "D",
+          "insignia": "+1",
+          "huella": "1e1wb59"
+        },
+        {
+          "letra": "G",
+          "insignia": "+1",
+          "huella": "2sa07r"
+        },
+        {
+          "letra": "N",
+          "insignia": "",
+          "huella": "upvgpg"
+        },
+        {
+          "letra": "R",
+          "insignia": "",
+          "huella": "6emhrx"
+        }
+      ],
+      "mayusculasYAcentos": [
+        {
+          "letra": "A",
+          "insignia": "",
+          "huella": "10yjxq5"
+        }
+      ],
+      "sinResultados": []
+    }
+  },
+  "prospectos": {
+    "datos": {
+      "items": 13,
+      "sinTutor": 1,
+      "tutores": 7,
+      "tutoresConVariosAlumnos": 1,
+      "tutoresConNombresDistintos": 0,
+      "tutoresConTelefonosDistintos": 0
+    },
+    "sinBusqueda": [
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "5k8udm"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "uvizcw"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "+5",
+        "huella": "y8ml4f"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "1fldhnm"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "57j8gt"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "1a3xfn8"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "3q7ngj"
+      },
+      {
+        "letra": "Poppins",
+        "insignia": "",
+        "huella": "1eglo4m"
+      }
+    ],
+    "consultas": {
+      "letraA": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "uvizcw"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "+5",
+          "huella": "y8ml4f"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1fldhnm"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "57j8gt"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1a3xfn8"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "3q7ngj"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1eglo4m"
+        }
+      ],
+      "unaLetraE": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "uvizcw"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "+5",
+          "huella": "y8ml4f"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1fldhnm"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "57j8gt"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1a3xfn8"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "3q7ngj"
+        },
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "1eglo4m"
+        }
+      ],
+      "alumno": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        }
+      ],
+      "tutor1": [
+        {
+          "letra": "Poppins",
+          "insignia": "Tutor · 1",
+          "huella": "1fr7zvy"
+        }
+      ],
+      "tutor2": [
+        {
+          "letra": "Poppins",
+          "insignia": "Tutor · 1",
+          "huella": "os10al"
+        }
+      ],
+      "telefono": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        }
+      ],
+      "parteDeApellido": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        }
+      ],
+      "mayusculasYAcentos": [
+        {
+          "letra": "Poppins",
+          "insignia": "",
+          "huella": "5k8udm"
+        }
+      ],
+      "sinResultados": []
+    }
+  },
+  "familias": {
+    "sinBusqueda": {
+      "contador": "30 de 30",
+      "filas": [
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "173moy"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "3 alumnos",
+          "huella": "xkvij3"
+        },
+        {
+          "puntos": 3,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "6 alumnos",
+          "huella": "5h5iab"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "8egdep"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "jmkgot"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "1euzwm"
+        },
+        {
+          "puntos": 3,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "3 alumnos",
+          "huella": "gwhj1l"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "3 alumnos",
+          "huella": "uz4xpq"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "oamwt6"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "1tz7edg"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "2kbp46"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "craql7"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "tiuedc"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "1wrkvh7"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "1dn3dgb"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "59no6t"
+        },
+        {
+          "puntos": 3,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "3 alumnos",
+          "huella": "1xzxzvg"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "2eub56"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "1unyiq2"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "yyul9v"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "1ggiuql"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "1f6j4gu"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "d9prmj"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "1luevpc"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "1ehvzi1"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "3 alumnos",
+          "huella": "1wpdgwp"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "1beh7gz"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "e2i6x1"
+        },
+        {
+          "puntos": 2,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "2 alumnos",
+          "huella": "ngoqjr"
+        },
+        {
+          "puntos": 1,
+          "conAlumnoCoincidente": false,
+          "cuentaAlumnos": "1 alumno",
+          "huella": "17fuiqf"
+        }
+      ]
+    },
+    "consultas": {
+      "letraA": {
+        "contador": "29 de 30",
+        "filas": [
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "173moy"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "xkvij3"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "6 alumnos",
+            "huella": "5h5iab"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "8egdep"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "jmkgot"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1euzwm"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "gwhj1l"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "uz4xpq"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "oamwt6"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1tz7edg"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "2kbp46"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "craql7"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "tiuedc"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1wrkvh7"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1dn3dgb"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "1xzxzvg"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "2eub56"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1unyiq2"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "yyul9v"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1ggiuql"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1f6j4gu"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "d9prmj"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1luevpc"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1ehvzi1"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "1wpdgwp"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1beh7gz"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "e2i6x1"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "ngoqjr"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "17fuiqf"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      },
+      "unaLetraE": {
+        "contador": "30 de 30",
+        "filas": [
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "173moy"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "xkvij3"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "6 alumnos",
+            "huella": "5h5iab"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "8egdep"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "jmkgot"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1euzwm"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "gwhj1l"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "uz4xpq"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": true,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1rqd9x8"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1tz7edg"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "2kbp46"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "craql7"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "tiuedc"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1wrkvh7"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1dn3dgb"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "59no6t"
+          },
+          {
+            "puntos": 3,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "1xzxzvg"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": true,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "15r2jwn"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1unyiq2"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "yyul9v"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1ggiuql"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1f6j4gu"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "d9prmj"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1luevpc"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "1ehvzi1"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": true,
+            "cuentaAlumnos": "3 alumnos",
+            "huella": "1gaft9l"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "1beh7gz"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "e2i6x1"
+          },
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "ngoqjr"
+          },
+          {
+            "puntos": 1,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "1 alumno",
+            "huella": "17fuiqf"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      },
+      "alumno": {
+        "contador": "1 de 30",
+        "filas": [
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": true,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "h3cxsi"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      },
+      "tutor": {
+        "contador": "1 de 30",
+        "filas": [
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "173moy"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      },
+      "mayusculasYAcentos": {
+        "contador": "1 de 30",
+        "filas": [
+          {
+            "puntos": 2,
+            "conAlumnoCoincidente": true,
+            "cuentaAlumnos": "2 alumnos",
+            "huella": "h3cxsi"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      },
+      "sinResultados": {
+        "contador": "0 de 30",
+        "filas": [
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Colegio Particular Estatal",
+            "huella": "1t6gtke"
+          },
+          {
+            "puntos": 0,
+            "conAlumnoCoincidente": false,
+            "cuentaAlumnos": "Secundaria Gabriela Mistral",
+            "huella": "6rdgmx"
+          }
+        ]
+      }
+    }
+  }
+}

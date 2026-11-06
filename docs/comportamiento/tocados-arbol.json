@@ -1,0 +1,410 @@
+{
+  "familias": {
+    "inicial": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "escribirSinSalir": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "alSalirDeCadaCampo": {
+      "fam-nombre": [
+        {
+          "id": "fam-nombre",
+          "bordeDeError": true,
+          "mensaje": "Escribe el nombre del alumno"
+        },
+        {
+          "id": "fam-apellido-p",
+          "bordeDeError": false,
+          "mensaje": null
+        },
+        {
+          "id": "fam-apellido-m",
+          "bordeDeError": false,
+          "mensaje": null
+        },
+        {
+          "id": "fam-telefono",
+          "bordeDeError": false,
+          "mensaje": null
+        }
+      ],
+      "fam-apellido-p": [
+        {
+          "id": "fam-nombre",
+          "bordeDeError": true,
+          "mensaje": "Escribe el nombre del alumno"
+        },
+        {
+          "id": "fam-apellido-p",
+          "bordeDeError": true,
+          "mensaje": "Escribe el apellido paterno"
+        },
+        {
+          "id": "fam-apellido-m",
+          "bordeDeError": false,
+          "mensaje": null
+        },
+        {
+          "id": "fam-telefono",
+          "bordeDeError": false,
+          "mensaje": null
+        }
+      ],
+      "fam-apellido-m": [
+        {
+          "id": "fam-nombre",
+          "bordeDeError": true,
+          "mensaje": "Escribe el nombre del alumno"
+        },
+        {
+          "id": "fam-apellido-p",
+          "bordeDeError": true,
+          "mensaje": "Escribe el apellido paterno"
+        },
+        {
+          "id": "fam-apellido-m",
+          "bordeDeError": true,
+          "mensaje": "Escribe el apellido materno"
+        },
+        {
+          "id": "fam-telefono",
+          "bordeDeError": false,
+          "mensaje": null
+        }
+      ],
+      "fam-telefono": [
+        {
+          "id": "fam-nombre",
+          "bordeDeError": true,
+          "mensaje": "Escribe el nombre del alumno"
+        },
+        {
+          "id": "fam-apellido-p",
+          "bordeDeError": true,
+          "mensaje": "Escribe el apellido paterno"
+        },
+        {
+          "id": "fam-apellido-m",
+          "bordeDeError": true,
+          "mensaje": "Escribe el apellido materno"
+        },
+        {
+          "id": "fam-telefono",
+          "bordeDeError": false,
+          "mensaje": null
+        }
+      ]
+    },
+    "trasElegirFamilia": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "botonEnviarConFormularioVacio": true,
+    "trasArreglarUno": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "telefonoCortoSinSalir": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "telefonoCortoTrasSalir": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": true,
+        "mensaje": "El teléfono debe tener 10 dígitos"
+      }
+    ],
+    "trasCambiarDeFamilia": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "enterValido": {
+      "confirmacion": true
+    },
+    "telefonoInvalidoSinHaberloTocado": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": true,
+        "mensaje": "El teléfono debe tener 10 dígitos"
+      }
+    ],
+    "trasReiniciarDespuesDeEnviar": [
+      {
+        "id": "fam-nombre",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-p",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-apellido-m",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "fam-telefono",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ]
+  },
+  "casos": {
+    "inicial": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "alSalirDelMonto": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": true,
+        "mensaje": "Escribe cuánto se cobró esta semana"
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "alSalirDelMotivo": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": true,
+        "mensaje": "Escribe cuánto se cobró esta semana"
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ],
+    "trasCambiarDeAlumno": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": true,
+        "mensaje": "Escribe cuánto se cobró esta semana"
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ],
+    "botonEnviarConFormularioVacio": true,
+    "montoCero": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": true,
+        "mensaje": "Escribe un monto mayor a cero, como 125 o 125.50"
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ],
+    "montoValido": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ],
+    "montoVacioOtraVez": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": true,
+        "mensaje": "Escribe cuánto se cobró esta semana"
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ],
+    "enterValido": {
+      "confirmacion": true
+    },
+    "trasCancelar": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": false,
+        "mensaje": null
+      }
+    ],
+    "motivoVaciadoSinSalir": [
+      {
+        "id": "caso-monto",
+        "bordeDeError": false,
+        "mensaje": null
+      },
+      {
+        "id": "caso-motivo",
+        "bordeDeError": true,
+        "mensaje": "Escribe por qué se cobró otro monto"
+      }
+    ]
+  }
+}

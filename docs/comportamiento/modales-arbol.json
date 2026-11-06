@@ -1,0 +1,693 @@
+{
+  "cliente": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/60",
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-center",
+            "justify-center",
+            "p-4",
+            "z-50"
+          ],
+          "attrs": {
+            "tabindex": "-1"
+          },
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.6)",
+          "filtro": "none",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "max-w-md",
+              "md:max-w-2xl",
+              "relative",
+              "w-full"
+            ],
+            "attrs": {}
+          }
+        }
+      ],
+      "cantidadDeCapas": 1,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "BODY",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/clientes/5"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/60",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-center",
+        "justify-center",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "transition",
+        "z-50"
+      ],
+      "hijo:1": [
+        "duration-200",
+        "ease-out",
+        "max-w-md",
+        "md:max-w-2xl",
+        "opacity-0",
+        "opacity-100",
+        "relative",
+        "scale-100",
+        "scale-95",
+        "transition",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 1,
+      "ruta": "/clientes/5"
+    },
+    "focoTrasClicDentro": "DIV",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/clientes"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/clientes",
+      "enfocadoDespues": "BODY"
+    }
+  },
+  "archivar": {
+    "estructura": {
+      "clases": [
+        "duration-300",
+        "ease-out",
+        "glass",
+        "max-h-full",
+        "max-w-md",
+        "md:max-w-xl",
+        "motion-reduce:transition-none",
+        "opacity-100",
+        "overflow-y-auto",
+        "overscroll-contain",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "scale-100",
+        "scroll-fino",
+        "shadow-black/40",
+        "shadow-xl",
+        "space-y-4",
+        "transition",
+        "w-full"
+      ],
+      "clasesContenedor": [
+        "fixed",
+        "grid",
+        "inset-0",
+        "p-4",
+        "place-items-center",
+        "pointer-events-none",
+        "z-50"
+      ],
+      "fondoPrevio": [
+        "bg-black/40",
+        "duration-200",
+        "fixed",
+        "inset-0",
+        "motion-reduce:transition-none",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition-opacity",
+        "v-enter-to",
+        "z-40"
+      ],
+      "anidadoEnTeleport": true,
+      "tabindex": null,
+      "ariaLabel": "Archivar alumno"
+    },
+    "escDentroDelDialogo": {
+      "dialogoAbierto": 0,
+      "capas": 0,
+      "ruta": "/clientes"
+    },
+    "clicFuera": {
+      "dialogoAbierto": 0,
+      "capas": 1,
+      "ruta": "/clientes/5"
+    }
+  },
+  "pago": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/60",
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-center",
+            "justify-center",
+            "p-4",
+            "z-50"
+          ],
+          "attrs": {
+            "tabindex": "-1"
+          },
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.6)",
+          "filtro": "none",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "flex",
+              "flex-col",
+              "glass",
+              "max-h-[calc(100dvh-2rem)]",
+              "max-w-md",
+              "md:max-w-2xl",
+              "p-5",
+              "relative",
+              "rounded-card",
+              "sm:p-6",
+              "w-full"
+            ],
+            "attrs": {}
+          }
+        }
+      ],
+      "cantidadDeCapas": 1,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "DIV",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/pagos?alumno=5"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/60",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-center",
+        "justify-center",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "transition",
+        "z-50"
+      ],
+      "hijo:1": [
+        "duration-200",
+        "ease-out",
+        "flex",
+        "flex-col",
+        "glass",
+        "max-h-[calc(100dvh-2rem)]",
+        "max-w-md",
+        "md:max-w-2xl",
+        "opacity-0",
+        "opacity-100",
+        "p-5",
+        "relative",
+        "rounded-card",
+        "scale-100",
+        "scale-95",
+        "sm:p-6",
+        "transition",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 1,
+      "ruta": "/pagos"
+    },
+    "focoTrasClicDentro": "DIV",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/pagos"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/pagos",
+      "enfocadoDespues": "BODY"
+    }
+  },
+  "prospecto": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/60",
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-center",
+            "justify-center",
+            "p-4",
+            "z-50"
+          ],
+          "attrs": {
+            "tabindex": "-1"
+          },
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.6)",
+          "filtro": "none",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "flex",
+              "flex-col",
+              "glass",
+              "max-h-[calc(100dvh-2rem)]",
+              "max-w-md",
+              "md:max-w-2xl",
+              "p-5",
+              "relative",
+              "rounded-card",
+              "sm:p-6",
+              "w-full"
+            ],
+            "attrs": {}
+          }
+        }
+      ],
+      "cantidadDeCapas": 1,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "BODY",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/prospectos/16"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/60",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-center",
+        "justify-center",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "transition",
+        "z-50"
+      ],
+      "hijo:1": [
+        "duration-200",
+        "ease-out",
+        "flex",
+        "flex-col",
+        "glass",
+        "max-h-[calc(100dvh-2rem)]",
+        "max-w-md",
+        "md:max-w-2xl",
+        "opacity-0",
+        "opacity-100",
+        "p-5",
+        "relative",
+        "rounded-card",
+        "scale-100",
+        "scale-95",
+        "sm:p-6",
+        "transition",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 1,
+      "ruta": "/prospectos/16"
+    },
+    "focoTrasClicDentro": "DIV",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/prospectos"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/prospectos",
+      "enfocadoDespues": "BODY"
+    }
+  },
+  "listaEstatus": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/60",
+            "fixed",
+            "inset-0",
+            "supports-backdrop-filter:backdrop-blur-sm",
+            "z-50"
+          ],
+          "attrs": {},
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.6)",
+          "filtro": "blur(8px)",
+          "hijoDirecto": null
+        },
+        {
+          "tag": "DIV",
+          "clases": [
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-end",
+            "justify-center",
+            "p-4",
+            "pointer-events-none",
+            "sm:items-center",
+            "z-51"
+          ],
+          "attrs": {
+            "tabindex": "-1"
+          },
+          "zIndex": "51",
+          "fondo": "rgba(0, 0, 0, 0)",
+          "filtro": "none",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "bg-panel",
+              "border",
+              "border-border",
+              "flex",
+              "flex-col",
+              "gap-4",
+              "max-h-[85dvh]",
+              "max-w-md",
+              "p-5",
+              "pointer-events-auto",
+              "rounded-card",
+              "shadow-lg",
+              "w-full"
+            ],
+            "attrs": {}
+          }
+        }
+      ],
+      "cantidadDeCapas": 2,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "BUTTON",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/60",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "inset-0",
+        "opacity-0",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "transition",
+        "v-enter-to",
+        "z-50"
+      ],
+      "raiz:2": [
+        "duration-300",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-end",
+        "justify-center",
+        "motion-reduce:transition-none",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "pointer-events-none",
+        "sm:items-center",
+        "sm:scale-100",
+        "sm:scale-95",
+        "transition",
+        "translate-y-0",
+        "translate-y-4",
+        "z-51"
+      ],
+      "hijo:2": [
+        "bg-panel",
+        "border",
+        "border-border",
+        "flex",
+        "flex-col",
+        "gap-4",
+        "max-h-[85dvh]",
+        "max-w-md",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "shadow-lg",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 2,
+      "ruta": "/"
+    },
+    "focoTrasClicDentro": "INPUT",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/",
+      "enfocadoDespues": "BODY"
+    }
+  },
+  "conductorPerfil": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/40",
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-center",
+            "justify-center",
+            "p-4",
+            "supports-backdrop-filter:backdrop-blur-sm",
+            "supports-backdrop-filter:bg-black/30",
+            "z-50"
+          ],
+          "attrs": {
+            "data-v-515d37d8": "",
+            "tabindex": "-1"
+          },
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.3)",
+          "filtro": "blur(8px)",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "flex",
+              "flex-col",
+              "glass",
+              "max-h-[calc(100dvh-2rem)]",
+              "max-w-md",
+              "p-5",
+              "relative",
+              "rounded-card",
+              "sm:p-6",
+              "w-full"
+            ],
+            "attrs": {
+              "data-v-515d37d8": ""
+            }
+          }
+        }
+      ],
+      "cantidadDeCapas": 1,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "ARTICLE",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/conductores/2"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-center",
+        "justify-center",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-50"
+      ],
+      "hijo:1": [
+        "duration-200",
+        "ease-out",
+        "flex",
+        "flex-col",
+        "glass",
+        "max-h-[calc(100dvh-2rem)]",
+        "max-w-md",
+        "opacity-0",
+        "opacity-100",
+        "p-5",
+        "relative",
+        "rounded-card",
+        "scale-100",
+        "scale-95",
+        "sm:p-6",
+        "transition",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 1,
+      "ruta": "/conductores/2"
+    },
+    "focoTrasClicDentro": "DIV",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/conductores"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/conductores",
+      "enfocadoDespues": "BODY"
+    }
+  },
+  "parada": {
+    "alAbrir": {
+      "capas": [
+        {
+          "tag": "DIV",
+          "clases": [
+            "bg-black/40",
+            "fixed",
+            "flex",
+            "inset-0",
+            "items-center",
+            "justify-center",
+            "p-4",
+            "supports-backdrop-filter:backdrop-blur-sm",
+            "supports-backdrop-filter:bg-black/30",
+            "z-50"
+          ],
+          "attrs": {
+            "data-v-c2feb4db": "",
+            "tabindex": "-1"
+          },
+          "zIndex": "50",
+          "fondo": "oklab(0 0 0 / 0.3)",
+          "filtro": "blur(8px)",
+          "hijoDirecto": {
+            "tag": "DIV",
+            "clases": [
+              "flex",
+              "flex-col",
+              "glass",
+              "max-h-[calc(100dvh-2rem)]",
+              "max-w-md",
+              "overflow-hidden",
+              "relative",
+              "rounded-card",
+              "w-full"
+            ],
+            "attrs": {
+              "data-v-c2feb4db": ""
+            }
+          }
+        }
+      ],
+      "cantidadDeCapas": 1,
+      "conRoleDialog": [],
+      "ariaModal": 0,
+      "tabindexMenosUno": 1,
+      "enfocado": "DIV",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "ruta": "/conductores/2/alumnos"
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "raiz:1": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "flex",
+        "inset-0",
+        "items-center",
+        "justify-center",
+        "opacity-0",
+        "opacity-100",
+        "p-4",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-50"
+      ],
+      "hijo:1": [
+        "duration-200",
+        "ease-out",
+        "flex",
+        "flex-col",
+        "glass",
+        "max-h-[calc(100dvh-2rem)]",
+        "max-w-md",
+        "opacity-0",
+        "opacity-100",
+        "overflow-hidden",
+        "relative",
+        "rounded-card",
+        "scale-100",
+        "scale-95",
+        "transition",
+        "w-full"
+      ]
+    },
+    "escConFocoFuera": {
+      "capas": 1,
+      "ruta": "/conductores/2/alumnos"
+    },
+    "focoTrasClicDentro": "DIV",
+    "escConFocoDentro": {
+      "capas": 0,
+      "ruta": "/conductores/2/alumnos"
+    },
+    "clicFuera": {
+      "capas": 0,
+      "ruta": "/conductores/2/alumnos",
+      "enfocadoDespues": "BODY"
+    }
+  }
+}

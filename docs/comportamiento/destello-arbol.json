@@ -1,0 +1,385 @@
+{
+  "clientes": {
+    "sinBusqueda": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "porAlumno": {
+      "tarjetasVisibles": 1,
+      "primeraEsTutor": false,
+      "muestras": {
+        "+300": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+1500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+2500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "button[0]<div|modal|alumno-actual"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "porTutor": {
+      "tarjetasVisibles": 1,
+      "indiceTarjetaTutor": 0,
+      "muestras": {
+        "+300": [
+          "div[0]<div|modal|glass"
+        ],
+        "+1500": [
+          "div[0]<div|modal|glass"
+        ],
+        "+2500": [
+          "div[0]<div|modal|glass"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "div[0]<div|modal|glass"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "reinicioAlAbrirOtra": {
+      "tarjetasVisibles": 32,
+      "muestras": {
+        "+300": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+1500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+2500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "button[0]<div|modal|alumno-actual"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "sinBusquedaConDestelloPrevio": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "otraPantallaNoHereda": {
+      "muestras": {
+        "+300": [],
+        "+1500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    }
+  },
+  "prospectos": {
+    "sinBusqueda": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "porAlumno": {
+      "tarjetasVisibles": 1,
+      "primeraEsTutor": false,
+      "muestras": {
+        "+300": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+1500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+2500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "button[0]<div|modal|alumno-actual"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "porTutor": {
+      "tarjetasVisibles": 1,
+      "indiceTarjetaTutor": 0,
+      "muestras": {
+        "+300": [
+          "div[0]<div|modal|glass"
+        ],
+        "+1500": [
+          "div[0]<div|modal|glass"
+        ],
+        "+2500": [
+          "div[0]<div|modal|glass"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "div[0]<div|modal|glass"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "reinicioAlAbrirOtra": {
+      "tarjetasVisibles": 8,
+      "muestras": {
+        "+300": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+1500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+2500": [
+          "button[0]<div|modal|alumno-actual"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "button[0]<div|modal|alumno-actual"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "sinBusquedaConDestelloPrevio": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "otraPantallaNoHereda": {
+      "muestras": {
+        "+300": [],
+        "+1500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    }
+  },
+  "familias": {
+    "familiasEnLista": 30,
+    "sinBusqueda": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "porAlumno": {
+      "familiasVisibles": 1,
+      "muestras": {
+        "+300": [
+          "li[0]<ul|pagina"
+        ],
+        "+1500": [
+          "li[0]<ul|pagina"
+        ],
+        "+2500": [
+          "li[0]<ul|pagina"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": [
+            "li[0]<ul|pagina"
+          ]
+        },
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "porTutor": {
+      "familiasVisibles": 1,
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [],
+      "alFinal": []
+    },
+    "reinicioAlElegirOtra": {
+      "muestras": {
+        "+300": [
+          "li[0]<ul|pagina"
+        ],
+        "+1500": [
+          "li[0]<ul|pagina"
+        ],
+        "+2500": [
+          "li[0]<ul|pagina"
+        ],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 3000,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    },
+    "sinBusquedaConDestelloPrevio": {
+      "muestras": {
+        "+300": [],
+        "+1500": [],
+        "+2500": [],
+        "+3500": []
+      },
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "vistos": []
+        }
+      ],
+      "alFinal": []
+    }
+  },
+  "dashboard": {
+    "clicEnTarjeta": {
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "url": "/",
+          "loaderVisible": true
+        },
+        {
+          "aprox_ms": 500,
+          "url": "/prospectos",
+          "loaderVisible": false
+        }
+      ],
+      "entradasNuevasEnElHistorial": 1
+    },
+    "dobleClicEnTarjeta": {
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "url": "/",
+          "loaderVisible": true
+        },
+        {
+          "aprox_ms": 500,
+          "url": "/prospectos",
+          "loaderVisible": false
+        }
+      ],
+      "entradasNuevasEnElHistorial": 1
+    },
+    "verEnPagos": {
+      "modalCerradoA100ms": false,
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "url": "/",
+          "loaderVisible": true
+        },
+        {
+          "aprox_ms": 500,
+          "url": "/pagos?estatus=pendiente_revision&semana=2026-11-02",
+          "loaderVisible": false
+        }
+      ],
+      "entradasNuevasEnElHistorial": 1
+    },
+    "casosEspeciales": {
+      "cambios": [
+        {
+          "aprox_ms": 0,
+          "url": "/",
+          "loaderVisible": true
+        },
+        {
+          "aprox_ms": 500,
+          "url": "/casos-especiales",
+          "loaderVisible": false
+        }
+      ],
+      "entradasNuevasEnElHistorial": 1
+    }
+  }
+}

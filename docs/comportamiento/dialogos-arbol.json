@@ -1,0 +1,272 @@
+{
+  "familias": {
+    "alAbrir": {
+      "role": "dialog",
+      "ariaLabel": "Agregar alumno",
+      "ariaModal": null,
+      "tabindex": "-1",
+      "clases": [
+        "bg-panel",
+        "border",
+        "border-border",
+        "duration-300",
+        "ease-out",
+        "max-w-md",
+        "motion-reduce:transition-none",
+        "opacity-0",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "scale-50",
+        "shadow-black/40",
+        "shadow-xl",
+        "space-y-4",
+        "transition",
+        "w-full"
+      ],
+      "tagContenedor": "DIV",
+      "clasesContenedor": [
+        "fixed",
+        "grid",
+        "inset-0",
+        "p-4",
+        "place-items-center",
+        "pointer-events-none",
+        "z-50"
+      ],
+      "tagFondo": "DIV",
+      "clasesFondo": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "inset-0",
+        "opacity-0",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-40"
+      ],
+      "zIndexFondo": "40",
+      "zIndexContenedor": "50",
+      "fondoColor": "oklab(0 0 0 / 0.3)",
+      "fondoFiltro": "blur(8px)",
+      "teleportadoFueraDeApp": true,
+      "padreDelContenedor": "BODY",
+      "hijosDeBody": [
+        "DIV#app",
+        "DIV",
+        "DIV"
+      ],
+      "posicion": "static",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "enfocado": "BUTTON",
+      "textoDelDialogo": "¿Agregar a Prueba Captura Visual? Se sumará a la familia de Adrián Mendoza Castillo. Tomará la escuela, el método de pago y el servicio de sus hermanos, y su cuota se configura después desde Clientes. Cancelar Agregar",
+      "botones": [
+        {
+          "texto": "Cancelar",
+          "type": "button",
+          "deshabilitado": false
+        },
+        {
+          "texto": "Agregar",
+          "type": "button",
+          "deshabilitado": false
+        }
+      ]
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "fondo": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "inset-0",
+        "opacity-0",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-40"
+      ],
+      "dialogo": [
+        "bg-panel",
+        "border",
+        "border-border",
+        "duration-300",
+        "ease-out",
+        "max-w-md",
+        "motion-reduce:transition-none",
+        "opacity-0",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "scale-50",
+        "shadow-black/40",
+        "shadow-xl",
+        "space-y-4",
+        "transition",
+        "w-full"
+      ],
+      "contenedor": []
+    },
+    "escConFocoFuera": {
+      "siguieAbierto": true,
+      "enfocadoDespues": "BUTTON[submit]"
+    },
+    "focoTrasClicEnElDialogo": "DIV",
+    "escConFocoDentro": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "clicEnElFondo": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "rueda": {
+      "scrollYAntes": 0,
+      "scrollYDespues": 0,
+      "alturaDocumento": 900
+    },
+    "cancelar": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "dialogosEnElDOMTrasCerrar": 0
+  },
+  "casos": {
+    "alAbrir": {
+      "role": "dialog",
+      "ariaLabel": "Registrar caso especial",
+      "ariaModal": null,
+      "tabindex": "-1",
+      "clases": [
+        "bg-panel",
+        "border",
+        "border-border",
+        "duration-300",
+        "ease-out",
+        "max-w-md",
+        "motion-reduce:transition-none",
+        "opacity-0",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "scale-50",
+        "shadow-black/40",
+        "shadow-xl",
+        "space-y-4",
+        "transition",
+        "w-full"
+      ],
+      "tagContenedor": "DIV",
+      "clasesContenedor": [
+        "fixed",
+        "grid",
+        "inset-0",
+        "p-4",
+        "place-items-center",
+        "pointer-events-none",
+        "z-50"
+      ],
+      "tagFondo": "DIV",
+      "clasesFondo": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "inset-0",
+        "opacity-0",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-40"
+      ],
+      "zIndexFondo": "40",
+      "zIndexContenedor": "50",
+      "fondoColor": "oklab(0 0 0 / 0.3)",
+      "fondoFiltro": "blur(8px)",
+      "teleportadoFueraDeApp": true,
+      "padreDelContenedor": "BODY",
+      "hijosDeBody": [
+        "DIV#app",
+        "DIV",
+        "DIV"
+      ],
+      "posicion": "static",
+      "overflowBody": "visible",
+      "overflowHtml": "visible",
+      "enfocado": "BUTTON",
+      "textoDelDialogo": "¿Registrar $100.00 como el pago de esta semana de Alexander Sánchez Montiel? La semana quedará como pagada con ese monto. La siguiente se cobra normal. Cancelar Registrar",
+      "botones": [
+        {
+          "texto": "Cancelar",
+          "type": "button",
+          "deshabilitado": false
+        },
+        {
+          "texto": "Registrar",
+          "type": "button",
+          "deshabilitado": false
+        }
+      ]
+    },
+    "clasesVistasDuranteLaTransicion": {
+      "fondo": [
+        "bg-black/40",
+        "duration-200",
+        "ease-out",
+        "fixed",
+        "inset-0",
+        "opacity-0",
+        "supports-backdrop-filter:backdrop-blur-sm",
+        "supports-backdrop-filter:bg-black/30",
+        "transition",
+        "z-40"
+      ],
+      "dialogo": [
+        "bg-panel",
+        "border",
+        "border-border",
+        "duration-300",
+        "ease-out",
+        "max-w-md",
+        "motion-reduce:transition-none",
+        "opacity-0",
+        "p-5",
+        "pointer-events-auto",
+        "rounded-card",
+        "scale-50",
+        "shadow-black/40",
+        "shadow-xl",
+        "space-y-4",
+        "transition",
+        "w-full"
+      ],
+      "contenedor": []
+    },
+    "escConFocoFuera": {
+      "siguieAbierto": true,
+      "enfocadoDespues": "BUTTON[submit]"
+    },
+    "focoTrasClicEnElDialogo": "DIV",
+    "escConFocoDentro": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "clicEnElFondo": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "rueda": {
+      "scrollYAntes": 0,
+      "scrollYDespues": 0,
+      "alturaDocumento": 900
+    },
+    "cancelar": {
+      "siguieAbierto": false,
+      "enfocadoDespues": "BODY"
+    },
+    "dialogosEnElDOMTrasCerrar": 0
+  }
+}

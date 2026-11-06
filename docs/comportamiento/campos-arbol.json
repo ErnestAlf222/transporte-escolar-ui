@@ -1,0 +1,1258 @@
+{
+  "loginVacio": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "flex",
+        "flex-col",
+        "justify-center",
+        "lg:p-12",
+        "p-8",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Correo",
+        "attrs": {
+          "for": "login-correo"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      },
+      {
+        "texto": "Contraseña",
+        "attrs": {
+          "for": "login-password"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Correo",
+        "attrs": {
+          "autocomplete": "username",
+          "id": "login-correo",
+          "inputmode": "email",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Contraseña",
+        "attrs": {
+          "autocomplete": "current-password",
+          "id": "login-password",
+          "type": "password"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "loginConErrores": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "flex",
+        "flex-col",
+        "justify-center",
+        "lg:p-12",
+        "p-8",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Correo",
+        "attrs": {
+          "for": "login-correo"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      },
+      {
+        "texto": "Contraseña",
+        "attrs": {
+          "for": "login-password"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Correo",
+        "attrs": {
+          "autocomplete": "username",
+          "id": "login-correo",
+          "inputmode": "email",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Contraseña",
+        "attrs": {
+          "autocomplete": "current-password",
+          "id": "login-password",
+          "type": "password"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [
+      {
+        "texto": "Escribe tu correo",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Escribe tu contraseña",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      }
+    ],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "loginRellenado": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "flex",
+        "flex-col",
+        "justify-center",
+        "lg:p-12",
+        "p-8",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Correo",
+        "attrs": {
+          "for": "login-correo"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      },
+      {
+        "texto": "Contraseña",
+        "attrs": {
+          "for": "login-password"
+        },
+        "clases": [
+          "block",
+          "text-sm",
+          "text-text-secondary"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Correo",
+        "attrs": {
+          "autocomplete": "username",
+          "id": "login-correo",
+          "inputmode": "email",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "a@b.c"
+      },
+      {
+        "etiqueta": "Contraseña",
+        "attrs": {
+          "autocomplete": "current-password",
+          "id": "login-password",
+          "type": "password"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "x"
+      }
+    ],
+    "mensajes": [],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "familiasVacio": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Nombre",
+        "attrs": {
+          "for": "fam-nombre"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido paterno",
+        "attrs": {
+          "for": "fam-apellido-p"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido materno",
+        "attrs": {
+          "for": "fam-apellido-m"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Teléfono (opcional)",
+        "attrs": {
+          "for": "fam-telefono"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Nombre",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-nombre",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Apellido paterno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-p",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Apellido materno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-m",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Teléfono (opcional)",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-telefono",
+          "inputmode": "numeric",
+          "type": "tel"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "familiasConErrores": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Nombre",
+        "attrs": {
+          "for": "fam-nombre"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido paterno",
+        "attrs": {
+          "for": "fam-apellido-p"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido materno",
+        "attrs": {
+          "for": "fam-apellido-m"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Teléfono (opcional)",
+        "attrs": {
+          "for": "fam-telefono"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Nombre",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-nombre",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Apellido paterno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-p",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Apellido materno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-m",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Teléfono (opcional)",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-telefono",
+          "inputmode": "numeric",
+          "type": "tel"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [
+      {
+        "texto": "Escribe el nombre del alumno",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Escribe el apellido paterno",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Escribe el apellido materno",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      }
+    ],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "familiasTelefonoCorto": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Nombre",
+        "attrs": {
+          "for": "fam-nombre"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido paterno",
+        "attrs": {
+          "for": "fam-apellido-p"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Apellido materno",
+        "attrs": {
+          "for": "fam-apellido-m"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Teléfono (opcional)",
+        "attrs": {
+          "for": "fam-telefono"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Nombre",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-nombre",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "Prueba"
+      },
+      {
+        "etiqueta": "Apellido paterno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-p",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "Captura"
+      },
+      {
+        "etiqueta": "Apellido materno",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-apellido-m",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "Visual"
+      },
+      {
+        "etiqueta": "Teléfono (opcional)",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "fam-telefono",
+          "inputmode": "numeric",
+          "type": "tel"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "123"
+      }
+    ],
+    "mensajes": [
+      {
+        "texto": "El teléfono debe tener 10 dígitos",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      }
+    ],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "casosVacio": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Monto que se cobró",
+        "attrs": {
+          "for": "caso-monto"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Motivo",
+        "attrs": {
+          "for": "caso-motivo"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Monto que se cobró",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-monto",
+          "inputmode": "decimal",
+          "placeholder": "0.00",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Motivo",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-motivo",
+          "maxlength": "200",
+          "placeholder": "Ej. No asistió tres días",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "casosConErrores": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Monto que se cobró",
+        "attrs": {
+          "for": "caso-monto"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Motivo",
+        "attrs": {
+          "for": "caso-motivo"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Monto que se cobró",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-monto",
+          "inputmode": "decimal",
+          "placeholder": "0.00",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      },
+      {
+        "etiqueta": "Motivo",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-motivo",
+          "maxlength": "200",
+          "placeholder": "Ej. No asistió tres días",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-danger",
+          "focus:border-danger",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-danger",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": ""
+      }
+    ],
+    "mensajes": [
+      {
+        "texto": "Escribe cuánto se cobró esta semana",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Escribe por qué se cobró otro monto",
+        "clases": [
+          "mt-1",
+          "text-danger",
+          "text-xs"
+        ]
+      }
+    ],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT,P",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  },
+  "casosMontoInvalido": {
+    "form": {
+      "attrs": {
+        "novalidate": ""
+      },
+      "clases": [
+        "glass",
+        "p-4",
+        "rounded-card",
+        "space-y-4"
+      ]
+    },
+    "etiquetas": [
+      {
+        "texto": "Monto que se cobró",
+        "attrs": {
+          "for": "caso-monto"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      },
+      {
+        "texto": "Motivo",
+        "attrs": {
+          "for": "caso-motivo"
+        },
+        "clases": [
+          "block",
+          "text-text-secondary",
+          "text-xs"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "etiqueta": "Monto que se cobró",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-monto",
+          "inputmode": "decimal",
+          "placeholder": "0.00",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "12.345"
+      },
+      {
+        "etiqueta": "Motivo",
+        "attrs": {
+          "autocomplete": "off",
+          "id": "caso-motivo",
+          "maxlength": "200",
+          "placeholder": "Ej. No asistió tres días",
+          "type": "text"
+        },
+        "clases": [
+          "bg-panel/40",
+          "border",
+          "border-border",
+          "focus:border-accent",
+          "focus:outline-none",
+          "focus:ring-1",
+          "focus:ring-accent",
+          "mt-1",
+          "px-3",
+          "py-2",
+          "rounded-card",
+          "text-sm",
+          "text-text-primary",
+          "w-full"
+        ],
+        "valor": "x"
+      }
+    ],
+    "mensajes": [],
+    "envoltorios": [
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      },
+      {
+        "etiquetaDelCampo": "LABEL,INPUT",
+        "tagPadre": "DIV",
+        "clasesPadre": []
+      }
+    ]
+  }
+}

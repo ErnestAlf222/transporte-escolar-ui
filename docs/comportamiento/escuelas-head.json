@@ -1,0 +1,132 @@
+{
+  "clientes": {
+    "peticiones": [
+      "GET /configuracion",
+      "GET /clientes?estatus=activo",
+      "GET /escuelas"
+    ],
+    "selectores": [
+      {
+        "actual": "Todas las escuelas",
+        "opciones": [
+          "Todas las escuelas",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "prospectos": {
+    "peticiones": [
+      "GET /configuracion",
+      "GET /prospectos",
+      "GET /escuelas"
+    ],
+    "selectores": [
+      {
+        "actual": "Todas las escuelas",
+        "opciones": [
+          "Todas las escuelas",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "clienteEditar": {
+    "peticiones": [
+      "GET /clientes/5",
+      "GET /clientes?estatus=activo",
+      "GET /escuelas",
+      "GET /clientes/5/adeudo-familia",
+      "GET /escuelas"
+    ],
+    "selectores": [
+      {
+        "actual": "Colegio Particular Estatal",
+        "opciones": [
+          "Sin escuela asignada",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "prospectoEditar": {
+    "peticiones": [
+      "GET /escuelas"
+    ],
+    "selectores": [
+      {
+        "actual": "Primaria Benito Juárez",
+        "opciones": [
+          "Sin escuela asignada",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "pagos": {
+    "peticiones": [
+      "GET /configuracion",
+      "GET /pagos/semana"
+    ],
+    "selectores": [
+      {
+        "actual": "Todas las escuelas",
+        "opciones": [
+          "Todas las escuelas",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "asistencias": {
+    "peticiones": [
+      "GET /configuracion",
+      "GET /asistencias"
+    ],
+    "selectores": [
+      {
+        "actual": "Todas las escuelas",
+        "opciones": [
+          "Todas las escuelas",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  },
+  "registro": {
+    "peticiones": [
+      "GET /configuracion",
+      "GET /escuelas/publicas"
+    ],
+    "selectores": [
+      {
+        "actual": "Selecciona una escuela",
+        "opciones": [
+          "Selecciona una escuela",
+          "Colegio Particular Estatal",
+          "Primaria Benito Juárez",
+          "Secundaria Gabriela Mistral (Matutino)",
+          "Secundaria Gabriela Mistral (Vespertino)"
+        ]
+      }
+    ]
+  }
+}
