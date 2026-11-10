@@ -37,7 +37,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
         <!-- Fondo oscuro: tocarlo cierra el visor -->
         <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
             leave-active-class="transition duration-200 ease-in" leave-to-class="opacity-0">
-            <div v-if="abierto" class="fixed inset-0 z-[70] bg-black/80 supports-backdrop-filter:backdrop-blur-sm"
+            <div v-if="abierto" class="fixed inset-0 z-70 bg-black/80 supports-backdrop-filter:backdrop-blur-sm"
                 @click="emit('close')"></div>
         </Transition>
 
