@@ -17,7 +17,7 @@ export interface RegistroProspectoPayload {
   numero_exterior?: string
   colonia?: string
   direccion_referencias?: string
-  escuela_id: number
+  escuela_escrita: string
   servicio?: Servicio
 }
 

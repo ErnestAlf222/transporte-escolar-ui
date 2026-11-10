@@ -3,6 +3,8 @@ import { ref, watch } from 'vue'
 import { verProspecto, convertirProspecto, descartarProspecto, restaurarProspecto } from '@/features/prospectos/api/prospectos'
 import type { ProspectoDetalle, AlumnoFamilia } from '@/features/prospectos/types/prospecto'
 import { telefonoInternacional } from '@/shared/utils/telefono'
+import { textoDeEstado } from '@/shared/utils/errores'
+import { ETIQUETA_ESCUELA_ESCRITA, MENSAJE_ASIGNAR_ANTES, TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
 import { inicialesAlumno, nombreCompleto } from '@/shared/utils/nombres'
 import {
     X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check, Phone, Clock, Ban, Undo2, Pencil, Save,
@@ -127,6 +129,17 @@ watch(
     { immediate: true },
 )
 
+// Sin escuela asignada no se llama a la API: primero se pide asignarla
+function pedirConversion() {
+    if (!detalle.value) return
+    if (!detalle.value.escuela_id) {
+        errorConversion.value = MENSAJE_ASIGNAR_ANTES
+        return
+    }
+    errorConversion.value = ''
+    confirmandoConversion.value = true
+}
+
 async function confirmarConversion() {
     if (!detalle.value) return
     convirtiendo.value = true
@@ -136,8 +149,8 @@ async function confirmarConversion() {
         convertidoOk.value = true
         emit('convertido')
         setTimeout(() => emit('close'), 1500)
-    } catch {
-        errorConversion.value = 'No se pudo convertir el prospecto'
+    } catch (e) {
+        errorConversion.value = textoDeEstado(e, 400) || 'No se pudo convertir el prospecto'
     } finally {
         convirtiendo.value = false
         confirmandoConversion.value = false
@@ -323,7 +336,7 @@ function alCerrar() {
                                                 </p>
                                                 <p class="flex items-center gap-1 text-xs text-text-secondary">
                                                     <GraduationCap class="h-3.5 w-3.5 shrink-0" />
-                                                    {{ a.nombre_escuela || 'Sin escuela asignada' }}
+                                                    {{ a.nombre_escuela || TEXTO_SIN_ASIGNAR }}
                                                 </p>
                                             </div>
                                             <span class="shrink-0 rounded-card px-2 py-1 text-xs font-medium"
@@ -358,6 +371,14 @@ function alCerrar() {
                                         </div>
                                     </div>
                                     <p v-else class="text-sm text-text-secondary">Sin teléfono del alumno</p>
+
+                                    <p class="flex items-center gap-2 text-sm text-text-secondary">
+                                        <GraduationCap class="h-4 w-4 shrink-0" />
+                                        {{ detalle.nombre_escuela || TEXTO_SIN_ASIGNAR }}
+                                    </p>
+                                    <p v-if="detalle.escuela_escrita" class="text-xs italic text-text-secondary">
+                                        {{ ETIQUETA_ESCUELA_ESCRITA }}: {{ detalle.escuela_escrita }}
+                                    </p>
 
                                     <p v-if="textoParentesco(detalle)" class="text-sm text-text-secondary">
                                         {{ textoParentesco(detalle) }}
@@ -395,7 +416,7 @@ function alCerrar() {
                                         </button>
                                         <button type="button"
                                             class="flex items-center gap-2 rounded-card bg-accent px-4 py-2 text-sm font-medium text-bg hover:opacity-90"
-                                            @click="confirmandoConversion = true">
+                                            @click="pedirConversion">
                                             <UserCheck class="h-4 w-4" />
                                             Convertir a cliente
                                         </button>

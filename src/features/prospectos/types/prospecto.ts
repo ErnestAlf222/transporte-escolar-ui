@@ -10,6 +10,7 @@ export interface ProspectoListItem {
   tutor_id: number | null
   escuela_id: number | null
   nombre_escuela?: string
+  escuela_escrita: string
   estatus: EstatusProspecto
   fecha_contacto: string
 }
@@ -32,6 +33,7 @@ export interface ProspectoDetalle {
   foto_domicilio_url?: string
   escuela_id: number | null
   nombre_escuela?: string
+  escuela_escrita: string
   estatus: EstatusProspecto
   fecha_contacto: string
   tutor_id: number | null

@@ -19,6 +19,7 @@ import { useFamilias } from '@/shared/composables/useFamilias'
 import { useOpcionesEscuela } from '@/shared/composables/useOpcionesEscuela'
 import type { Familia as FamiliaDe } from '@/shared/utils/familias'
 import { ESPERA_RECONEXION_MS } from '@/shared/constants/tiempo'
+import { TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
 
 const route = useRoute()
 const router = useRouter()
@@ -220,8 +221,8 @@ onUnmounted(() => {
                                     {{ coincidePorTutor(familia) ? `${familia.alumnos.length} ${familia.alumnos.length
                                         === 1 ? 'alumno' : 'alumnos'}` : textoTutor(familia) }}
                                 </p>
-                                <p v-if="alumnoPrincipal(familia).nombre_escuela" class="text-xs text-text-secondary">
-                                    {{ alumnoPrincipal(familia).nombre_escuela }}
+                                <p class="text-xs text-text-secondary">
+                                    {{ alumnoPrincipal(familia).nombre_escuela || TEXTO_SIN_ASIGNAR }}
                                 </p>
                             </div>
                         </div>

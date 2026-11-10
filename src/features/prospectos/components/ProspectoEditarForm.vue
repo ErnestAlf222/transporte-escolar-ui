@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { actualizarProspecto } from '@/features/prospectos/api/prospectos'
-import { mensajeDeEstado } from '@/shared/utils/errores'
+import { mensajeDeEstado, textoDeEstado } from '@/shared/utils/errores'
+import { ETIQUETA_ESCUELA_ESCRITA } from '@/features/prospectos/constants/prospectos'
 import { useOpcionesEscuela } from '@/shared/composables/useOpcionesEscuela'
 import type { ProspectoDetalle, ActualizarProspectoPayload } from '@/features/prospectos/types/prospecto'
 import { Save } from 'lucide-vue-next'
@@ -119,7 +120,8 @@ async function guardar() {
         await actualizarProspecto(props.detalle.id, payload)
         emit('guardado')
     } catch (e) {
-        errorGuardar.value = mensajeDeEstado(e, 409, 'No se pudieron guardar los cambios')
+        // 400: escuela inexistente o inactiva; 409: dato repetido. El servidor explica ambos con texto
+        errorGuardar.value = textoDeEstado(e, 400) || mensajeDeEstado(e, 409, 'No se pudieron guardar los cambios')
     } finally {
         guardando.value = false
     }
@@ -154,6 +156,9 @@ async function guardar() {
                 <label class="block text-xs text-text-secondary">Escuela</label>
                 <DropdownSelect v-model="form.escuela_id" :opciones="escuelasOpciones" alinear="full"
                     class="mt-1 w-full" />
+                <p v-if="detalle.escuela_escrita" class="mt-1 text-xs text-text-secondary">
+                    {{ ETIQUETA_ESCUELA_ESCRITA }}: {{ detalle.escuela_escrita }}
+                </p>
             </div>
         </div>
 

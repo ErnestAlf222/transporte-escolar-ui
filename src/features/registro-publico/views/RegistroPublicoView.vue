@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { registrarProspecto } from '@/features/registro-publico/api/registro-publico'
-import { listarEscuelasPublicas } from '@/shared/api/escuelas'
-import { useOpcionesEscuela } from '@/shared/composables/useOpcionesEscuela'
+import {
+    MAX_ESCUELA_ESCRITA,
+    ETIQUETA_ESCUELA_ESCRITA,
+    MENSAJE_CAMPO_OBLIGATORIO,
+} from '@/features/registro-publico/constants/registro-publico'
 import type { Parentesco } from '@/features/registro-publico/types/registro-publico'
 import { OPCIONES_SERVICIO, type Servicio } from '@/shared/utils/servicio'
 import DropdownSelect from '@/shared/ui/DropdownSelect.vue'
@@ -22,8 +25,6 @@ const opcionesParentesco = [
     { value: 'otro', label: 'Otro' },
 ]
 
-const { opciones: opcionesEscuela, cargar: pedirEscuelas } = useOpcionesEscuela('Selecciona una escuela', listarEscuelasPublicas)
-
 const form = ref({
     nombre_alumno: '',
     apellido_paterno_alumno: '',
@@ -39,7 +40,7 @@ const form = ref({
     numero_exterior: '',
     colonia: '',
     direccion_referencias: '',
-    escuela_id: '',
+    escuela_escrita: '',
     servicio: 'completo' as Servicio,
 })
 
@@ -83,7 +84,7 @@ const errores = computed(() => ({
     nombre_alumno: !form.value.nombre_alumno,
     apellido_paterno_alumno: !form.value.apellido_paterno_alumno,
     apellido_materno_alumno: !form.value.apellido_materno_alumno,
-    escuela_id: !form.value.escuela_id,
+    escuela_escrita: !form.value.escuela_escrita.trim(),
     parentesco_detalle: form.value.parentesco === 'otro' && !form.value.parentesco_detalle,
     telefono_alumno: esEstudiante.value && !form.value.telefono_alumno,
     nombre_tutor: !esEstudiante.value && !tutorConfirmado.value && !form.value.nombre_tutor,
@@ -98,19 +99,6 @@ function mostrarError(campo: keyof typeof errores.value) {
 
 const enviando = ref(false)
 const resultado = ref<{ tipo: 'ok' | 'ya_existe'; mensaje: string } | null>(null)
-
-const errorEscuelas = ref(false)
-
-async function cargarEscuelas() {
-    errorEscuelas.value = false
-    try {
-        await pedirEscuelas()
-    } catch {
-        errorEscuelas.value = true
-    }
-}
-
-onMounted(cargarEscuelas)
 
 async function enviar() {
     intentoEnviar.value = true
@@ -134,7 +122,7 @@ async function enviar() {
             numero_exterior: form.value.numero_exterior || undefined,
             colonia: form.value.colonia || undefined,
             direccion_referencias: form.value.direccion_referencias || undefined,
-            escuela_id: Number(form.value.escuela_id),
+            escuela_escrita: form.value.escuela_escrita.trim(),
             servicio: form.value.servicio,
         })
         resultado.value = { tipo: resp.ya_existe ? 'ya_existe' : 'ok', mensaje: resp.mensaje }
@@ -265,15 +253,12 @@ function registrarOtroAlumno() {
                     </div>
 
                     <div>
-                        <label class="block text-xs text-text-secondary">Escuela</label>
-                        <DropdownSelect v-model="form.escuela_id" :opciones="opcionesEscuela"
-                            :invalid="mostrarError('escuela_id')" alinear="full" class="mt-1 w-full" />
-                        <p v-if="mostrarError('escuela_id')" class="mt-1 text-xs text-danger">Selecciona una escuela
-                        </p>
-                        <p v-if="errorEscuelas" class="mt-1 text-xs text-danger">
-                            No se pudieron cargar las escuelas.
-                            <button type="button" class="underline" @click="cargarEscuelas">Reintentar</button>
-                        </p>
+                        <label class="block text-xs text-text-secondary">{{ ETIQUETA_ESCUELA_ESCRITA }}</label>
+                        <input v-model="form.escuela_escrita" type="text" :maxlength="MAX_ESCUELA_ESCRITA"
+                            class="mt-1 w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
+                            :class="mostrarError('escuela_escrita') ? 'border-danger' : 'border-border'" />
+                        <p v-if="mostrarError('escuela_escrita')" class="mt-1 text-xs text-danger">{{
+                            MENSAJE_CAMPO_OBLIGATORIO }}</p>
                     </div>
                 </div>
 
