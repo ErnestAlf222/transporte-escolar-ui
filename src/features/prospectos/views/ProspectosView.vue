@@ -19,14 +19,19 @@ import { useFamilias } from '@/shared/composables/useFamilias'
 import { useOpcionesEscuela } from '@/shared/composables/useOpcionesEscuela'
 import type { Familia as FamiliaDe } from '@/shared/utils/familias'
 import { ESPERA_RECONEXION_MS } from '@/shared/constants/tiempo'
-import { TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
+import { FILTRO_SIN_ESCUELA, TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
 
 const route = useRoute()
 const router = useRouter()
 
 // Escuela va primero: es el filtro de primer nivel del negocio, tal como se definió desde
 // la planeación original (cada escuela se gestiona como su propio universo de prospectos)
-const { opciones: opcionesEscuela, cargar: cargarEscuelas } = useOpcionesEscuela('Todas las escuelas')
+const { opciones: opcionesEscuelaApi, cargar: cargarEscuelas } = useOpcionesEscuela('Todas las escuelas')
+// "Sin asignar" va justo después de "Todas": son los prospectos que escribieron su escuela y aún no tienen una
+const opcionesEscuela = computed(() => {
+    const [todas, ...escuelas] = opcionesEscuelaApi.value
+    return [todas!, { value: FILTRO_SIN_ESCUELA, label: TEXTO_SIN_ASIGNAR }, ...escuelas]
+})
 const opcionesEstatus = [
     { value: '', label: 'Todos' },
     { value: 'pendiente', label: 'Pendientes' },
@@ -107,14 +112,19 @@ function abrirDesdeTarjeta(f: Familia) {
     )
 }
 
+function filtrosActuales(): Parameters<typeof listarProspectos>[0] {
+    return {
+        escuela_id: filtroEscuela.value === FILTRO_SIN_ESCUELA ? FILTRO_SIN_ESCUELA
+            : filtroEscuela.value ? Number(filtroEscuela.value) : undefined,
+        estatus: filtroEstatus.value || undefined,
+    }
+}
+
 async function cargar() {
     cargando.value = true
     error.value = ''
     try {
-        prospectos.value = await listarProspectos({
-            escuela_id: filtroEscuela.value ? Number(filtroEscuela.value) : undefined,
-            estatus: filtroEstatus.value || undefined,
-        })
+        prospectos.value = await listarProspectos(filtrosActuales())
     } catch {
         error.value = 'No se pudo cargar el listado de prospectos'
     } finally {
@@ -129,10 +139,7 @@ function alConvertido() {
 // Recarga sin el spinner de carga, para que la lista no parpadee al llegar un aviso
 async function refrescar() {
     try {
-        prospectos.value = await listarProspectos({
-            escuela_id: filtroEscuela.value ? Number(filtroEscuela.value) : undefined,
-            estatus: filtroEstatus.value || undefined,
-        })
+        prospectos.value = await listarProspectos(filtrosActuales())
     } catch {
         // se conserva lo que ya se muestra
     }

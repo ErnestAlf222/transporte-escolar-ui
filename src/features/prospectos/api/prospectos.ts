@@ -7,9 +7,10 @@ import type {
   ConversionResponse,
   ActualizarProspectoPayload,
 } from '@/features/prospectos/types/prospecto'
+import type { FILTRO_SIN_ESCUELA } from '@/features/prospectos/constants/prospectos'
 
 interface FiltrosProspectos {
-  escuela_id?: number
+  escuela_id?: number | typeof FILTRO_SIN_ESCUELA
   estatus?: EstatusProspecto
 }
 
