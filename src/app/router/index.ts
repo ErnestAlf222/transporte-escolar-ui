@@ -17,6 +17,18 @@ const router = createRouter({
       component: () => import('@/features/auth/views/LoginView.vue'),
     },
     {
+      path: '/recuperar-contrasena',
+      name: 'recuperar-contrasena',
+      meta: { soloSinSesion: true },
+      component: () => import('@/features/auth/views/RecuperarContrasenaView.vue'),
+    },
+    {
+      path: '/nueva-contrasena',
+      name: 'nueva-contrasena',
+      meta: { soloSinSesion: true },
+      component: () => import('@/features/auth/views/NuevaContrasenaView.vue'),
+    },
+    {
       path: '/registro',
       name: 'registro-publico',
       component: () => import('@/features/registro-publico/views/RegistroPublicoView.vue'),
@@ -113,7 +125,7 @@ router.beforeEach((to, from) => {
     return { name: 'login' }
   }
 
-  if (to.name === 'login' && auth.isAuthenticated) {
+  if ((to.name === 'login' || to.meta.soloSinSesion) && auth.isAuthenticated) {
     return { name: 'home' }
   }
 

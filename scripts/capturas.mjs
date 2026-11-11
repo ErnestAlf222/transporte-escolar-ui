@@ -194,6 +194,26 @@ const PANTALLAS = [
     },
   },
   {
+    id: 'recuperar-contrasena',
+    anonima: true,
+    async correr({ page, snap }) {
+      await ir(page, '/recuperar-contrasena', '#recuperar-correo')
+      await snap('recuperar-contrasena')
+      await tocarCampos(page, '#recuperar-correo')
+      await snap('recuperar-contrasena-errores')
+    },
+  },
+  {
+    id: 'nueva-contrasena',
+    anonima: true,
+    async correr({ page, snap }) {
+      await ir(page, '/nueva-contrasena?token=captura', '#nueva-password')
+      await snap('nueva-contrasena')
+      await tocarCampos(page, '#nueva-password, #nueva-confirmacion')
+      await snap('nueva-contrasena-errores')
+    },
+  },
+  {
     id: 'registro',
     anonima: true,
     async correr({ page, snap }) {

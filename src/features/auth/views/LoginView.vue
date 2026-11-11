@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth/stores/auth'
+import { FORMATO_CORREO } from '@/features/auth/constants/auth'
 import { useConfiguracion } from '@/shared/composables/useConfiguracion'
 import Spinner from '@/shared/ui/Spinner.vue'
 import LoaderVanJuego from '@/shared/ui/LoaderVanJuego.vue'
@@ -15,7 +16,6 @@ const cargando = ref(false)
 // Los avisos se muestran cuando la persona sale de un campo, no mientras escribe
 const tocoCorreo = ref(false)
 const tocoPassword = ref(false)
-const FORMATO_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const errorCorreo = computed(() => {
     if (correo.value.trim() === '') return 'Escribe tu correo'
@@ -75,6 +75,11 @@ async function onSubmit() {
                     <Spinner v-if="cargando" />
                     {{ cargando ? 'Ingresando...' : 'Ingresar' }}
                 </button>
+
+                <RouterLink :to="{ name: 'recuperar-contrasena' }"
+                    class="block text-center text-sm text-accent hover:underline">
+                    ¿Olvidaste tu contraseña?
+                </RouterLink>
             </form>
         </div>
     </div>
