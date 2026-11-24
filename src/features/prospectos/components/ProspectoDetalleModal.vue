@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { OPCIONES_PARENTESCO } from '@/shared/constants/parentesco'
 import { ref, watch } from 'vue'
 import { verProspecto, convertirProspecto, descartarProspecto, restaurarProspecto } from '@/features/prospectos/api/prospectos'
 import type { ProspectoDetalle, AlumnoFamilia } from '@/features/prospectos/types/prospecto'
@@ -78,13 +79,9 @@ function textoFechaRegistro(d: ProspectoDetalle): string {
     return `Registrado el ${dia} a las ${hora}`
 }
 
-const ETIQUETAS_PARENTESCO: Record<string, string> = {
-    padre: 'Padre',
-    madre: 'Madre',
-    abuelo: 'Abuelo',
-    abuela: 'Abuela',
-    estudiante: 'El propio alumno',
-}
+const ETIQUETAS_PARENTESCO: Record<string, string> = Object.fromEntries(
+    OPCIONES_PARENTESCO.map((o) => [o.value, o.label]),
+)
 
 function textoParentesco(d: ProspectoDetalle): string {
     if (!d.parentesco) return ''

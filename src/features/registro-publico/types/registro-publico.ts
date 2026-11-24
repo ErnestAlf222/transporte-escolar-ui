@@ -1,6 +1,6 @@
 import type { Servicio } from '@/shared/utils/servicio'
 
-export type Parentesco = 'padre' | 'madre' | 'abuelo' | 'abuela' | 'estudiante' | 'otro'
+import type { Parentesco } from '@/shared/constants/parentesco'
 
 export interface RegistroProspectoPayload {
   nombre_alumno: string
@@ -11,7 +11,7 @@ export interface RegistroProspectoPayload {
   parentesco_detalle?: string
   nombre_tutor?: string
   telefono_tutor?: string
-  correo?: string
+  correo: string
   codigo_postal?: string
   calle?: string
   numero_exterior?: string

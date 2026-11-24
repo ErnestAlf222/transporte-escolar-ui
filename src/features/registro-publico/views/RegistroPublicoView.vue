@@ -5,8 +5,13 @@ import {
     MAX_ESCUELA_ESCRITA,
     ETIQUETA_ESCUELA_ESCRITA,
     MENSAJE_CAMPO_OBLIGATORIO,
+    ETIQUETA_CORREO_TUTOR,
+    AVISO_CORREO_TUTOR,
+    MENSAJE_CORREO_INVALIDO,
 } from '@/features/registro-publico/constants/registro-publico'
-import type { Parentesco } from '@/features/registro-publico/types/registro-publico'
+import { OPCIONES_PARENTESCO, type Parentesco } from '@/shared/constants/parentesco'
+import { esCorreoValido } from '@/shared/utils/correo'
+import { textoDeEstado } from '@/shared/utils/errores'
 import { OPCIONES_SERVICIO, type Servicio } from '@/shared/utils/servicio'
 import DropdownSelect from '@/shared/ui/DropdownSelect.vue'
 import LoaderVan from '@/shared/ui/LoaderVan.vue'
@@ -18,14 +23,7 @@ import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin, ArrowRightLeft,
 
 const { configuracion } = useConfiguracion()
 const { conBienvenida } = useBienvenida()
-const opcionesParentesco = [
-    { value: 'padre', label: 'Padre' },
-    { value: 'madre', label: 'Madre' },
-    { value: 'abuelo', label: 'Abuelo' },
-    { value: 'abuela', label: 'Abuela' },
-    { value: 'estudiante', label: 'Soy el alumno' },
-    { value: 'otro', label: 'Otro' },
-]
+const opcionesParentesco = OPCIONES_PARENTESCO
 
 const form = ref({
     nombre_alumno: '',
@@ -46,8 +44,6 @@ const form = ref({
     servicio: 'completo' as Servicio,
 })
 
-const esEstudiante = computed(() => form.value.parentesco === 'estudiante')
-
 // Escucha los teléfonos mientras se escriben y pregunta al servidor si ya existen
 const { resultado: consultaTutor } = useConsultaTelefono(() => form.value.telefono_tutor)
 const { resultado: consultaAlumno } = useConsultaTelefono(() => form.value.telefono_alumno)
@@ -61,10 +57,10 @@ watch(
     },
 )
 
-const tutorConocido = computed(() => !esEstudiante.value && consultaTutor.value?.tipo === 'tutor')
+const tutorConocido = computed(() => consultaTutor.value?.tipo === 'tutor')
 const tutorConfirmado = computed(() => tutorConocido.value && respuestaTutor.value === 'si')
 const textoBotonEnvio = computed(() => (tutorConfirmado.value ? 'Unir a mi familia' : 'Registrarme'))
-const tutorEsAlumno = computed(() => !esEstudiante.value && consultaTutor.value?.tipo === 'alumno')
+const tutorEsAlumno = computed(() => consultaTutor.value?.tipo === 'alumno')
 // No se puede enviar mientras el número del tutor no esté confirmado o sea de un alumno
 const tutorBloqueado = computed(
     () => tutorEsAlumno.value || (tutorConocido.value && respuestaTutor.value !== 'si'),
@@ -88,9 +84,10 @@ const errores = computed(() => ({
     apellido_materno_alumno: !form.value.apellido_materno_alumno,
     escuela_escrita: !form.value.escuela_escrita.trim(),
     parentesco_detalle: form.value.parentesco === 'otro' && !form.value.parentesco_detalle,
-    telefono_alumno: esEstudiante.value && !form.value.telefono_alumno,
-    nombre_tutor: !esEstudiante.value && !tutorConfirmado.value && !form.value.nombre_tutor,
-    telefono_tutor: !esEstudiante.value && !form.value.telefono_tutor,
+    nombre_tutor: !tutorConfirmado.value && !form.value.nombre_tutor,
+    telefono_tutor: !form.value.telefono_tutor,
+    correo: !form.value.correo.trim(),
+    correo_formato: !!form.value.correo.trim() && !esCorreoValido(form.value.correo),
     telefono_tutor_conocido: tutorBloqueado.value,
     telefono_alumno_repetido: alumnoTelefonoRepetido.value,
 }))
@@ -99,11 +96,33 @@ function mostrarError(campo: keyof typeof errores.value) {
     return intentoEnviar.value && errores.value[campo]
 }
 
+// Error que devuelve la API (texto plano) y el campo al que corresponde; se limpia al editar ese campo
+type CampoServidor = 'parentesco' | 'nombre_tutor' | 'telefono_tutor' | 'correo'
+const errorServidor = ref<{ campo: CampoServidor; mensaje: string } | null>(null)
+function campoDeMensaje(mensaje: string): CampoServidor | null {
+    const m = mensaje.toLowerCase()
+    if (m.includes('correo')) return 'correo'
+    if (m.includes('parentesco')) return 'parentesco'
+    if (m.includes('teléfono del tutor')) return 'telefono_tutor'
+    if (m.includes('nombre del tutor')) return 'nombre_tutor'
+    return null
+}
+function errorDe(campo: CampoServidor) {
+    return errorServidor.value?.campo === campo ? errorServidor.value.mensaje : ''
+}
+watch(
+    () => [form.value.parentesco, form.value.nombre_tutor, form.value.telefono_tutor, form.value.correo],
+    () => {
+        errorServidor.value = null
+    },
+)
+
 const enviando = ref(false)
 const resultado = ref<{ tipo: 'ok' | 'ya_existe'; mensaje: string } | null>(null)
 
 async function enviar() {
     intentoEnviar.value = true
+    errorServidor.value = null
     if (Object.values(errores.value).some(Boolean)) return
 
     enviando.value = true
@@ -116,9 +135,9 @@ async function enviar() {
             parentesco: form.value.parentesco,
             parentesco_detalle: form.value.parentesco === 'otro' ? form.value.parentesco_detalle : undefined,
             telefono_alumno: form.value.telefono_alumno || undefined,
-            nombre_tutor: esEstudiante.value || tutorConfirmado.value ? undefined : form.value.nombre_tutor,
-            telefono_tutor: esEstudiante.value ? undefined : form.value.telefono_tutor,
-            correo: form.value.correo || undefined,
+            nombre_tutor: tutorConfirmado.value ? undefined : form.value.nombre_tutor,
+            telefono_tutor: form.value.telefono_tutor,
+            correo: form.value.correo.trim(),
             codigo_postal: form.value.codigo_postal || undefined,
             calle: form.value.calle || undefined,
             numero_exterior: form.value.numero_exterior || undefined,
@@ -135,7 +154,13 @@ async function enviar() {
         // Registro nuevo: bienvenida con el loader de temporada y luego la pantalla de éxito. Si ya existía, directo al aviso
         if (exito.tipo === 'ok') await conBienvenida(mostrarResultado)
         else mostrarResultado()
-    } catch {
+    } catch (e) {
+        const mensaje = textoDeEstado(e, 400)
+        const campo = mensaje ? campoDeMensaje(mensaje) : null
+        if (mensaje && campo) {
+            errorServidor.value = { campo, mensaje }
+            return
+        }
         resultado.value = { tipo: 'ya_existe', mensaje: 'Ocurrió un error, intenta de nuevo más tarde' }
     } finally {
         enviando.value = false
@@ -169,7 +194,7 @@ function registrarOtroAlumno() {
                 <Check v-if="resultado.tipo === 'ok'" class="h-10 w-10" />
                 <AlertCircle v-else class="h-10 w-10" />
                 <p class="font-medium text-text-primary">{{ resultado.mensaje }}</p>
-                <button v-if="resultado.tipo === 'ok' && !esEstudiante" type="button"
+                <button v-if="resultado.tipo === 'ok'" type="button"
                     class="mt-2 rounded-card border border-border bg-panel px-5 py-2 text-sm font-medium text-text-primary hover:bg-panel-2"
                     @click="registrarOtroAlumno">
                     Registrar otro alumno
@@ -188,6 +213,7 @@ function registrarOtroAlumno() {
                         <label class="block text-xs text-text-secondary">¿Quién llena este registro?</label>
                         <DropdownSelect v-model="form.parentesco" :opciones="opcionesParentesco" alinear="left"
                             class="mt-1 w-fit" />
+                        <p v-if="errorDe('parentesco')" class="mt-1 text-xs text-danger">{{ errorDe('parentesco') }}</p>
                     </div>
 
                     <div>
@@ -248,13 +274,10 @@ function registrarOtroAlumno() {
                         </div>
                         <div>
                             <label class="block text-xs text-text-secondary">
-                                Teléfono del alumno {{ esEstudiante ? '' : '(opcional)' }}
+                                Teléfono del alumno (opcional)
                             </label>
                             <input v-model="form.telefono_alumno" type="tel"
-                                class="mt-1 w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
-                                :class="mostrarError('telefono_alumno') ? 'border-danger' : 'border-border'" />
-                            <p v-if="mostrarError('telefono_alumno')" class="mt-1 text-xs text-danger">Este campo es
-                                obligatorio</p>
+                                class="mt-1 w-full rounded-card border border-border bg-panel px-3 py-2 text-sm text-text-primary" />
                             <p v-if="alumnoTelefonoRepetido" class="mt-1 text-xs text-sun">
                                 Ese teléfono ya está registrado.
                             </p>
@@ -271,7 +294,7 @@ function registrarOtroAlumno() {
                     </div>
                 </div>
 
-                <div v-if="!esEstudiante" class="space-y-3 border-t border-border pt-4">
+                <div class="space-y-3 border-t border-border pt-4">
                     <p
                         class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                         <Users class="h-4 w-4" />
@@ -282,17 +305,21 @@ function registrarOtroAlumno() {
                             <label class="block text-xs text-text-secondary">Nombre del tutor</label>
                             <input v-model="form.nombre_tutor" type="text"
                                 class="mt-1 w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
-                                :class="mostrarError('nombre_tutor') ? 'border-danger' : 'border-border'" />
-                            <p v-if="mostrarError('nombre_tutor')" class="mt-1 text-xs text-danger">Este campo es
-                                obligatorio</p>
+                                :class="mostrarError('nombre_tutor') || errorDe('nombre_tutor') ? 'border-danger' : 'border-border'" />
+                            <p v-if="mostrarError('nombre_tutor')" class="mt-1 text-xs text-danger">{{
+                                MENSAJE_CAMPO_OBLIGATORIO }}</p>
+                            <p v-else-if="errorDe('nombre_tutor')" class="mt-1 text-xs text-danger">{{
+                                errorDe('nombre_tutor') }}</p>
                         </div>
                         <div>
                             <label class="block text-xs text-text-secondary">Teléfono del tutor</label>
                             <input v-model="form.telefono_tutor" type="tel"
                                 class="mt-1 w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
-                                :class="mostrarError('telefono_tutor') ? 'border-danger' : 'border-border'" />
-                            <p v-if="mostrarError('telefono_tutor')" class="mt-1 text-xs text-danger">Este campo es
-                                obligatorio</p>
+                                :class="mostrarError('telefono_tutor') || errorDe('telefono_tutor') ? 'border-danger' : 'border-border'" />
+                            <p v-if="mostrarError('telefono_tutor')" class="mt-1 text-xs text-danger">{{
+                                MENSAJE_CAMPO_OBLIGATORIO }}</p>
+                            <p v-else-if="errorDe('telefono_tutor')" class="mt-1 text-xs text-danger">{{
+                                errorDe('telefono_tutor') }}</p>
                         </div>
                     </div>
 
@@ -336,10 +363,16 @@ function registrarOtroAlumno() {
                     <p
                         class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                         <Mail class="h-4 w-4" />
-                        Correo de contacto (opcional)
+                        {{ ETIQUETA_CORREO_TUTOR }}
                     </p>
                     <input v-model="form.correo" type="email"
-                        class="w-full rounded-card border border-border bg-panel px-3 py-2 text-sm text-text-primary" />
+                        class="w-full rounded-card border bg-panel px-3 py-2 text-sm text-text-primary"
+                        :class="mostrarError('correo') || mostrarError('correo_formato') || errorDe('correo') ? 'border-danger' : 'border-border'" />
+                    <p v-if="mostrarError('correo')" class="text-xs text-danger">{{ MENSAJE_CAMPO_OBLIGATORIO }}</p>
+                    <p v-else-if="mostrarError('correo_formato')" class="text-xs text-danger">{{ MENSAJE_CORREO_INVALIDO
+                        }}</p>
+                    <p v-else-if="errorDe('correo')" class="text-xs text-danger">{{ errorDe('correo') }}</p>
+                    <p class="text-xs text-text-secondary">{{ AVISO_CORREO_TUTOR }}</p>
                 </div>
 
                 <div class="space-y-3 border-t border-border pt-4">
