@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useTemaLoader } from '@/shared/composables/useTemaLoader'
+import DecoracionVan from '@/shared/ui/DecoracionVan.vue'
+import MensajeTema from '@/shared/ui/MensajeTema.vue'
 import { CONO, RUEDA_A, RUEDA_B, VAN, pixeles } from '@/shared/utils/spritesVan'
 
-const props = withDefaults(defineProps<{ texto?: string; compacto?: boolean }>(), {
+const props = withDefaults(defineProps<{ texto?: string; compacto?: boolean; tema?: string | null }>(), {
     texto: 'Doña Mary',
     compacto: false,
 })
@@ -25,6 +28,17 @@ const SALIDA = -62
 const CICLO = 486
 const ENTRADA = SALIDA + CICLO
 const PERIODO_MARCAS = 27
+
+// Con tema, la escena gana lienzo arriba para el gorro, la estrella y los banderines (y para el salto);
+// el nombre sube al borde de arriba para que la decoración no lo tape
+const ALTO_ESCENA = 262
+const EXTRA_ARRIBA = 140 // alcanza para el gorro en lo alto del salto
+const temaActivo = useTemaLoader(() => props.tema)
+const viewBox = computed(() =>
+    temaActivo.value ? `0 -${EXTRA_ARRIBA} 680 ${ALTO_ESCENA + EXTRA_ARRIBA}` : `0 0 680 ${ALTO_ESCENA}`,
+)
+
+const yTexto = computed(() => (temaActivo.value ? 16 - EXTRA_ARRIBA : 30))
 
 const uid = `lvj${Math.random().toString(36).slice(2, 8)}`
 
@@ -101,7 +115,7 @@ onUnmounted(() => clearTimeout(reloj))
 
 <template>
     <div role="status" class="mx-auto w-full" :class="compacto ? 'max-w-xl' : 'max-w-2xl'" :aria-label="texto">
-        <svg class="escena" viewBox="0 0 680 262" shape-rendering="crispEdges" aria-hidden="true" :style="estilo">
+        <svg class="escena" :viewBox="viewBox" shape-rendering="crispEdges" aria-hidden="true" :style="estilo">
             <defs>
                 <g v-for="d in DEFINICIONES" :id="`${uid}-${d.id}`" :key="d.id">
                     <rect v-for="(p, i) in d.pixeles" :key="i" :x="p.x" :y="p.y" :width="p.ancho" height="1"
@@ -117,9 +131,11 @@ onUnmounted(() => clearTimeout(reloj))
                 </g>
             </defs>
 
-            <text :x="xTexto" y="30" class="hud hud-texto">{{ escrito }}<tspan class="cursor">_</tspan></text>
+            <text :x="xTexto" :y="yTexto" class="hud hud-texto">{{ escrito }}<tspan class="cursor">_</tspan></text>
 
             <g transform="translate(10 40) scale(2)">
+                <DecoracionVan :tema="temaActivo" plano="fondo" :transform="`translate(${VAN_X} ${VAN_Y}) scale(${PIXEL})`" />
+
                 <rect :y="SUELO_Y" :width="ANCHO_ESCENA + 10" height="3" class="marca" />
                 <g class="marcas">
                     <rect v-for="(m, i) in MARCAS" :key="i" :x="m.x" :y="m.y" :width="m.ancho" height="3"
@@ -140,10 +156,15 @@ onUnmounted(() => clearTimeout(reloj))
                         <use :href="`#${uid}-van`" :transform="`translate(${VAN_X} ${VAN_Y}) scale(${PIXEL})`" />
                         <use v-for="eje in EJES" :key="eje" :href="`#${uid}-rueda`"
                             :transform="`translate(${VAN_X + (eje - RUEDA_MITAD) * PIXEL} ${VAN_Y + RUEDA_FILA * PIXEL}) scale(${PIXEL})`" />
+                        <DecoracionVan :tema="temaActivo" plano="cuerpo" :transform="`translate(${VAN_X} ${VAN_Y}) scale(${PIXEL})`" />
                     </g>
                 </g>
+
+                <DecoracionVan :tema="temaActivo" plano="frente" :transform="`translate(${VAN_X} ${VAN_Y}) scale(${PIXEL})`" />
             </g>
         </svg>
+
+        <MensajeTema v-if="!compacto && temaActivo?.mensaje" :key="temaActivo.id" :texto="temaActivo.mensaje" />
     </div>
 </template>
 

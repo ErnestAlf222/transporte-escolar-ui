@@ -1,9 +1,33 @@
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { verConfiguracion } from '@/shared/api/configuracion'
+import { CLAVE_TEMA_LOADER, TEMA_NORMAL } from '@/shared/constants/temasLoader'
 import type { Configuracion } from '@/shared/types/configuracion'
 
 // La configuración vigente: la comparten el arranque de la app y la pantalla de Apariencia
 const configuracion = ref<Configuracion | null>(null)
+
+// El último tema de loader que se vio se recuerda en el navegador: así el primer loader ya sale decorado,
+// sin esperar la respuesta del servidor
+function leerTemaGuardado(): string {
+  try {
+    return localStorage.getItem(CLAVE_TEMA_LOADER) ?? TEMA_NORMAL
+  } catch {
+    return TEMA_NORMAL
+  }
+}
+const temaGuardado = ref(leerTemaGuardado())
+
+// Al llegar (o cambiar) la configuración del servidor se reescribe; si viene vacío, se borra
+watch(configuracion, (c) => {
+  if (!c) return
+  temaGuardado.value = c.tema_loader ?? TEMA_NORMAL
+  try {
+    if (temaGuardado.value) localStorage.setItem(CLAVE_TEMA_LOADER, temaGuardado.value)
+    else localStorage.removeItem(CLAVE_TEMA_LOADER)
+  } catch {
+    // sin almacenamiento: solo se pierde el ahorro del primer loader
+  }
+})
 
 function cargarLetra(nombre: string) {
   const id = `letra-${nombre}`
@@ -42,5 +66,8 @@ export function useConfiguracion() {
     }
   }
 
-  return { configuracion, cargar }
+  // Tema de temporada vigente del loader ('' = normal)
+  const temaLoader = computed(() => (configuracion.value ? (configuracion.value.tema_loader ?? TEMA_NORMAL) : temaGuardado.value))
+
+  return { configuracion, temaLoader, cargar }
 }

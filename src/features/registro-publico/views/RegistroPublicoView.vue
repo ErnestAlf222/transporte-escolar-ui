@@ -12,10 +12,12 @@ import DropdownSelect from '@/shared/ui/DropdownSelect.vue'
 import LoaderVan from '@/shared/ui/LoaderVan.vue'
 import BotonScroll from '@/shared/ui/BotonScroll.vue'
 import { useConsultaTelefono } from '@/shared/composables/useConsultaTelefono'
+import { useBienvenida } from '@/shared/composables/useBienvenida'
 import { useConfiguracion } from '@/shared/composables/useConfiguracion'
 import { Check, AlertCircle, GraduationCap, Users, Mail, MapPin, ArrowRightLeft, ArrowRight, ArrowLeft } from 'lucide-vue-next'
 
 const { configuracion } = useConfiguracion()
+const { conBienvenida } = useBienvenida()
 const opcionesParentesco = [
     { value: 'padre', label: 'Padre' },
     { value: 'madre', label: 'Madre' },
@@ -125,7 +127,14 @@ async function enviar() {
             escuela_escrita: form.value.escuela_escrita.trim(),
             servicio: form.value.servicio,
         })
-        resultado.value = { tipo: resp.ya_existe ? 'ya_existe' : 'ok', mensaje: resp.mensaje }
+        const exito = { tipo: resp.ya_existe ? ('ya_existe' as const) : ('ok' as const), mensaje: resp.mensaje }
+        enviando.value = false
+        const mostrarResultado = () => {
+            resultado.value = exito
+        }
+        // Registro nuevo: bienvenida con el loader de temporada y luego la pantalla de éxito. Si ya existía, directo al aviso
+        if (exito.tipo === 'ok') await conBienvenida(mostrarResultado)
+        else mostrarResultado()
     } catch {
         resultado.value = { tipo: 'ya_existe', mensaje: 'Ocurrió un error, intenta de nuevo más tarde' }
     } finally {

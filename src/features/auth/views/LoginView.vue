@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth/stores/auth'
 import { FORMATO_CORREO } from '@/features/auth/constants/auth'
+import { useBienvenida } from '@/shared/composables/useBienvenida'
 import { useConfiguracion } from '@/shared/composables/useConfiguracion'
 import Spinner from '@/shared/ui/Spinner.vue'
 import LoaderVanJuego from '@/shared/ui/LoaderVanJuego.vue'
@@ -29,6 +30,7 @@ const puedeEntrar = computed(() => !errorCorreo.value && !errorPassword.value &&
 const auth = useAuthStore()
 const router = useRouter()
 const { configuracion } = useConfiguracion()
+const { conBienvenida } = useBienvenida()
 
 async function onSubmit() {
     tocoCorreo.value = true
@@ -36,14 +38,17 @@ async function onSubmit() {
     if (errorCorreo.value || errorPassword.value) return
     error.value = ''
     cargando.value = true
+    let entro = false
     try {
         await auth.login(correo.value, password.value)
-        router.push('/')
+        entro = true
     } catch {
         error.value = 'Correo o contraseña incorrectos'
     } finally {
         cargando.value = false
     }
+    // Con la sesión iniciada: bienvenida con el loader de temporada y luego a la app
+    if (entro) await conBienvenida(() => router.push('/'))
 }
 </script>
 
