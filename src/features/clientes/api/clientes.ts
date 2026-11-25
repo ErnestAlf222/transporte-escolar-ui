@@ -11,6 +11,7 @@ import type {
   AdeudoCliente,
   AgregarAlumnoPayload,
   AgregarAlumnoRespuesta,
+  MensajeRespuesta,
 } from '@/features/clientes/types/cliente'
 
 interface FiltrosClientes {
@@ -75,5 +76,34 @@ export async function agregarAlumno(
   payload: AgregarAlumnoPayload,
 ): Promise<AgregarAlumnoRespuesta> {
   const { data } = await http.post<AgregarAlumnoRespuesta>(`/clientes/${id}/hermanos`, payload)
+  return data
+}
+
+// Acceso al portal del cliente (solo admin). Apagarlo corta las sesiones abiertas
+export async function cambiarAccesoPortal(id: number, activo: boolean): Promise<MensajeRespuesta> {
+  const { data } = await http.patch<MensajeRespuesta>(`/clientes/${id}/acceso-portal`, { activo })
+  return data
+}
+
+// Corrige el correo del tutor (y su copia en sus alumnos); con reenviarCodigo manda un código al correo nuevo
+export async function corregirCorreoTutor(
+  tutorId: number,
+  correo: string,
+  reenviarCodigo = false,
+): Promise<MensajeRespuesta> {
+  const { data } = await http.patch<MensajeRespuesta>(`/tutores/${tutorId}/correo`, {
+    correo,
+    reenviar_codigo: reenviarCodigo,
+  })
+  return data
+}
+
+export async function reenviarCodigoTutor(tutorId: number): Promise<MensajeRespuesta> {
+  const { data } = await http.post<MensajeRespuesta>(`/tutores/${tutorId}/portal/codigo`)
+  return data
+}
+
+export async function avisarTutor(tutorId: number): Promise<MensajeRespuesta> {
+  const { data } = await http.post<MensajeRespuesta>(`/tutores/${tutorId}/portal/aviso`)
   return data
 }

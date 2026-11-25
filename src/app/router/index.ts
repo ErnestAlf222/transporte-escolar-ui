@@ -1,5 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/features/auth'
+import { usePortalStore } from '@/features/portal-cliente'
+import {
+  NOMBRE_RUTA_PORTAL_ACCESO,
+  NOMBRE_RUTA_PORTAL_INICIO,
+  RUTA_PORTAL_ACCESO,
+  RUTA_PORTAL_INICIO,
+} from '@/features/portal-cliente/constants/portal'
+import { NOMBRE_RUTA_PORTAL_PERFIL, RUTA_PORTAL_PERFIL } from '@/features/portal-cliente/constants/perfil'
 import { useNavegacionStore } from '@/shared/stores/navegacion'
 
 // Solo cuenta como "cambio de sección" el primer segmento de la ruta (clientes, prospectos, etc.),
@@ -32,6 +40,24 @@ const router = createRouter({
       path: '/registro',
       name: 'registro-publico',
       component: () => import('@/features/registro-publico/views/RegistroPublicoView.vue'),
+    },
+    {
+      path: RUTA_PORTAL_ACCESO,
+      name: NOMBRE_RUTA_PORTAL_ACCESO,
+      meta: { portalSoloSinSesion: true },
+      component: () => import('@/features/portal-cliente/views/PortalAccesoView.vue'),
+    },
+    {
+      path: RUTA_PORTAL_INICIO,
+      name: NOMBRE_RUTA_PORTAL_INICIO,
+      meta: { requierePortal: true },
+      component: () => import('@/features/portal-cliente/views/PortalInicioView.vue'),
+    },
+    {
+      path: RUTA_PORTAL_PERFIL,
+      name: NOMBRE_RUTA_PORTAL_PERFIL,
+      meta: { requierePortal: true },
+      component: () => import('@/features/portal-cliente/views/PortalPerfilView.vue'),
     },
     {
       path: '/',
@@ -119,6 +145,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+  // El portal tiene su propia sesión: no mira la del admin
+  if (to.meta.requierePortal || to.meta.portalSoloSinSesion) {
+    const portal = usePortalStore()
+    if (to.meta.requierePortal && !portal.estaAutenticado) return { name: NOMBRE_RUTA_PORTAL_ACCESO }
+    if (to.meta.portalSoloSinSesion && portal.estaAutenticado) return { name: NOMBRE_RUTA_PORTAL_INICIO }
+    return
+  }
+
   const auth = useAuthStore()
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {

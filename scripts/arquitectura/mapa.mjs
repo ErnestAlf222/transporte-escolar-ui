@@ -90,6 +90,7 @@ export const RAIZ = ['main.ts', 'App.vue', 'env.d.ts']
 
 // Aristas aprobadas entre features (desde -> hacia)
 export const ARISTAS_APROBADAS = {
+  apariencia: ['auth'],
   clientes: ['auth'],
   pagos: ['clientes', 'auth'],
   familias: ['clientes'],
@@ -98,4 +99,4 @@ export const ARISTAS_APROBADAS = {
 }
 
 // Features que exponen index.ts (los demás no lo necesitan: nadie los importa desde fuera)
-export const FEATURES_CON_INDEX = ['clientes', 'pagos', 'casos-especiales', 'auth']
+export const FEATURES_CON_INDEX = ['clientes', 'pagos', 'casos-especiales', 'auth', 'portal-cliente']

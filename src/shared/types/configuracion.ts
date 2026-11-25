@@ -13,4 +13,9 @@ export interface ActualizarConfiguracionPayload {
   fuente?: string
   nombre_negocio?: string
   tema_loader?: string | null // "" o null vuelve al loader normal
+  tarjeta_deposito?: string | null // solo dígitos (15 a 19); "" o null la borra
+}
+
+export interface DatosPago {
+  tarjeta_deposito: string // vacía = todavía no se captura
 }

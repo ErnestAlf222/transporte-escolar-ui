@@ -1,0 +1,32 @@
+// Textos de la sección "Acceso al portal" del detalle del cliente
+export const TEXTOS_ACCESO_PORTAL = {
+  titulo: 'Acceso al portal',
+  estadoActivo: 'Acceso activo',
+  estadoApagado: 'Acceso desactivado',
+  estadoDesconocido: 'Elige si este alumno puede entrar al portal',
+  activar: 'Activar acceso',
+  desactivar: 'Desactivar acceso',
+  confirmarActivar: '¿Activar el acceso al portal?',
+  confirmarDesactivar: '¿Desactivar el acceso al portal?',
+  ayudaActivar: 'La familia podrá entrar al portal con su teléfono.',
+  ayudaDesactivar: 'Las sesiones abiertas se cerrarán y la familia ya no podrá entrar.',
+  correo: 'Correo del tutor',
+  correoFalta: 'Falta el correo del tutor: captúralo para que pueda entrar',
+  correoFaltaLectura: 'Falta el correo del tutor',
+  correoInvalido: 'Escribe un correo válido, por ejemplo nombre@correo.com',
+  correoGuardar: 'Guardar correo',
+  correoCambiar: 'Cambiar correo',
+  reenviarCodigo: 'Reenviar código',
+  avisarTutor: 'Avisar al tutor',
+  confirmarCodigo: '¿Enviar un código al correo del tutor?',
+  ayudaCodigo: 'Le llegará un código nuevo y los anteriores dejarán de servir. Por seguridad, aquí no se muestra.',
+  confirmarAviso: '¿Avisar al tutor que ya puede entrar?',
+  ayudaAviso: 'Se le enviará un correo diciéndole que puede entrar al portal con su teléfono.',
+  ultimoCambioDireccion: 'Último cambio de dirección',
+  confirmar: 'Sí, continuar',
+  cancelar: 'Cancelar',
+  errorGenerico: 'No se pudo completar la acción. Intenta de nuevo',
+  exitoCorreo: 'Correo del tutor actualizado',
+} as const
+
+export const CORREO_MAX_CARACTERES = 254

@@ -22,3 +22,9 @@ export const DURACION_MENSAJE_MS = 700 // entrada del mensaje festivo
 // Pantalla de bienvenida con el loader de temporada, tras iniciar sesión y tras registrarse. Con "reducir movimiento" dura menos
 export const DURACION_BIENVENIDA_MS = 3000
 export const DURACION_BIENVENIDA_REDUCIDA_MS = 800
+
+// Cuánto se ve un aviso breve (toast) antes de irse solo
+export const DURACION_AVISO_MS = 3500
+
+// Tope de la espera creciente al reconectar el tiempo real del portal tras cortes seguidos
+export const ESPERA_RECONEXION_MAX_MS = 30000

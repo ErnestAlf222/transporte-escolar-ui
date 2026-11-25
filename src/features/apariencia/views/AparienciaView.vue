@@ -6,13 +6,16 @@ import type { ActualizarConfiguracionPayload } from '@/shared/types/configuracio
 import { useConfiguracion, aplicarConfiguracion } from '@/shared/composables/useConfiguracion'
 import { MESES_CORTOS, TEMAS_DISPONIBLES, TEMA_NORMAL } from '@/shared/constants/temasLoader'
 import { mensajeDeError } from '@/shared/utils/errores'
+import { useAuthStore } from '@/features/auth'
 import LoaderVan from '@/shared/ui/LoaderVan.vue'
 import Spinner from '@/shared/ui/Spinner.vue'
 import DropdownSelect from '@/shared/ui/DropdownSelect.vue'
 import SelectorColor from '@/features/apariencia/components/SelectorColor.vue'
+import DatosPagoSeccion from '@/features/apariencia/components/DatosPagoSeccion.vue'
 import { TEXTOS_TEMPORADAS } from '@/features/apariencia/constants/apariencia'
 
 const { configuracion } = useConfiguracion()
+const auth = useAuthStore()
 
 // Colores listos para elegir de un toque; el cuadro libre permite cualquier otro
 const COLORES = ['#ff5c7a', '#3b82f6', '#8b5cf6', '#14b8a6', '#f59e0b', '#ef4444']
@@ -168,6 +171,8 @@ const opcionesFuente = computed(() =>
                 </button>
             </div>
         </div>
+
+        <DatosPagoSeccion :puede-editar="auth.rol === 'admin'" />
 
         <p v-if="error" class="text-sm text-danger">{{ error }}</p>
         <p v-else-if="mensaje" class="text-sm text-mint">{{ mensaje }}</p>

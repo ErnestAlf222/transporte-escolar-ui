@@ -13,6 +13,8 @@ import TelegramIcon from '@/shared/ui/icons/TelegramIcon.vue'
 import Spinner from '@/shared/ui/Spinner.vue'
 import ClienteEditarForm from '@/features/clientes/components/ClienteEditarForm.vue'
 import ClienteDineroPanel from '@/features/clientes/components/ClienteDineroPanel.vue'
+import ClienteAccesoPortal from '@/features/clientes/components/ClienteAccesoPortal.vue'
+import { cambiosDireccion } from '@/shared/composables/useEventosDirecciones'
 import { useAuthStore } from '@/features/auth'
 import axios from 'axios'
 
@@ -230,6 +232,11 @@ watch(
     { immediate: true },
 )
 
+// Un cliente cambió su dirección desde el portal: se refresca el detalle abierto sin parpadeo
+watch(cambiosDireccion, () => {
+    if (props.clienteId !== null && !props.modoEdicion) cargar(props.clienteId, true)
+})
+
 function alGuardar() {
     mensajeGuardado.value = true
     setTimeout(() => (mensajeGuardado.value = false), 2500)
@@ -259,9 +266,9 @@ function alCerrar() {
 
 <template>
     <ModalBase :abierto="clienteId !== null" @cerrar="emit('close')">
-                    <div class="relative w-full max-w-md md:max-w-2xl">
-                        <div class="glass w-full rounded-card p-5 sm:p-6">
-                            <div class="mb-4 flex items-start justify-between">
+                    <div class="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col md:max-w-2xl">
+                        <div class="glass flex min-h-0 w-full flex-1 flex-col rounded-card p-5 sm:p-6">
+                            <div class="mb-4 flex shrink-0 items-start justify-between">
                                 <h2 class="text-lg font-semibold text-text-primary">
                                     {{ modoEdicion ? 'Editar cliente' : 'Detalle del cliente' }}
                                 </h2>
@@ -281,12 +288,14 @@ function alCerrar() {
                                 leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100"
                                 leave-to-class="opacity-0">
                                 <p v-if="mensajeGuardado"
-                                    class="mb-3 flex items-center gap-2 rounded-card bg-mint/15 px-3 py-2 text-sm text-mint">
+                                    class="mb-3 flex shrink-0 items-center gap-2 rounded-card bg-mint/15 px-3 py-2 text-sm text-mint">
                                     <Save class="h-4 w-4" />
                                     Cambios guardados
                                 </p>
                             </Transition>
 
+                            <div
+                                class="-mr-4 min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-fino pr-4 sm:-mr-5 sm:pr-5">
                             <div v-if="cargando" class="flex items-center gap-2 py-8 text-text-secondary">
                                 <Spinner />
                                 Cargando...
@@ -410,6 +419,9 @@ function alCerrar() {
                                     <p v-else class="text-sm text-text-secondary">Sin teléfono del alumno</p>
                                 </div>
 
+                                <ClienteAccesoPortal :key="detalle.id" :detalle="detalle" :puede-editar="puedeEditar"
+                                    @cambio="cargar(detalle.id, true)" />
+
                                 <div v-if="detalle.estatus === 'archivado'"
                                     class="space-y-3 rounded-card border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
                                     <div class="flex items-start gap-2">
@@ -474,6 +486,7 @@ function alCerrar() {
                                         Archivar alumno
                                     </button>
                                 </div>
+                            </div>
                             </div>
 
                         </div>

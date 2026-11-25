@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth'
 import { useTema } from '@/shared/composables/useTema'
 import { useConfiguracion } from '@/shared/composables/useConfiguracion'
+import { useEventosDirecciones } from '@/shared/composables/useEventosDirecciones'
 import {
     Menu,
     User,
@@ -27,6 +28,9 @@ const { tema, alternar } = useTema()
 const { configuracion } = useConfiguracion()
 
 const menuAbierto = ref(false)
+
+// Aviso en vivo cuando un cliente cambia su dirección; se cierra al salir del panel
+useEventosDirecciones().iniciar()
 
 const navItems = [
     { label: 'Dashboard', to: '/', icono: LayoutDashboard },

@@ -54,6 +54,13 @@ export interface ClienteDetalle {
   servicio?: string // completo, ida o vuelta
   alumnos: AlumnoClienteFamilia[]
   hermanos_iguales?: boolean // todos sus hermanos activos tienen su misma configuración de dinero
+  // El servidor todavía NO los manda en GET /clientes/{id}: la pantalla los usa solo si llegan
+  acceso_portal?: boolean
+  direccion_actualizada_en?: string | null // ISO 8601 del último cambio de dirección desde el portal
+}
+
+export interface MensajeRespuesta {
+  mensaje: string
 }
 
 // Cada alumno de la misma familia (mismo tutor), incluido el que se está viendo
