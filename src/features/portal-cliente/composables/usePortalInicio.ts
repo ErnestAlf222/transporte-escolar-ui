@@ -6,6 +6,7 @@ import { usePortalEventos } from '@/features/portal-cliente/composables/usePorta
 import {
   EVENTO_PAGO_VALIDADO,
   EVENTO_PAGO_RECHAZADO,
+  SECCIONES_CON_ERROR_PARA_AVISO_GENERAL,
   TEXTO_AVISO_PAGO_VALIDADO,
   TEXTO_AVISO_PAGO_RECHAZADO,
 } from '@/features/portal-cliente/constants/portal'
@@ -29,6 +30,19 @@ export function usePortalInicio() {
   if (portal.sesion) {
     sesion.datos.value = portal.sesion
     sesion.estado.value = 'listo'
+  }
+
+  // Si fallan varias secciones a la vez, la pantalla muestra un solo aviso y un solo botón que recarga todo
+  const variasFallan = computed(
+    () =>
+      [sesion, tarjeta, resumen, reportes].filter((s) => s.estado.value === 'error').length >=
+      SECCIONES_CON_ERROR_PARA_AVISO_GENERAL,
+  )
+  function recargarTodo() {
+    sesion.cargar()
+    tarjeta.cargar()
+    resumen.cargar()
+    reportes.cargar()
   }
 
   const esTutor = computed(() => (sesion.datos.value?.tipo ?? resumen.datos.value?.tipo) === 'tutor')
@@ -68,5 +82,5 @@ export function usePortalInicio() {
     iniciar()
   })
 
-  return { sesion, tarjeta, resumen, reportes, esTutor }
+  return { sesion, tarjeta, resumen, reportes, esTutor, variasFallan, recargarTodo }
 }

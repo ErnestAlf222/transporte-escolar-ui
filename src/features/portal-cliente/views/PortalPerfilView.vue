@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { usePerfil } from '@/features/portal-cliente/composables/usePerfil'
 import SeccionPortal from '@/features/portal-cliente/components/SeccionPortal.vue'
 import NavegacionPortal from '@/features/portal-cliente/components/NavegacionPortal.vue'
+import ContenedorPortal from '@/features/portal-cliente/components/ContenedorPortal.vue'
 import FotoEditable from '@/features/portal-cliente/components/FotoEditable.vue'
 import DireccionAlumno from '@/features/portal-cliente/components/DireccionAlumno.vue'
 import {
@@ -22,11 +23,12 @@ const esTutor = computed(() => datos.value?.tipo === 'tutor')
 </script>
 
 <template>
-    <div class="mx-auto min-h-screen w-full max-w-md space-y-6 p-4 pb-10">
+    <ContenedorPortal>
         <NavegacionPortal />
 
         <SeccionPortal :titulo="TEXTO_PERFIL_TITULO" :estado="perfil.estado.value" @reintentar="perfil.cargar">
             <div v-if="datos" class="space-y-6">
+                <!-- Escritorio: los datos del tutor arriba y los alumnos en cuadrícula de dos columnas -->
                 <div class="glass-plano entra-suave space-y-4 rounded-card p-4">
                     <FotoEditable v-if="esTutor" :foto="datos.foto_url" :nombre="datos.nombre" :subiendo="estaOcupado('tutor')"
                         @elegida="cambiarFotoTutor" @error="errorImagen" />
@@ -48,6 +50,7 @@ const esTutor = computed(() => datos.value?.tipo === 'tutor')
                     <p class="text-xs text-text-muted">{{ TEXTO_PERFIL_SOLO_LECTURA }}</p>
                 </div>
 
+                <div class="space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
                 <div v-for="(a, i) in datos.alumnos" :key="a.id" class="glass-plano entra-suave space-y-4 rounded-card p-4"
                     :style="{ '--i': i + 1 }">
                     <FotoEditable :foto="a.foto_url" :nombre="nombreCompleto(a)" :subiendo="estaOcupado(`foto-${a.id}`)"
@@ -60,7 +63,8 @@ const esTutor = computed(() => datos.value?.tipo === 'tutor')
                         @guardar="cambiarDireccion(a.id, $event)" @foto-elegida="cambiarFotoDomicilio(a.id, $event)"
                         @error-foto="errorImagen" />
                 </div>
+                </div>
             </div>
         </SeccionPortal>
-    </div>
+    </ContenedorPortal>
 </template>

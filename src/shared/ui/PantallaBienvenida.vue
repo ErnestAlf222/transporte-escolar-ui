@@ -10,7 +10,7 @@ const { configuracion } = useConfiguracion()
 
 <template>
   <div v-if="visible" class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-bg p-4">
-    <LoaderVanJuego :texto="configuracion?.nombre_negocio ?? ''" />
+    <LoaderVanJuego :texto="configuracion?.nombre_negocio ?? ''" nombre-fijo />
     <div v-if="saludo" class="text-center">
       <p class="text-lg font-semibold text-text-primary">{{ saludo.titulo }}</p>
       <p v-if="saludo.detalle" class="mt-1 text-sm text-text-secondary">{{ saludo.detalle }}</p>

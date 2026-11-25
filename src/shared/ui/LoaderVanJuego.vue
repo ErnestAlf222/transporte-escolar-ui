@@ -5,9 +5,11 @@ import DecoracionVan from '@/shared/ui/DecoracionVan.vue'
 import MensajeTema from '@/shared/ui/MensajeTema.vue'
 import { CONO, RUEDA_A, RUEDA_B, VAN, pixeles } from '@/shared/utils/spritesVan'
 
-const props = withDefaults(defineProps<{ texto?: string; compacto?: boolean; tema?: string | null }>(), {
+// nombreFijo: el nombre se ve completo y quieto, como texto normal sobre la escena (la bienvenida dura poco y la letra del dibujo es muy chica en pantallas angostas)
+const props = withDefaults(defineProps<{ texto?: string; compacto?: boolean; tema?: string | null; nombreFijo?: boolean }>(), {
     texto: 'Doña Mary',
     compacto: false,
+    nombreFijo: false,
 })
 
 // Todo se mide en unidades de la escena: un pixel del dibujo son 3 unidades
@@ -103,7 +105,7 @@ function paso() {
 
 onMounted(() => {
     // Con "reducir movimiento" el nombre se ve completo y quieto
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (props.nombreFijo || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         letras.value = props.texto.length
         return
     }
@@ -115,6 +117,10 @@ onUnmounted(() => clearTimeout(reloj))
 
 <template>
     <div role="status" class="mx-auto w-full" :class="compacto ? 'max-w-xl' : 'max-w-2xl'" :aria-label="texto">
+        <p v-if="nombreFijo"
+            class="mb-2 px-2 text-center font-mono text-sm uppercase tracking-widest text-text-secondary wrap-anywhere sm:text-base">
+            {{ texto }}
+        </p>
         <svg class="escena" :viewBox="viewBox" shape-rendering="crispEdges" aria-hidden="true" :style="estilo">
             <defs>
                 <g v-for="d in DEFINICIONES" :id="`${uid}-${d.id}`" :key="d.id">
@@ -131,7 +137,7 @@ onUnmounted(() => clearTimeout(reloj))
                 </g>
             </defs>
 
-            <text :x="xTexto" :y="yTexto" class="hud hud-texto">{{ escrito }}<tspan class="cursor">_</tspan></text>
+            <text v-if="!nombreFijo" :x="xTexto" :y="yTexto" class="hud hud-texto">{{ escrito }}<tspan class="cursor">_</tspan></text>
 
             <g transform="translate(10 40) scale(2)">
                 <DecoracionVan :tema="temaActivo" plano="fondo" :transform="`translate(${VAN_X} ${VAN_Y}) scale(${PIXEL})`" />

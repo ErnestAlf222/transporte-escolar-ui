@@ -111,3 +111,6 @@ export const ETIQUETAS_ESTADO_REPORTE: Record<EstadoReportePortal, { texto: stri
   rechazado: { texto: 'Rechazado', clases: 'bg-danger/15 text-danger' },
   parcial: { texto: 'Pago parcial', clases: 'bg-servicio/15 text-servicio' },
 }
+export const TEXTO_ERROR_VARIAS = 'Estamos teniendo problemas para mostrar tu información. Intenta de nuevo en un momento.'
+// Desde cuántas secciones con error a la vez se muestra un solo aviso general en lugar de uno por sección
+export const SECCIONES_CON_ERROR_PARA_AVISO_GENERAL = 2

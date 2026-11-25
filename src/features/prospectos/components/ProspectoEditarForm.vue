@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { actualizarProspecto } from '@/features/prospectos/api/prospectos'
 import { mensajeDeEstado, textoDeEstado } from '@/shared/utils/errores'
-import { ETIQUETA_ESCUELA_ESCRITA } from '@/features/prospectos/constants/prospectos'
+import EscuelaEscritaChip from '@/features/prospectos/components/EscuelaEscritaChip.vue'
 import { useOpcionesEscuela } from '@/shared/composables/useOpcionesEscuela'
 import type { ProspectoDetalle, ActualizarProspectoPayload } from '@/features/prospectos/types/prospecto'
 import { Save } from 'lucide-vue-next'
@@ -154,11 +154,9 @@ async function guardar() {
             </div>
             <div>
                 <label class="block text-xs text-text-secondary">Escuela</label>
+                <EscuelaEscritaChip :escrita="detalle.escuela_escrita" class="mt-1" />
                 <DropdownSelect v-model="form.escuela_id" :opciones="escuelasOpciones" alinear="full"
                     class="mt-1 w-full" />
-                <p v-if="detalle.escuela_escrita" class="mt-1 text-xs text-text-secondary">
-                    {{ ETIQUETA_ESCUELA_ESCRITA }}: {{ detalle.escuela_escrita }}
-                </p>
             </div>
         </div>
 

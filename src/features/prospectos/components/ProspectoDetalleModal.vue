@@ -5,7 +5,7 @@ import { verProspecto, convertirProspecto, descartarProspecto, restaurarProspect
 import type { ProspectoDetalle, AlumnoFamilia } from '@/features/prospectos/types/prospecto'
 import { telefonoInternacional } from '@/shared/utils/telefono'
 import { textoDeEstado } from '@/shared/utils/errores'
-import { ETIQUETA_ESCUELA_ESCRITA, MENSAJE_ASIGNAR_ANTES, TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
+import { MENSAJE_ASIGNAR_ANTES, TEXTO_SIN_ASIGNAR } from '@/features/prospectos/constants/prospectos'
 import { inicialesAlumno, nombreCompleto } from '@/shared/utils/nombres'
 import {
     X, Mail, GraduationCap, MapPin, AlertTriangle, UserCheck, Check, Phone, Clock, Ban, Undo2, Pencil, Save,
@@ -14,6 +14,7 @@ import WhatsappIcon from '@/shared/ui/icons/WhatsappIcon.vue'
 import TelegramIcon from '@/shared/ui/icons/TelegramIcon.vue'
 import Spinner from '@/shared/ui/Spinner.vue'
 import ProspectoEditarForm from '@/features/prospectos/components/ProspectoEditarForm.vue'
+import EscuelaEscritaChip from '@/features/prospectos/components/EscuelaEscritaChip.vue'
 import BotonScroll from '@/shared/ui/BotonScroll.vue'
 import ModalBase from '@/shared/ui/ModalBase.vue'
 
@@ -373,9 +374,7 @@ function alCerrar() {
                                         <GraduationCap class="h-4 w-4 shrink-0" />
                                         {{ detalle.nombre_escuela || TEXTO_SIN_ASIGNAR }}
                                     </p>
-                                    <p v-if="detalle.escuela_escrita" class="text-xs italic text-text-secondary">
-                                        {{ ETIQUETA_ESCUELA_ESCRITA }}: {{ detalle.escuela_escrita }}
-                                    </p>
+                                    <EscuelaEscritaChip :escrita="detalle.escuela_escrita" />
 
                                     <p v-if="textoParentesco(detalle)" class="text-sm text-text-secondary">
                                         {{ textoParentesco(detalle) }}
