@@ -23,6 +23,7 @@ export interface PerfilPortal {
   telefono: string
   correo?: string
   foto_url?: string
+  parentesco?: string // del tutor con el alumno; '' si no hay dato
   alumnos: AlumnoPerfilPortal[]
 }
 

@@ -1,5 +1,3 @@
-import type { EstadoReportePortal, EstadoSemanaPortal } from '@/features/portal-cliente/types/portal'
-
 // Rutas del portal del cliente (prefijo propio, separado del admin)
 export const RUTA_PORTAL_ACCESO = '/portal/acceso'
 export const RUTA_PORTAL_INICIO = '/portal'
@@ -50,6 +48,7 @@ export const API_PORTAL_PAGOS_EVENTOS = '/portal/pagos/eventos'
 // Eventos del tiempo real de la familia
 export const EVENTO_PAGO_VALIDADO = 'pago_validado'
 export const EVENTO_PAGO_RECHAZADO = 'pago_rechazado'
+export const EVENTO_PAGO_ACTUALIZADO = 'pago_actualizado'
 
 // Tarjeta de depósito
 export const TEXTO_TARJETA_TITULO = 'Tarjeta para depositar'
@@ -95,22 +94,24 @@ export const TEXTO_BOTON_REINTENTAR = 'Intentar de nuevo'
 // Avisos de tiempo real
 export const TEXTO_AVISO_PAGO_VALIDADO = 'Se confirmó un pago de tu familia'
 export const TEXTO_AVISO_PAGO_RECHAZADO = 'Se rechazó un reporte de pago. Revisa el detalle'
+export const TEXTO_AVISO_PAGO_ACTUALIZADO = 'Se actualizó un pago de tu familia'
 
-// Chips de estado (mismos tokens de color que el admin)
-export const CLASES_CHIP_NEUTRO = 'bg-panel-2 text-text-secondary'
-export const ETIQUETAS_ESTADO_SEMANA: Record<EstadoSemanaPortal, { texto: string; clases: string }> = {
-  pendiente: { texto: 'Pendiente', clases: 'bg-danger/15 text-danger' },
-  por_verificar: { texto: 'Por verificar', clases: 'bg-sun/15 text-sun' },
-  parcial: { texto: 'Pago parcial', clases: 'bg-servicio/15 text-servicio' },
-  pagado: { texto: 'Pagado', clases: 'bg-mint/15 text-mint' },
-  sin_cobro: { texto: 'Sin cobro todavía', clases: 'bg-panel-2 text-text-muted' },
-}
-export const ETIQUETAS_ESTADO_REPORTE: Record<EstadoReportePortal, { texto: string; clases: string }> = {
-  por_verificar: { texto: 'Por verificar', clases: 'bg-sun/15 text-sun' },
-  pagado: { texto: 'Pagado', clases: 'bg-mint/15 text-mint' },
-  rechazado: { texto: 'Rechazado', clases: 'bg-danger/15 text-danger' },
-  parcial: { texto: 'Pago parcial', clases: 'bg-servicio/15 text-servicio' },
-}
+// Ayudas cortas bajo el estado de cada alumno (los chips salen del mapa único de estados)
+export const TEXTO_AYUDA_PARCIAL = 'Puedes reportar lo que falta'
+export const TEXTO_AYUDA_RECHAZADA = 'Puedes volver a reportar tu pago'
+export const TEXTO_AYUDA_POR_VERIFICAR = 'Estamos revisando tu pago'
 export const TEXTO_ERROR_VARIAS = 'Estamos teniendo problemas para mostrar tu información. Intenta de nuevo en un momento.'
 // Desde cuántas secciones con error a la vez se muestra un solo aviso general en lugar de uno por sección
 export const SECCIONES_CON_ERROR_PARA_AVISO_GENERAL = 2
+
+// Pulido visual
+export const TEXTO_SALUDO_AYUDA = 'Aquí ves tus pagos y los datos de tu familia'
+export const TEXTO_COPIAR_NUMERO = 'Copiar número'
+export const TEXTO_RESUMEN_VER_DETALLE = 'Ver detalle'
+export const TEXTO_RESUMEN_OCULTAR_DETALLE = 'Ocultar detalle'
+
+// Línea de tiempo de reportes
+export const TEXTO_REPORTES_ESTA_SEMANA = 'Esta semana'
+export const TEXTO_REPORTES_METODO = 'Método'
+export const TEXTO_REPORTES_REPORTADO = 'Reportado'
+export const TEXTO_REPORTES_VER_DETALLE = 'Ver detalle de la semana'

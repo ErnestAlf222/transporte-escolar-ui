@@ -5,7 +5,6 @@ import type {
   EstatusCliente,
   MetodoPago,
   ActualizarClientePayload,
-  AdeudoFamilia,
   ConfigurarClientePayload,
   ConfigurarClienteRespuesta,
   AdeudoCliente,
@@ -47,11 +46,6 @@ export async function actualizarCliente(
   payload: ActualizarClientePayload,
 ): Promise<void> {
   await http.patch(`/clientes/${id}`, payload)
-}
-
-export async function verAdeudoFamilia(id: number): Promise<AdeudoFamilia> {
-  const { data } = await http.get<AdeudoFamilia>(`/clientes/${id}/adeudo-familia`)
-  return data
 }
 
 export async function configurarCliente(

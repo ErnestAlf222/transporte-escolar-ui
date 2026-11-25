@@ -130,7 +130,7 @@ const CLASES_METODO_OFF = 'border-border bg-panel text-text-secondary hover:bg-p
                         @click="cerrar">
                         {{ TEXTO_REPORTAR_CERRAR }}
                     </button>
-                    <button type="submit" :disabled="f.enviando.value"
+                    <button type="submit" :disabled="f.enviando.value || (f.metodo.value === 'digital' && !f.captura.value)"
                         class="flex flex-1 items-center justify-center gap-2 rounded-card bg-accent py-2 text-sm font-medium text-bg hover:opacity-90 disabled:opacity-50">
                         <Spinner v-if="f.enviando.value" />
                         {{ f.enviando.value ? TEXTO_REPORTAR_AVANCE(f.hechos.value + 1, f.seleccion.value.length)

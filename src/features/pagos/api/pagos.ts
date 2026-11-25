@@ -1,6 +1,14 @@
 import http from '@/shared/api/http'
 import { escucharEventos } from '@/shared/api/eventos'
-import type { PagosSemana, AbonoPayload, AbonoRespuesta, Recibo } from '@/features/pagos/types/pago'
+import type {
+  PagosSemana,
+  AbonoPayload,
+  AbonoRespuesta,
+  Recibo,
+  RecibiMenosPayload,
+  CandadoTarifaRespuesta,
+  RecibiMenosRespuesta,
+} from '@/features/pagos/types/pago'
 
 // Sin semana devuelve la semana en curso; con semana (un lunes, AAAA-MM-DD) devuelve esa
 export async function verPagosSemana(semana?: string): Promise<PagosSemana> {
@@ -12,20 +20,20 @@ export async function confirmarPago(id: number, mensaje: string): Promise<void> 
   await http.post(`/pagos/${id}/confirmar`, { mensaje })
 }
 
-export async function rechazarPago(id: number, motivo: string): Promise<void> {
-  await http.post(`/pagos/${id}/rechazar`, { motivo })
+// Llegó menos de lo reportado: queda como abono, la semana pasa a parcial y el cliente puede reportar de nuevo
+export async function recibiMenos(id: number, payload: RecibiMenosPayload): Promise<RecibiMenosRespuesta> {
+  const { data } = await http.post<RecibiMenosRespuesta>(`/pagos/${id}/recibi-menos`, payload)
+  return data
 }
 
-// Para una semana que el cliente no reportó (efectivo, o pagó en persona): el admin la marca como pagada
-export async function marcarPagado(
-  clienteId: number,
-  semanaInicio: string,
-  mensaje: string,
-): Promise<void> {
-  await http.post(`/clientes/${clienteId}/pagos/confirmar-manual`, {
-    semana_inicio: semanaInicio,
-    mensaje,
-  })
+// Pone o quita el candado de tarifa de la familia del alumno. Con candado, todos los hermanos quedan con la tarifa de este alumno
+export async function cambiarCandadoTarifa(clienteId: number, activo: boolean): Promise<CandadoTarifaRespuesta> {
+  const { data } = await http.put<CandadoTarifaRespuesta>(`/clientes/${clienteId}/candado-tarifa`, { activo })
+  return data
+}
+
+export async function rechazarPago(id: number, motivo: string): Promise<void> {
+  await http.post(`/pagos/${id}/rechazar`, { motivo })
 }
 
 // Lo que se recibió de una familia en una semana: el servidor lo reparte entre los hermanos que deben
@@ -50,6 +58,10 @@ export async function verRecibos(clienteId: number, semanaInicio: string): Promi
   return data ?? []
 }
 
-export function escucharEventosPagos(alEvento: () => void, senal: AbortSignal): Promise<void> {
-  return escucharEventos('/pagos/eventos', alEvento, senal)
+export function escucharEventosPagos(
+  alEvento: (nombre: string) => void,
+  senal: AbortSignal,
+  alConectar: () => void,
+): Promise<void> {
+  return escucharEventos('/pagos/eventos', alEvento, senal, { alConectar })
 }

@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { X } from 'lucide-vue-next'
-import { ETIQUETAS, ETIQUETAS_METODO, estaAtenuado } from '@/features/pagos'
+import { ETIQUETAS_METODO, estaAtenuado, estadoDe } from '@/features/pagos'
+import { ESTADO_CICLO, type EstadoCiclo } from '@/shared/constants/estadoCiclo'
 import { colorEscuela } from '@/shared/utils/escuelas'
 import { coincideBusqueda } from '@/shared/utils/busqueda'
 import { inicialesDeTexto } from '@/shared/utils/nombres'
 import BuscadorInput from '@/shared/ui/BuscadorInput.vue'
+import { TAMANO_MODAL } from '@/shared/constants/modal'
 import { rangoSemana, soloFecha } from '@/shared/utils/semana'
-import type { PagosSemana, EstatusSemana } from '@/features/pagos'
+import type { PagosSemana } from '@/features/pagos'
 
 const props = defineProps<{
     pagos: PagosSemana | null
-    estatus: EstatusSemana | null // null = cerrado
+    estatus: EstadoCiclo | null // null = cerrado
 }>()
 const emit = defineEmits<{ close: []; verEnPagos: []; verAlumno: [id: number] }>()
 
@@ -37,7 +39,7 @@ const gruposCompletos = computed(() => {
             nombre: e.turno ? `${e.nombre} (${e.turno})` : e.nombre,
             color: colorEscuela(e.escuela_id),
             alumnos: e.alumnos
-                .filter((a) => a.estatus === props.estatus && !estaAtenuado(a))
+                .filter((a) => estadoDe(a) === props.estatus && !estaAtenuado(a))
                 .map((a) => ({
                     id: a.cliente_id,
                     nombre: a.alumno,
@@ -86,12 +88,13 @@ function alTeclaEsc(evento: KeyboardEvent) {
                 class="pointer-events-none fixed inset-0 z-51 flex items-end justify-center p-4 sm:items-center"
                 tabindex="-1" @keydown="alTeclaEsc">
                 <div
-                    class="pointer-events-auto flex max-h-[85dvh] w-full max-w-md flex-col gap-4 rounded-card border border-border bg-panel p-5 shadow-lg">
+                    class="pointer-events-auto flex max-h-[85dvh] w-full flex-col gap-4 rounded-card border border-border bg-panel p-5 shadow-lg"
+                    :class="TAMANO_MODAL.muyAncho">
                     <div class="flex shrink-0 items-start justify-between gap-3">
                         <div class="min-w-0">
                             <span class="w-fit rounded-card px-2 py-0.5 text-xs font-medium"
-                                :class="ETIQUETAS[estatus].clases">
-                                {{ ETIQUETAS[estatus].texto }}
+                                :class="ESTADO_CICLO[estatus].clases">
+                                {{ ESTADO_CICLO[estatus].texto }}
                             </span>
                             <p class="mt-2 text-2xl font-semibold text-text-primary">
                                 {{ totalVisible }}
@@ -136,7 +139,7 @@ function alTeclaEsc(evento: KeyboardEvent) {
                                 {{ g.nombre }} · {{ g.alumnos.length }}
                             </p>
 
-                            <ul class="space-y-2">
+                            <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                                 <li v-for="a in g.alumnos" :key="a.id"
                                     class="flex cursor-pointer items-center gap-3 rounded-card bg-panel-2 p-3 transition hover:opacity-80"
                                     role="button" tabindex="0" @click="emit('verAlumno', a.id)"

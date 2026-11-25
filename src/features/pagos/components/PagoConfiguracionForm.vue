@@ -4,23 +4,15 @@ import { Save, Wallet, X } from 'lucide-vue-next'
 import { configurarCliente } from '@/features/clientes'
 import { mensajeDeEstado } from '@/shared/utils/errores'
 import type { AlumnoPagoSemana } from '@/features/pagos/types/pago'
-import type { MetodoPago, ConfigurarClientePayload } from '@/features/clientes'
+import type { ConfigurarClientePayload } from '@/features/clientes'
+import type { MetodoPago } from '@/shared/types/pago'
 import { parseMonto } from '@/shared/utils/moneda'
-import { ETIQUETAS_METODO } from '@/features/pagos/utils/pagos'
+import { DIAS_LIMITE_PAGO } from '@/shared/constants/pagos'
+import SelectorDiaMetodo from '@/shared/ui/SelectorDiaMetodo.vue'
 import Spinner from '@/shared/ui/Spinner.vue'
 
 const props = defineProps<{ alumno: AlumnoPagoSemana }>()
 const emit = defineEmits<{ guardado: [] }>()
-
-// La semana es de lunes a viernes: el día límite no puede caer en fin de semana (0 = domingo ... 6 = sábado)
-const DIAS_LIMITE = [
-    { valor: 1, etiqueta: 'Lun' },
-    { valor: 2, etiqueta: 'Mar' },
-    { valor: 3, etiqueta: 'Mié' },
-    { valor: 4, etiqueta: 'Jue' },
-    { valor: 5, etiqueta: 'Vie' },
-]
-const METODOS: MetodoPago[] = ['digital', 'efectivo']
 
 const clasesCampo =
     'mt-1 w-full rounded-card border border-border bg-panel/40 px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary/70 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
@@ -65,7 +57,7 @@ function validar(): { payload?: ConfigurarClientePayload; mensaje?: string } {
     if (cuota === null || cuota <= 0) return { mensaje: 'Escribe la cuota semanal (mayor a 0)' }
     const recargo = parseMonto(form.value.recargo)
     if (recargo === null) return { mensaje: 'Escribe el recargo por atraso (puede ser 0)' }
-    if (!DIAS_LIMITE.some((d) => d.valor === form.value.dia)) {
+    if (!DIAS_LIMITE_PAGO.some((d) => d.valor === form.value.dia)) {
         return { mensaje: 'Elige el día límite de pago, de lunes a viernes' }
     }
     return {
@@ -154,29 +146,7 @@ async function guardar() {
                                 </div>
                             </div>
 
-                            <div>
-                                <p class="text-xs text-text-secondary">Día límite de pago</p>
-                                <div class="mt-1 grid grid-cols-5 gap-1.5">
-                                    <button v-for="d in DIAS_LIMITE" :key="d.valor" type="button"
-                                        class="rounded-card border py-2 text-xs transition"
-                                        :class="form.dia === d.valor ? 'border-accent bg-accent/15 text-accent' : 'border-border text-text-secondary hover:bg-panel-2'"
-                                        @click="form.dia = d.valor">
-                                        {{ d.etiqueta }}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div>
-                                <p class="text-xs text-text-secondary">Método de pago</p>
-                                <div class="mt-1 grid grid-cols-2 gap-2">
-                                    <button v-for="m in METODOS" :key="m" type="button"
-                                        class="rounded-card border py-2 text-sm transition"
-                                        :class="form.metodo === m ? 'border-accent bg-accent/15 text-accent' : 'border-border text-text-secondary hover:bg-panel-2'"
-                                        @click="form.metodo = m">
-                                        {{ ETIQUETAS_METODO[m] ?? m }}
-                                    </button>
-                                </div>
-                            </div>
+                            <SelectorDiaMetodo v-model:dia="form.dia" v-model:metodo="form.metodo" />
 
                             <p v-if="error" class="text-sm text-danger">{{ error }}</p>
 

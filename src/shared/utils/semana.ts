@@ -1,6 +1,7 @@
 const DIAS_POR_SEMANA = 7
 const DIAS_LABORALES = 5 // lunes a viernes: el fin de semana no cuenta
 const FORMATO_DIA = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' })
+const FORMATO_LUNES = new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })
 
 // Las fechas se manejan como "AAAA-MM-DD" para no depender de la zona horaria del navegador
 function aFecha(iso: string): Date {
@@ -39,6 +40,16 @@ export function lunesDe(iso: string): string {
   const fecha = aFecha(iso)
   fecha.setDate(fecha.getDate() - ((fecha.getDay() + 6) % DIAS_POR_SEMANA))
   return aIso(fecha)
+}
+
+// El lunes siguiente a hoy: desde ahí rige un cambio de cuota, recargo o día límite
+export function lunesSiguiente(): string {
+  return moverSemana(lunesDe(hoyIso()), 1)
+}
+
+// "2026-11-30" -> "lunes 30 de noviembre"
+export function textoLunes(iso: string): string {
+  return FORMATO_LUNES.format(aFecha(iso)).replace(',', '')
 }
 
 // Sábado y domingo no cuentan

@@ -2,11 +2,14 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { Banknote, CalendarDays } from 'lucide-vue-next'
 import { registrarAbono } from '@/features/pagos/api/pagos'
-import { esEstadoConTexto, mensajeDeError } from '@/shared/utils/errores'
+import { esEstado, esEstadoConTexto, mensajeDeError } from '@/shared/utils/errores'
+import { useAviso } from '@/shared/composables/useAviso'
+import { estadoDe } from '@/features/pagos/utils/pagos'
 import { MAX_MENSAJE } from '@/shared/constants/pagos'
 import type { AbonoPayload, AlumnoPagoSemana, ParteAbono } from '@/features/pagos/types/pago'
 import { formatearMonto } from '@/shared/utils/moneda'
 import { soloFecha } from '@/shared/utils/semana'
+import { nuevoIdentificador } from '@/shared/utils/identificador'
 import Spinner from '@/shared/ui/Spinner.vue'
 
 const ESPERA_VISTA_MS = 350
@@ -31,16 +34,15 @@ const hoy = hoyTexto()
 // La fecha del registro la pone el servidor: aquí solo se muestra
 const textoHoy = `Hoy, ${new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}`
 
-// Identificador único del envío: frena el doble toque. Funciona también donde randomUUID no existe
-function uuid(): string {
-    if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
-    const b = crypto.getRandomValues(new Uint8Array(16))
-    b[6] = (b[6]! & 0x0f) | 0x40
-    b[8] = (b[8]! & 0x3f) | 0x80
-    const h = Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('')
-    return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
-}
-let lote = uuid()
+let lote = nuevoIdentificador()
+
+const { mostrarAviso } = useAviso()
+
+// Con tarjeta o transferencia el servidor exige el comprobante del cliente (puede venir de cualquier hermano;
+// un reporte rechazado no cuenta): sin él no se ofrece el método digital
+const hayComprobante = computed(() =>
+    props.hermanos.some((h) => !!h.evidencia_url && estadoDe(h) !== 'rechazada'),
+)
 
 const monto = ref('')
 const fecha = ref(hoy)
@@ -149,12 +151,15 @@ function pedirVista() {
 function reiniciar() {
     monto.value = totalSugerido.value
     fecha.value = hoy
-    metodo.value = props.alumno.metodo_semana === 'digital' ? 'digital' : 'efectivo'
+    metodo.value = props.alumno.metodo_semana === 'digital' && hayComprobante.value ? 'digital' : 'efectivo'
     mensaje.value = ''
     error.value = ''
 }
 
 watch(() => props.alumno.cliente_id, reiniciar, { immediate: true })
+watch(hayComprobante, (hay) => {
+    if (!hay && metodo.value === 'digital') metodo.value = 'efectivo'
+})
 
 // Si cambia lo abonado de la semana (se anuló o se registró un recibo), el monto sugerido ya no es el mismo
 watch(() => props.alumno.abonado ?? 0, reiniciar)
@@ -163,7 +168,7 @@ watch(() => props.alumno.abonado ?? 0, reiniciar)
 watch(
     [monto, fecha, () => props.alumno.cliente_id],
     () => {
-        lote = uuid()
+        lote = nuevoIdentificador()
         pedirVista()
     },
     { immediate: true },
@@ -181,6 +186,7 @@ async function confirmar() {
             emit('registrado') // doble toque: el primer envío ya quedó guardado
         } else {
             error.value = mensajeDeError(e, 'No se pudo guardar el pago')
+            if (esEstado(e, 409)) mostrarAviso(error.value, 'error') // p. ej. falta el comprobante del pago digital
         }
     } finally {
         enviando.value = false
@@ -221,7 +227,9 @@ const clasesCampo =
 
         <div class="grid grid-cols-2 gap-2">
             <button v-for="m in METODOS" :key="m.value" type="button"
-                class="rounded-card border px-3 py-2 text-sm transition"
+                class="rounded-card border px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="m.value === 'digital' && !hayComprobante"
+                :title="m.value === 'digital' && !hayComprobante ? 'Sin comprobante: el cliente debe reportar su pago con captura' : undefined"
                 :class="metodo === m.value ? 'border-accent bg-accent/10 text-accent' : 'border-border text-text-secondary hover:bg-panel-2'"
                 @click="metodo = m.value">
                 {{ m.texto }}

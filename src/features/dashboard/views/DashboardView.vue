@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, onMounted } from 'vue'
+import { useEventosEnVivo } from '@/shared/composables/useEventosEnVivo'
 import { useNavegacionConLoader } from '@/shared/composables/useNavegacionConLoader'
 import { ChevronLeft, ChevronRight, BadgeDollarSign } from 'lucide-vue-next'
 import { verPagosSemana } from '@/features/pagos'
@@ -7,9 +10,10 @@ import { moverSemana, rangoSemana, soloFecha, lunesDe } from '@/shared/utils/sem
 import { verDashboard } from '@/features/dashboard/api/dashboard'
 import { listarCasosEspeciales } from '@/features/casos-especiales'
 import type { CasoEspecial } from '@/features/casos-especiales'
-import { ETIQUETAS } from '@/features/pagos'
+import { ESTADO_CICLO, type EstadoCiclo } from '@/shared/constants/estadoCiclo'
 import { formatearMonto } from '@/shared/utils/moneda'
-import type { PagosSemana, EstatusSemana } from '@/features/pagos'
+import { escucharEventosPagos } from '@/features/pagos'
+import type { PagosSemana } from '@/features/pagos'
 import type { DashboardResumen } from '@/features/dashboard/types/dashboard'
 import LoaderVan from '@/shared/ui/LoaderVan.vue'
 import ListaEstatusModal from '@/features/dashboard/components/ListaEstatusModal.vue'
@@ -22,6 +26,7 @@ const cambiando = ref(false) // al cambiar de semana: se conserva lo mostrado y 
 const errorPagos = ref(false)
 const errorResumen = ref(false)
 const semanaPedida = ref<string | undefined>(undefined) // undefined = semana en curso
+useEstadoPantalla(PANTALLAS.dashboard, { semanaPedida }, cargandoInicial)
 
 const hayError = computed(() => errorPagos.value || errorResumen.value)
 
@@ -34,7 +39,7 @@ const esPrimeraSemana = computed(
 )
 
 // El estatus cuya lista está abierta; null = cerrada
-const estatusAbierto = ref<EstatusSemana | null>(null)
+const estatusAbierto = ref<EstadoCiclo | null>(null)
 
 // Abre Pagos con ese alumno ya abierto en su detalle, en la misma semana que se ve aquí
 function verAlumno(id: number) {
@@ -63,9 +68,9 @@ const casosSemana = ref<CasoEspecial[]>([])
 const totalCasos = computed(() => casosSemana.value.reduce((suma, c) => suma + c.monto, 0))
 
 // Solo los pagos dependen de la semana elegida; al cambiar de semana solo se cambian los datos
-async function cargarPagos() {
+async function cargarPagos(silencioso = false) {
     const solicitud = ++ultimaSolicitud
-    cambiando.value = pagos.value !== null
+    cambiando.value = pagos.value !== null && !silencioso
     try {
         // Si los casos fallan, la tarjeta de pagos se ve igual: cada pedido falla por su lado
         const [nuevos, casos] = await Promise.all([
@@ -93,7 +98,16 @@ async function cargarResumen() {
     }
 }
 
+// Tiempo real: cualquier aviso de pagos (pago_cambiado, pago_actualizado...) recarga los contadores sin parpadeo;
+// al reconectar se vuelve a cargar por si se perdió un aviso
+const { iniciar: suscribirEventos } = useEventosEnVivo({
+    conectar: escucharEventosPagos,
+    alEvento: () => cargarPagos(true),
+    alReconectar: () => cargarPagos(true),
+})
+
 onMounted(async () => {
+    suscribirEventos()
     await Promise.allSettled([cargarPagos(), cargarResumen()])
     cargandoInicial.value = false
 })
@@ -123,26 +137,21 @@ const contadoresPagos = computed(() => {
     const r = pagos.value?.resumen
     if (!r) return []
     return [
-        { estatus: 'pendiente_revision' as const, valor: r.por_verificar },
-        { estatus: 'no_reportada' as const, valor: r.sin_reportar },
-        { estatus: 'pago_parcial' as const, valor: r.pago_parcial },
-        { estatus: 'confirmado' as const, valor: r.pagados },
+        { estatus: 'por_verificar' as const, valor: r.por_verificar },
+        { estatus: 'sin_reportar' as const, valor: r.sin_reportar },
+        { estatus: 'parcial' as const, valor: r.pago_parcial },
+        { estatus: 'pagada' as const, valor: r.pagados },
     ]
 })
 
 // Barra de avance: el ancho de cada tramo es proporcional a los alumnos de ese estatus
-const COLOR_TRAMO = {
-    confirmado: 'bg-mint',
-    pago_parcial: 'bg-servicio',
-    pendiente_revision: 'bg-sun',
-    no_reportada: 'bg-text-muted',
-} as const
+const ORDEN_TRAMOS: EstadoCiclo[] = ['pagada', 'parcial', 'por_verificar', 'sin_reportar']
 
 const totalBarra = computed(() => contadoresPagos.value.reduce((suma, c) => suma + c.valor, 0))
 
 const tramos = computed(() =>
     [...contadoresPagos.value]
-        .sort((a, b) => Object.keys(COLOR_TRAMO).indexOf(a.estatus) - Object.keys(COLOR_TRAMO).indexOf(b.estatus))
+        .sort((a, b) => ORDEN_TRAMOS.indexOf(a.estatus) - ORDEN_TRAMOS.indexOf(b.estatus))
         .filter((c) => c.valor > 0)
         .map((c) => ({ ...c, ancho: (c.valor / totalBarra.value) * 100 })),
 )
@@ -153,7 +162,7 @@ const CIRCUNFERENCIA = 2 * Math.PI * RADIO_MEDIDOR
 
 const porcentajeCobrado = computed(() => {
     if (totalBarra.value === 0) return 0
-    const pagados = contadoresPagos.value.find((c) => c.estatus === 'confirmado')?.valor ?? 0
+    const pagados = contadoresPagos.value.find((c) => c.estatus === 'pagada')?.valor ?? 0
     return Math.round((pagados / totalBarra.value) * 100)
 })
 
@@ -161,7 +170,7 @@ const arcoMedidor = computed(() => (porcentajeCobrado.value / 100) * CIRCUNFEREN
 
 // Lo que lee un lector de pantalla en la barra de avance
 const descripcionBarra = computed(
-    () => 'Avance de cobro: ' + tramos.value.map((t) => `${ETIQUETAS[t.estatus].texto} ${t.valor}`).join(', '),
+    () => 'Avance de cobro: ' + tramos.value.map((t) => `${ESTADO_CICLO[t.estatus].texto} ${t.valor}`).join(', '),
 )
 
 // Lo demás que entrega /dashboard; sin "to" la tarjeta no es un enlace
@@ -223,8 +232,8 @@ const tarjetas = computed(() => {
                         class="flex flex-col gap-1 rounded-card bg-panel-2 p-3 text-left transition hover:opacity-80"
                         @click="estatusAbierto = c.estatus">
                         <span class="w-fit rounded-card px-2 py-0.5 text-xs font-medium"
-                            :class="ETIQUETAS[c.estatus].clases">
-                            {{ ETIQUETAS[c.estatus].texto }}
+                            :class="ESTADO_CICLO[c.estatus].clases">
+                            {{ ESTADO_CICLO[c.estatus].texto }}
                         </span>
                         <span class="text-2xl font-semibold text-text-primary">{{ c.valor }}</span>
                     </button>
@@ -248,7 +257,7 @@ const tarjetas = computed(() => {
                 <div v-if="totalBarra > 0" class="space-y-2">
                     <div class="flex h-3 w-full overflow-hidden rounded-full bg-panel-2" role="img"
                         :aria-label="descripcionBarra">
-                        <div v-for="t in tramos" :key="t.estatus" :class="COLOR_TRAMO[t.estatus]"
+                        <div v-for="t in tramos" :key="t.estatus" :class="ESTADO_CICLO[t.estatus].barra"
                             :style="{ width: `${t.ancho}%` }" />
                     </div>
                     <p class="text-xs text-text-secondary">{{ totalBarra }} alumnos a cobrar esta semana</p>

@@ -18,7 +18,7 @@ const ENLACES = [
 <template>
     <nav :aria-label="TEXTO_NAV_ETIQUETA" class="glass-plano mx-auto flex w-full max-w-md gap-1 rounded-full p-1 lg:mx-0">
         <RouterLink v-for="e in ENLACES" :key="e.nombre" :to="{ name: e.nombre }"
-            class="flex-1 rounded-full py-2 text-center text-sm font-medium text-text-secondary hover:text-text-primary"
+            class="flex min-h-11 flex-1 items-center justify-center rounded-full text-center text-sm font-bold text-text-secondary hover:text-text-primary focus-visible:outline-2 focus-visible:outline-accent"
             active-class="!bg-accent !text-bg">
             {{ e.texto }}
         </RouterLink>

@@ -6,9 +6,11 @@ import { usePortalEventos } from '@/features/portal-cliente/composables/usePorta
 import {
   EVENTO_PAGO_VALIDADO,
   EVENTO_PAGO_RECHAZADO,
+  EVENTO_PAGO_ACTUALIZADO,
   SECCIONES_CON_ERROR_PARA_AVISO_GENERAL,
   TEXTO_AVISO_PAGO_VALIDADO,
   TEXTO_AVISO_PAGO_RECHAZADO,
+  TEXTO_AVISO_PAGO_ACTUALIZADO,
 } from '@/features/portal-cliente/constants/portal'
 import { useAviso } from '@/shared/composables/useAviso'
 
@@ -69,6 +71,7 @@ export function usePortalInicio() {
   function alEvento(nombre: string) {
     if (nombre === EVENTO_PAGO_VALIDADO) mostrarAviso(TEXTO_AVISO_PAGO_VALIDADO)
     else if (nombre === EVENTO_PAGO_RECHAZADO) mostrarAviso(TEXTO_AVISO_PAGO_RECHAZADO)
+    else if (nombre === EVENTO_PAGO_ACTUALIZADO) mostrarAviso(TEXTO_AVISO_PAGO_ACTUALIZADO)
     refrescarPagos()
   }
 

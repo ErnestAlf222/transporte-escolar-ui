@@ -12,6 +12,17 @@ export function servicioDe(valor: string | null | undefined): Servicio {
   return valor === 'ida' || valor === 'vuelta' ? valor : 'completo'
 }
 
+// Etiqueta que se entiende sola, para mostrar el servicio de un alumno
+export const TEXTO_SERVICIO: Record<Servicio, string> = {
+  completo: 'Servicio: ida y vuelta',
+  ida: 'Servicio: solo ida',
+  vuelta: 'Servicio: solo vuelta',
+}
+
+export function textoServicio(valor: string | null | undefined): string {
+  return TEXTO_SERVICIO[servicioDe(valor)]
+}
+
 export function tituloServicio(valor: string | null | undefined): string {
   return OPCIONES_SERVICIO.find((o) => o.value === servicioDe(valor))!.titulo
 }

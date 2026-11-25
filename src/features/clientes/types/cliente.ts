@@ -9,7 +9,6 @@ export interface ClienteListItem {
   apellido_materno_alumno: string
   nombre_tutor: string
   telefono_tutor: string
-  metodo_pago: MetodoPago
   escuela_id: number | null
   nombre_escuela?: string
   motivo_archivo?: MotivoArchivo
@@ -42,10 +41,6 @@ export interface ClienteDetalle {
   correo: string
   escuela_id: number | null
   nombre_escuela?: string
-  metodo_pago: MetodoPago
-  monto_cuota: number
-  monto_recargo: number
-  dia_limite_pago: number
   estatus: EstatusCliente
   motivo_archivo?: MotivoArchivo
   motivo_archivo_detalle?: string
@@ -53,7 +48,6 @@ export interface ClienteDetalle {
   tutor_id: number | null
   servicio?: string // completo, ida o vuelta
   alumnos: AlumnoClienteFamilia[]
-  hermanos_iguales?: boolean // todos sus hermanos activos tienen su misma configuración de dinero
   // El servidor todavía NO los manda en GET /clientes/{id}: la pantalla los usa solo si llegan
   acceso_portal?: boolean
   direccion_actualizada_en?: string | null // ISO 8601 del último cambio de dirección desde el portal
@@ -71,23 +65,6 @@ export interface AlumnoClienteFamilia {
   apellido_materno_alumno?: string
   nombre_escuela?: string
   estatus: EstatusCliente
-  metodo_pago: MetodoPago
-  monto_cuota: number
-}
-
-export interface AdeudoAlumno {
-  id: number
-  nombre_alumno: string
-  apellido_paterno_alumno?: string
-  apellido_materno_alumno?: string
-  estatus: EstatusCliente
-  semanas_pendientes: number
-  total_adeudo: number
-}
-
-export interface AdeudoFamilia {
-  alumnos: AdeudoAlumno[]
-  total_familia: number
 }
 
 export interface ConfigurarClientePayload {

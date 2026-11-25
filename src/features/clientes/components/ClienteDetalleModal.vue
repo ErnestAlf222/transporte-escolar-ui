@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { verCliente, verAdeudoCliente, verAdeudoFamilia, archivarCliente, reincorporarCliente } from '@/features/clientes/api/clientes'
+import { verCliente, verAdeudoCliente, archivarCliente, reincorporarCliente } from '@/features/clientes/api/clientes'
 import type { ClienteDetalle, AlumnoClienteFamilia, MotivoArchivo } from '@/features/clientes/types/cliente'
 import ServicioEtiqueta from '@/shared/ui/ServicioEtiqueta.vue'
 import { telefonoInternacional } from '@/shared/utils/telefono'
 import { inicialesAlumno, nombreCompleto } from '@/shared/utils/nombres'
 import { mensajeDeEstado } from '@/shared/utils/errores'
 import ModalBase from '@/shared/ui/ModalBase.vue'
-import { X, Mail, GraduationCap, AlertTriangle, Pencil, Save, Phone, Archive, ArchiveRestore } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { RUTA_PAGOS, PARAM_BUSQUEDA_PAGOS } from '@/shared/constants/pagos'
+import { X, Receipt, Mail, GraduationCap, AlertTriangle, Pencil, Save, Phone, Archive, ArchiveRestore } from 'lucide-vue-next'
 import WhatsappIcon from '@/shared/ui/icons/WhatsappIcon.vue'
 import TelegramIcon from '@/shared/ui/icons/TelegramIcon.vue'
 import Spinner from '@/shared/ui/Spinner.vue'
+import { formatearMonto } from '@/shared/utils/moneda'
 import ClienteEditarForm from '@/features/clientes/components/ClienteEditarForm.vue'
-import ClienteDineroPanel from '@/features/clientes/components/ClienteDineroPanel.vue'
+import { TAMANO_MODAL } from '@/shared/constants/modal'
 import ClienteAccesoPortal from '@/features/clientes/components/ClienteAccesoPortal.vue'
 import { cambiosDireccion } from '@/shared/composables/useEventosDirecciones'
 import { useAuthStore } from '@/features/auth'
@@ -29,11 +32,11 @@ const emit = defineEmits<{
     'cancelar-edicion': []
     guardado: []
     abrir: [id: number]
-    'dinero-guardado': []
     'estatus-cambiado': []
 }>()
 
 const auth = useAuthStore()
+const router = useRouter()
 const puedeEditar = computed(() => auth.rol === 'admin')
 
 const MOTIVOS: { valor: MotivoArchivo; etiqueta: string }[] = [
@@ -155,26 +158,11 @@ const error = ref('')
 const mensajeGuardado = ref(false)
 const formRef = ref<InstanceType<typeof ClienteEditarForm> | null>(null)
 
-// Lo que debe cada hermano: es el mismo cálculo que usa el panel de Dinero
-const adeudos = ref<Record<number, number>>({})
-
-async function cargarAdeudos(id: number) {
-    try {
-        const r = await verAdeudoFamilia(id)
-        const mapa: Record<number, number> = {}
-        for (const a of r.alumnos) mapa[a.id] = a.total_adeudo
-        adeudos.value = mapa
-    } catch {
-        // Si falla no se muestra monto, y el resto del detalle no se afecta
-    }
-}
-
-function adeudoDe(id: number): number | null {
-    return id in adeudos.value ? adeudos.value[id]! : null
-}
-
-function formatearMonto(monto: number): string {
-    return monto.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
+// Un solo puente al dinero: Pagos filtrado a esta familia (los parámetros de la URL mandan sobre lo recordado)
+function verPagos() {
+    const d = detalle.value
+    if (!d) return
+    router.push({ path: RUTA_PAGOS, query: { [PARAM_BUSQUEDA_PAGOS]: d.telefono_tutor || d.nombre_alumno } })
 }
 
 function abrirAlumno(a: AlumnoClienteFamilia) {
@@ -206,7 +194,6 @@ async function cargar(id: number, silencioso = false) {
         const nuevo = await verCliente(id)
         if (solicitud === ultimaSolicitud) {
             detalle.value = nuevo
-            cargarAdeudos(id)
         }
     } catch {
         if (solicitud === ultimaSolicitud) error.value = 'No se pudo cargar el detalle del cliente'
@@ -245,12 +232,6 @@ function alGuardar() {
     if (props.clienteId !== null) cargar(props.clienteId, true)
 }
 
-// Al guardar dinero: el listado de atrás y el detalle se refrescan sin parpadeo.
-function alDineroGuardado() {
-    emit('dinero-guardado')
-    if (props.clienteId !== null) cargar(props.clienteId, true)
-}
-
 // Si el usuario cierra con la "X" mientras edita (incluso por error), se guarda igual que con
 // el botón "Guardar" — dispara el submit real del formulario, respetando validaciones
 function alCerrar() {
@@ -266,7 +247,7 @@ function alCerrar() {
 
 <template>
     <ModalBase :abierto="clienteId !== null" @cerrar="emit('close')">
-                    <div class="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col md:max-w-2xl">
+                    <div class="relative flex max-h-[calc(100dvh-2rem)] w-full flex-col" :class="TAMANO_MODAL.ancho">
                         <div class="glass flex min-h-0 w-full flex-1 flex-col rounded-card p-5 sm:p-6">
                             <div class="mb-4 flex shrink-0 items-start justify-between">
                                 <h2 class="text-lg font-semibold text-text-primary">
@@ -309,6 +290,9 @@ function alCerrar() {
                                 :class="{ 'opacity-60': cambiando }">
                                 <p v-if="error" class="text-sm text-danger">{{ error }}</p>
 
+                                <!-- Escritorio: izquierda, tutor, alumnos y datos; derecha, pagos, acceso al portal y acciones -->
+                                <div class="space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+                                <div class="space-y-5">
                                 <div class="glass space-y-3 rounded-card p-4"
                                     :class="{ destello: resaltar === 'tutor' }">
                                     <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">
@@ -374,15 +358,6 @@ function alCerrar() {
                                                 </p>
                                             </div>
                                             <div class="shrink-0 text-right">
-                                                <template v-if="a.estatus !== 'archivado' && adeudoDe(a.id) !== null">
-                                                    <p v-if="adeudoDe(a.id)! > 0"
-                                                        class="text-sm font-semibold text-accent">
-                                                        {{ formatearMonto(adeudoDe(a.id)!) }}
-                                                    </p>
-                                                    <p v-else-if="a.monto_cuota > 0" class="text-xs text-mint">Al
-                                                        corriente</p>
-                                                    <p v-else class="text-xs text-sun">Sin cuota</p>
-                                                </template>
                                                 <p v-if="a.estatus === 'archivado'" class="text-xs text-danger">
                                                     Archivado
                                                 </p>
@@ -418,6 +393,16 @@ function alCerrar() {
                                     </div>
                                     <p v-else class="text-sm text-text-secondary">Sin teléfono del alumno</p>
                                 </div>
+
+                                </div>
+
+                                <div class="space-y-5">
+                                <button type="button"
+                                    class="flex w-full items-center justify-center gap-2 rounded-card border border-border px-4 py-2 text-sm text-text-primary transition hover:bg-panel-2"
+                                    @click="verPagos">
+                                    <Receipt class="h-4 w-4" aria-hidden="true" />
+                                    Ver pagos
+                                </button>
 
                                 <ClienteAccesoPortal :key="detalle.id" :detalle="detalle" :puede-editar="puedeEditar"
                                     @cambio="cargar(detalle.id, true)" />
@@ -486,13 +471,12 @@ function alCerrar() {
                                         Archivar alumno
                                     </button>
                                 </div>
+                                </div>
+                                </div>
                             </div>
                             </div>
 
                         </div>
-
-                        <ClienteDineroPanel v-if="detalle && !modoEdicion" :detalle="detalle"
-                            :puede-editar="puedeEditar" @guardado="alDineroGuardado" />
 
                         <!-- Archivado: capa de desenfoque + panel grande (mismo patrón que la burbuja) -->
                         <Transition enter-active-class="transition-opacity duration-200 motion-reduce:transition-none"

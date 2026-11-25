@@ -45,6 +45,7 @@ export const TEXTO_REPORTAR_SIN_CAPTURA = 'Sube la captura de tu pago con tarjet
 export const TEXTO_REPORTAR_FALLOS = 'Algunos no se pudieron enviar. Revisa abajo e intenta de nuevo solo con ellos'
 export const TEXTO_REPORTAR_REINTENTAR = 'Reintentar los que faltan'
 export const TEXTO_ERROR_503 = 'Por ahora no se pueden subir capturas. Intenta más tarde o paga en efectivo'
+export const TEXTO_ERROR_503_FOTO = 'Por ahora no se pueden subir fotos. Intenta más tarde.'
 export const TEXTO_ERROR_429 = 'Hiciste muchos cambios seguidos. Espera unos minutos e intenta de nuevo'
 export const TEXTO_ERROR_RED = 'No pudimos enviar. Revisa tu conexión e intenta de nuevo'
 export const TEXTO_ESTADO_ENVIADO = 'Enviado'
@@ -77,3 +78,16 @@ export const TEXTO_CAMBIAR_FOTO_DOMICILIO = 'Cambiar foto de la casa'
 export const TEXTO_AGREGAR_FOTO_DOMICILIO = 'Agregar foto de la casa'
 export const TEXTO_FOTO_DOMICILIO_ACTUALIZADA = 'Foto de la casa actualizada'
 export const TEXTO_ERROR_GUARDAR = 'No se pudo guardar, inténtalo de nuevo'
+
+// Perfil con más calidez
+export const TEXTO_PERFIL_AYUDA = 'Revisa que tus datos estén bien. Si algo no es correcto, avisa a la administración.'
+export const TEXTO_DATOS_TUTOR = 'Tus datos'
+export const TEXTO_DIRECCION_AYUDA = 'Así sabemos dónde recoger y dejar a tu hijo.'
+export const TEXTO_DIRECCION_LUGAR = 'Dónde vive'
+export const TEXTO_PERFIL_FOTO_TUTOR_AYUDA = 'Una foto ayuda a que te reconozcan.'
+
+// Quién es quién en el perfil
+export const ETIQUETA_PARENTESCO = 'Parentesco con el alumno'
+export const TEXTO_SIN_REGISTRAR = 'Sin registrar'
+export const TEXTO_PARENTESCO_AYUDA = 'Avisa a la administración para agregarlo'
+export const TEXTO_PERFIL_ALUMNO = 'Alumno'

@@ -13,6 +13,8 @@ import {
   TEXTO_FOTO_ACTUALIZADA,
   TEXTO_DIRECCION_ACTUALIZADA,
   TEXTO_FOTO_DOMICILIO_ACTUALIZADA,
+  TEXTO_ERROR_503_FOTO,
+  TEXTO_ERROR_GUARDAR,
 } from '@/features/portal-cliente/constants/perfil'
 import type { CambiosDireccion } from '@/features/portal-cliente/types/perfil'
 import { useAviso } from '@/shared/composables/useAviso'
@@ -37,7 +39,8 @@ export function usePerfil() {
       await perfil.cargar()
       mostrarAviso(aviso)
     } catch (e) {
-      errores.value[clave] = mensajeErrorPortal(e)
+      // Un 503 en fotos es "no hay almacenamiento"; en la dirección es un fallo al guardar
+      errores.value[clave] = mensajeErrorPortal(e, clave.startsWith('direccion-') ? TEXTO_ERROR_GUARDAR : TEXTO_ERROR_503_FOTO)
       mostrarAviso(errores.value[clave], 'error')
     } finally {
       ocupado.value = ocupado.value.filter((c) => c !== clave)

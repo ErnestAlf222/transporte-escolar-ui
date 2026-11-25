@@ -28,8 +28,8 @@ export function useReportarPago(alumnos: () => AlumnoResumenPortal[], alReportar
   const error = ref('')
   const terminado = ref(false)
 
-  // Todos se listan (el servidor avisa con claridad si ya reportaron esta semana); por defecto van los que deben algo
-  const elegibles = computed(() => alumnos())
+  // Solo se listan quienes pueden reportar (lo dice el servidor); por defecto van los que deben algo
+  const elegibles = computed(() => alumnos().filter((a) => a.puede_reportar === true))
 
   function reiniciar() {
     metodo.value = 'digital'
@@ -40,7 +40,7 @@ export function useReportarPago(alumnos: () => AlumnoResumenPortal[], alReportar
     error.value = ''
     terminado.value = false
     // Por defecto, los que deben algo
-    const quienDebe = elegibles.value.filter((a) => a.debe_esta_semana > 0 && a.estado_semana !== 'por_verificar')
+    const quienDebe = elegibles.value.filter((a) => a.debe_esta_semana > 0)
     seleccion.value = (quienDebe.length ? quienDebe : elegibles.value).map((a) => a.id)
   }
 

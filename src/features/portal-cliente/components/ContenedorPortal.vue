@@ -5,7 +5,7 @@
 </script>
 
 <template>
-    <div class="mx-auto min-h-screen w-full max-w-md space-y-6 p-4 pb-10 md:max-w-2xl md:p-6 md:pb-12 lg:max-w-5xl">
+    <div class="mx-auto min-h-screen w-full max-w-md space-y-8 p-4 pb-12 md:max-w-2xl md:p-6 md:pb-14 lg:max-w-5xl">
         <slot />
     </div>
 </template>

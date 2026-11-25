@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { escucharEventosProspectos, listarProspectos } from '@/features/prospectos/api/prospectos'
@@ -45,6 +47,7 @@ const error = ref('')
 const filtroEscuela = ref('')
 const filtroEstatus = ref<EstatusProspecto | ''>('')
 const busqueda = ref('')
+useEstadoPantalla(PANTALLAS.prospectos, { filtroEscuela, busqueda }, cargando)
 
 const prospectoIdActivo = computed(() => {
     const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id

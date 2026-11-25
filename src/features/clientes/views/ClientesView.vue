@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listarClientes } from '@/features/clientes/api/clientes'
@@ -32,6 +34,7 @@ const error = ref('')
 const filtroEstatus = ref<EstatusCliente>('activo')
 const filtroEscuela = ref('')
 const busqueda = ref('')
+useEstadoPantalla(PANTALLAS.clientes, { filtroEstatus, filtroEscuela, busqueda }, cargando)
 
 const CAMPOS_BUSQUEDA: CamposDeBusqueda<ClienteListItem> = {
     nombresAlumno: (c) => [c.nombre_alumno, c.apellido_paterno_alumno, c.apellido_materno_alumno],
@@ -131,12 +134,6 @@ function textoTutorFamilia(f: Familia): string {
 function textoEscuelas(f: Familia): string {
     const nombres = new Set(f.alumnos.map((a) => a.nombre_escuela).filter(Boolean))
     return [...nombres].join(' · ')
-}
-
-function textoPago(f: Familia): string {
-    const metodos = new Set(f.alumnos.map((a) => a.metodo_pago))
-    if (metodos.size > 1) return 'Pago mixto'
-    return f.alumnos[0]!.metodo_pago === 'digital' ? 'Pago digital' : 'Pago en efectivo'
 }
 
 async function cargar() {
@@ -247,11 +244,6 @@ onMounted(() => {
                                         </p>
                                     </div>
                                 </div>
-
-                                <span
-                                    class="shrink-0 rounded-card bg-accent/15 px-2 py-1 text-xs font-medium text-accent">
-                                    {{ textoPago(familia) }}
-                                </span>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-3">
@@ -279,6 +271,6 @@ onMounted(() => {
         <!-- Modal de detalle del cliente -->
         <ClienteDetalleModal :cliente-id="clienteIdActivo" :modo-edicion="modoEdicion" :resaltar="resaltado"
             @close="cerrarDetalle" @editar="abrirEdicion" @cancelar-edicion="cancelarEdicion" @guardado="alGuardar"
-            @abrir="abrirDetalle" @dinero-guardado="recargarSilencioso" @estatus-cambiado="recargarSilencioso" />
+            @abrir="abrirDetalle" @estatus-cambiado="recargarSilencioso" />
     </div>
 </template>

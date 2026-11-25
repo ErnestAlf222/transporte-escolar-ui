@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, onMounted } from 'vue'
 import { UserPlus, Check, Users } from 'lucide-vue-next'
 import { listarClientes, agregarAlumno } from '@/features/clientes'
@@ -78,6 +80,7 @@ const familias = computed<Familia[]>(() => {
 })
 
 const busqueda = ref('')
+useEstadoPantalla(PANTALLAS.familias, { busqueda }, cargando)
 
 // Sin búsqueda se ven todas; con búsqueda, las que coincidan por tutor, alumno o teléfono
 const familiasFiltradas = computed(() =>

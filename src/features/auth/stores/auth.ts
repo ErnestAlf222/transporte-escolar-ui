@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import http from '@/shared/api/http'
+import { limpiarEstadoPantallas } from '@/shared/composables/useEstadoPantalla'
 
 interface JwtPayload {
   admin_id: number
@@ -27,12 +28,14 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(correo: string, password: string) {
     const { data } = await http.post<{ token: string }>('/login', { correo, password })
+    limpiarEstadoPantallas()
     token.value = data.token
     localStorage.setItem('token', data.token)
   }
 
   function logout() {
     token.value = null
+    limpiarEstadoPantallas()
     localStorage.removeItem('token')
   }
 

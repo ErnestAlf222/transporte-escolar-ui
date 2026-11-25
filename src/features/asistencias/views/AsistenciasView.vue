@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Check, X, CircleAlert } from 'lucide-vue-next'
 import { verAsistenciasHoy, marcarAsistencia } from '@/features/asistencias/api/asistencias'
@@ -90,6 +92,7 @@ function escuelaGuardada(): string {
 
 const filtroEscuela = ref(escuelaGuardada())
 const busqueda = ref('')
+useEstadoPantalla(PANTALLAS.asistencias, { busqueda }, cargando)
 
 watch(filtroEscuela, (valor) => {
     try {

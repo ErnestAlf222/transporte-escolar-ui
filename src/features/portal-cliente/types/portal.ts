@@ -1,3 +1,5 @@
+import type { EstadoCiclo } from '@/shared/constants/estadoCiclo'
+
 export type TipoPortal = 'tutor' | 'alumno'
 
 export interface SesionPortalResponse {
@@ -35,6 +37,18 @@ export interface DatosPagoPortal {
 
 export type EstadoSemanaPortal = 'pendiente' | 'por_verificar' | 'parcial' | 'pagado' | 'sin_cobro'
 
+// Ciclo de pago de la semana, tal como lo calcula el servidor. En el resumen va plano en cada alumno;
+// en los reportes va dentro de `ciclo`
+export interface CicloPortal {
+  cargo: number
+  abonado_confirmado: number
+  por_verificar: number
+  saldo: number
+  estado: EstadoCiclo
+  puede_reportar: boolean
+  total_familia: number
+}
+
 export interface AtrasoPortal {
   semana_inicio: string
   estado: string
@@ -43,7 +57,7 @@ export interface AtrasoPortal {
   con_recargo: boolean
 }
 
-export interface AlumnoResumenPortal {
+export interface AlumnoResumenPortal extends Partial<CicloPortal> {
   id: number
   nombre: string
   estado_semana: EstadoSemanaPortal
@@ -76,6 +90,7 @@ export interface ReportePortal {
   mensaje?: string
   abonado?: number
   falta?: number
+  ciclo?: CicloPortal
 }
 
 export interface ReportesPortalResponse {

@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { useEstadoPantalla } from '@/shared/composables/useEstadoPantalla'
+import { PANTALLAS } from '@/shared/constants/estadoPantalla'
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { verPagosSemana, escucharEventosPagos } from '@/features/pagos/api/pagos'
-import type { PagosSemana, EscuelaPagoSemana, EstatusSemana, AlumnoPagoSemana } from '@/features/pagos/types/pago'
+import type { PagosSemana, EscuelaPagoSemana, AlumnoPagoSemana, FamiliaPago } from '@/features/pagos/types/pago'
 import { useAuthStore } from '@/features/auth'
 import { moverSemana, rangoSemana, lunesDe, soloFecha } from '@/shared/utils/semana'
 import { compararTexto } from '@/shared/utils/orden'
 import { coincideBusqueda } from '@/shared/utils/busqueda'
 import { PAUSA_CARGA_MS, esperar } from '@/shared/utils/tiempo'
-import { ESPERA_RECONEXION_MS } from '@/shared/constants/tiempo'
-import { ETIQUETAS, ETIQUETAS_METODO, METODO_DIGITAL, estaAtenuado, etiquetaDe } from '@/features/pagos/utils/pagos'
+import { agruparFamilias, estaAtenuado, estadoDe } from '@/features/pagos/utils/pagos'
+import { ESTADO_CICLO, ORDEN_ESTADOS_CICLO, type EstadoCiclo } from '@/shared/constants/estadoCiclo'
+import { estadoDeTexto } from '@/shared/utils/estadoCiclo'
+import { useEventosEnVivo } from '@/shared/composables/useEventosEnVivo'
 import DropdownSelect from '@/shared/ui/DropdownSelect.vue'
 import LoaderVan from '@/shared/ui/LoaderVan.vue'
 import LoaderVanJuego from '@/shared/ui/LoaderVanJuego.vue'
 import PagoDetalleModal from '@/features/pagos/components/PagoDetalleModal.vue'
+import FilaFamiliaPago from '@/features/pagos/components/FilaFamiliaPago.vue'
+import PanelDineroFamilia from '@/features/pagos/components/PanelDineroFamilia.vue'
 import SelectorSemana from '@/shared/ui/SelectorSemana.vue'
 import SinResultados from '@/shared/ui/SinResultados.vue'
 import BuscadorInput from '@/shared/ui/BuscadorInput.vue'
@@ -28,15 +34,6 @@ const CLAVE_SIN_ESCUELA = 'sin-escuela'
 // porque esa clase fija su propio fondo y taparía el color
 const CLASES_CONTADOR_NORMAL = 'glass hover:bg-panel-2'
 const CLASES_TODOS_SELECCIONADO = 'border border-accent/40 bg-accent/10'
-const CLASES_CONTADOR_SELECCIONADO: Record<EstatusSemana, string> = {
-    pendiente_revision: 'border border-sun/40 bg-sun/10',
-    no_reportada: 'border border-text-secondary/40 bg-text-secondary/10',
-    pago_parcial: 'border border-[#229ED9]/40 bg-[#229ED9]/10',
-    sin_cobro: 'border border-text-secondary/40 bg-text-secondary/10',
-    rechazado: 'border border-danger/40 bg-danger/10',
-    confirmado: 'border border-mint/40 bg-mint/10',
-}
-
 
 
 const datos = ref<PagosSemana | null>(null)
@@ -51,10 +48,11 @@ const semanaDeUrl = textoDe(route.query.semana)
 
 const semanaPedida = ref<string | undefined>(/^\d{4}-\d{2}-\d{2}$/.test(semanaDeUrl) ? semanaDeUrl : undefined) // undefined = semana en curso
 const filtroEscuela = ref(textoDe(route.query.escuela))
-const filtroEstatus = ref<EstatusSemana | ''>(
-    Object.keys(CLASES_CONTADOR_SELECCIONADO).includes(estatusDeUrl) ? (estatusDeUrl as EstatusSemana) : '',
-)
+// El filtro acepta los estados del ciclo; los valores viejos (de enlaces o de lo recordado) se traducen
+const filtroEstatus = ref<EstadoCiclo | ''>(estadoDeTexto(estatusDeUrl))
 const busqueda = ref(textoDe(route.query.q))
+useEstadoPantalla(PANTALLAS.pagos, { semanaPedida, filtroEscuela, filtroEstatus, busqueda }, cargando)
+filtroEstatus.value = estadoDeTexto(filtroEstatus.value)
 const busquedaActiva = computed(() => busqueda.value.trim() !== '')
 
 // Por nombre del alumno o del tutor, o por cualquiera de sus teléfonos
@@ -87,6 +85,8 @@ const auth = useAuthStore()
 const puedeResolver = computed(() => auth.rol === 'admin')
 
 const alumnoDeUrl = Number(textoDe(route.query.alumno))
+// El panel de dinero de la familia (la burbuja): qué alumno de la familia está abierto; null = cerrado
+const dineroActivoId = ref<number | null>(null)
 const clienteActivoId = ref<number | null>(Number.isInteger(alumnoDeUrl) && alumnoDeUrl > 0 ? alumnoDeUrl : null)
 
 // La URL refleja la vista (semana, filtros, búsqueda y alumno abierto): al recargar se regresa al mismo punto
@@ -112,6 +112,16 @@ const escuelaActiva = computed(() => (grupoActivo.value ? etiquetaEscuela(grupoA
 // Los hermanos del alumno abierto (mismo tutor, aunque vayan a otra escuela), incluido él
 const hermanosActivo = computed<AlumnoPagoSemana[]>(() => {
     const a = alumnoActivo.value
+    if (!a) return []
+    if (a.tutor_id === null || a.tutor_id === undefined) return [a]
+    return (datos.value?.escuelas ?? []).flatMap((e) => e.alumnos).filter((x) => x.tutor_id === a.tutor_id)
+})
+
+const alumnoDinero = computed(
+    () => (datos.value?.escuelas ?? []).flatMap((e) => e.alumnos).find((a) => a.cliente_id === dineroActivoId.value) ?? null,
+)
+const hermanosDinero = computed<AlumnoPagoSemana[]>(() => {
+    const a = alumnoDinero.value
     if (!a) return []
     if (a.tutor_id === null || a.tutor_id === undefined) return [a]
     return (datos.value?.escuelas ?? []).flatMap((e) => e.alumnos).filter((x) => x.tutor_id === a.tutor_id)
@@ -156,11 +166,12 @@ const escuelasVisibles = computed(() =>
                     (a) =>
                         !estaAtenuado(a) &&
                         coincideConBusqueda(a) &&
-                        (!filtroEstatus.value || a.estatus === filtroEstatus.value),
+                        (!filtroEstatus.value || estadoDe(a) === filtroEstatus.value),
                 )
                 .sort((a, b) => compararTexto(a.alumno, b.alumno)),
         }))
         .filter((e) => e.alumnos.length > 0)
+        .map((e) => ({ ...e, familias: agruparFamilias(e.alumnos) }))
         .sort(compararEscuelas),
 )
 
@@ -178,19 +189,20 @@ const centinela = ref<HTMLElement | null>(null)
 let temporizadorTanda: ReturnType<typeof setTimeout> | undefined
 let observador: IntersectionObserver | undefined
 
-const totalVisibles = computed(() => escuelasVisibles.value.reduce((suma, e) => suma + e.alumnos.length, 0))
+// La tanda cuenta familias (una fila por familia); el encabezado de cada escuela cuenta sus alumnos
+const totalVisibles = computed(() => escuelasVisibles.value.reduce((suma, e) => suma + e.familias.length, 0))
 const hayMas = computed(() => visibles.value < totalVisibles.value)
 
-// Se muestran de a TANDA alumnos, de corrido entre escuelas; cada escuela conserva su total real
+// Se muestran de a TANDA familias, de corrido entre escuelas; cada escuela conserva su total real de alumnos
 const escuelasMostradas = computed(() => {
     let restantes = visibles.value
-    const resultado: (EscuelaPagoSemana & { total: number; desde: number })[] = []
+    const resultado: (EscuelaPagoSemana & { familias: FamiliaPago[]; total: number; desde: number })[] = []
     for (const escuela of escuelasVisibles.value) {
         if (restantes <= 0) break
-        const desde = visibles.value - restantes // cuántos alumnos se muestran antes de esta escuela
-        const alumnos = escuela.alumnos.slice(0, restantes)
-        restantes -= alumnos.length
-        resultado.push({ ...escuela, alumnos, total: escuela.alumnos.length, desde })
+        const desde = visibles.value - restantes // cuántas familias se muestran antes de esta escuela
+        const familias = escuela.familias.slice(0, restantes)
+        restantes -= familias.length
+        resultado.push({ ...escuela, familias, total: escuela.alumnos.length, desde })
     }
     return resultado
 })
@@ -238,22 +250,18 @@ const alumnosDeLaEscuela = computed(() =>
         .filter((a) => !estaAtenuado(a) && coincideConBusqueda(a)),
 )
 
-function contarPorEstatus(estatus: EstatusSemana): number {
-    return alumnosDeLaEscuela.value.filter((a) => a.estatus === estatus).length
+function contarPorEstatus(estatus: EstadoCiclo): number {
+    return alumnosDeLaEscuela.value.filter((a) => estadoDe(a) === estatus).length
 }
 
-const contadores = computed(() => [
-    { estatus: 'pendiente_revision' as const, valor: contarPorEstatus('pendiente_revision') },
-    { estatus: 'no_reportada' as const, valor: contarPorEstatus('no_reportada') },
-    { estatus: 'pago_parcial' as const, valor: contarPorEstatus('pago_parcial') },
-    { estatus: 'rechazado' as const, valor: contarPorEstatus('rechazado') },
-    { estatus: 'confirmado' as const, valor: contarPorEstatus('confirmado') },
-])
+const contadores = computed(() =>
+    ORDEN_ESTADOS_CICLO.map((estatus) => ({ estatus, valor: contarPorEstatus(estatus) })),
+)
 
 const totalAlumnos = computed(() => alumnosDeLaEscuela.value.length)
 
 // Tocar el contador activo otra vez quita el filtro
-function alternarFiltro(estatus: EstatusSemana) {
+function alternarFiltro(estatus: EstadoCiclo) {
     cambiarFiltro(filtroEstatus.value === estatus ? '' : estatus)
 }
 
@@ -274,7 +282,7 @@ function mostrarPausa() {
 
 watch([filtroEscuela, filtroEstatus], mostrarPausa)
 
-function cambiarFiltro(estatus: EstatusSemana | '') {
+function cambiarFiltro(estatus: EstadoCiclo | '') {
     filtroEstatus.value = estatus
 }
 
@@ -330,23 +338,13 @@ function refrescar() {
     cargar(true)
 }
 
-let detener: AbortController | null = null
-
-// Mantiene la conexión de tiempo real; si se cae, espera, reconecta y refresca por si se perdió un aviso
-async function suscribirEventos() {
-    detener = new AbortController()
-    const { signal } = detener
-    while (!signal.aborted) {
-        try {
-            await escucharEventosPagos(refrescar, signal)
-        } catch {
-            if (signal.aborted) return
-        }
-        if (signal.aborted) return
-        refrescar()
-        await esperar(ESPERA_RECONEXION_MS)
-    }
-}
+// Tiempo real: cualquier aviso de pagos (pago_cambiado, pago_actualizado...) recarga la semana completa;
+// si la conexión se cae, el composable reconecta y se vuelve a cargar por si se perdió un aviso
+const { iniciar: suscribirEventos } = useEventosEnVivo({
+    conectar: escucharEventosPagos,
+    alEvento: () => refrescar(),
+    alReconectar: refrescar,
+})
 
 onMounted(() => {
     cargar()
@@ -364,7 +362,6 @@ onUnmounted(() => {
     clearTimeout(temporizadorFiltro)
     clearTimeout(temporizadorTanda)
     observador?.disconnect()
-    detener?.abort()
 })
 </script>
 
@@ -421,11 +418,11 @@ onUnmounted(() => {
                     </button>
                     <button v-for="c in contadores" :key="c.estatus" type="button"
                         class="flex flex-col gap-1 rounded-card p-3 text-left transition last:col-span-2 sm:last:col-span-1"
-                        :class="filtroEstatus === c.estatus ? CLASES_CONTADOR_SELECCIONADO[c.estatus] : CLASES_CONTADOR_NORMAL"
+                        :class="filtroEstatus === c.estatus ? ESTADO_CICLO[c.estatus].seleccionado : CLASES_CONTADOR_NORMAL"
                         :aria-pressed="filtroEstatus === c.estatus" @click="alternarFiltro(c.estatus)">
                         <span class="w-fit rounded-card px-2 py-0.5 text-xs font-medium"
-                            :class="ETIQUETAS[c.estatus].clases">
-                            {{ ETIQUETAS[c.estatus].texto }}
+                            :class="ESTADO_CICLO[c.estatus].clases">
+                            {{ ESTADO_CICLO[c.estatus].texto }}
                         </span>
                         <span class="text-2xl font-semibold text-text-primary">{{ c.valor }}</span>
                     </button>
@@ -460,30 +457,10 @@ onUnmounted(() => {
                         {{ etiquetaEscuela(escuela) }} · {{ escuela.total }}
                     </EncabezadoEscuela>
                     <div class="flex flex-col gap-2">
-                        <div v-for="(a, j) in escuela.alumnos" :key="a.cliente_id" role="button" tabindex="0"
-                            class="entra-suave glass-plano flex cursor-pointer items-center justify-between gap-3 rounded-card p-4 transition hover:bg-panel-2"
-                            :class="{ 'opacity-60': estaAtenuado(a) }" @click="clienteActivoId = a.cliente_id"
+                        <FilaFamiliaPago v-for="(f, j) in escuela.familias" :key="f.clave" :familia="f"
+                            :puede-resolver="puedeResolver" class="entra-suave"
                             :style="{ '--i': Math.min(escuela.desde + j, ESCALON_ENTRADA) }"
-                            @keydown.enter="clienteActivoId = a.cliente_id">
-                            <div class="min-w-0">
-                                <p class="truncate font-semibold text-text-primary">{{ a.alumno }}</p>
-                                <p class="text-xs text-text-secondary">
-                                    <span :class="{ 'font-medium text-accent': a.metodo_semana === METODO_DIGITAL }">
-                                        {{ ETIQUETAS_METODO[a.metodo_semana] ?? a.metodo_semana }}
-                                    </span>
-                                    <span v-if="a.sin_cuota" class="text-sun"> · Cuota sin configurar</span>
-                                </p>
-                            </div>
-                            <div class="flex shrink-0 flex-col items-end gap-1">
-                                <span class="rounded-card px-2 py-1 text-xs font-medium" :class="etiquetaDe(a).clases">
-                                    {{ etiquetaDe(a).texto }}
-                                </span>
-                                <p v-if="a.con_recargo && a.estatus !== 'confirmado' && !estaAtenuado(a)"
-                                    class="text-xs text-sun">
-                                    con recargo
-                                </p>
-                            </div>
-                        </div>
+                            @abrir="clienteActivoId = $event" @dinero="dineroActivoId = $event" />
                     </div>
                 </section>
 
@@ -495,6 +472,10 @@ onUnmounted(() => {
 
         <PagoDetalleModal :alumno="alumnoActivo" :hermanos="hermanosActivo" :escuela="escuelaActiva"
             :semana-inicio="datos?.semana_inicio ?? ''" :puede-resolver="puedeResolver" @close="clienteActivoId = null"
-            @resuelto="refrescar" />
+            @resuelto="refrescar" @abrir="clienteActivoId = $event"
+            @dinero="dineroActivoId = $event" />
+
+        <PanelDineroFamilia :alumno="alumnoDinero" :hermanos="hermanosDinero" :semana-inicio="datos?.semana_inicio ?? ''"
+            @cerrar="dineroActivoId = null" @cambiado="refrescar" @elegir="dineroActivoId = $event" />
     </div>
 </template>
